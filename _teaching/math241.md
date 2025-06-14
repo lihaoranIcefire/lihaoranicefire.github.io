@@ -7,3 +7,5 @@ venue: "University of Maryland, Math Department"
 date: 2024-02-01
 location: "College Park, MD"
 ---
+
+- [Spring 2024 notes](../files/math241spring2024.html)

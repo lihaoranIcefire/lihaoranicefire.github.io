@@ -8,13 +8,6 @@ date: 2024-06-01
 location: "College Park, MD"
 ---
 
-This is a description of a teaching experience. You can use markdown like any other post.
-
-Heading 1
-======
-
-Heading 2
-======
-
-Heading 3
-======
+- [Syllabus](../files/math240/Syllabus.pdf)
+- [Day-to-day Schedule](../files/math240/schedule.html)
+- [Lecture notes](../files/math240/LectureNotes.pdf)
