@@ -8,6 +8,6 @@ date: 2024-06-01
 location: "College Park, MD"
 ---
 
-- [Syllabus](../files/math240/Syllabus.pdf)
+- [Syllabus](../files/math240/syllabus.pdf)
 - [Day-to-day Schedule](../files/math240/schedule.html)
 - [Lecture notes](../files/math240/LectureNotes.pdf)

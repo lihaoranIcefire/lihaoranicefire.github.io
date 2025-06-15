@@ -55,10 +55,9 @@
 ).with(numbering: none)
 
 // Template
-
-#let project(title: "", authors: (), body) = {
-	set document(author: authors, title: title)
-	set text(font: "Libertinus Serif", lang: "en")
+#let project(title: "", authors: (), date: none, body) = {
+	set document(author: authors, title: title, date: date)
+	set text(font: "New Computer Modern", lang: "en")
 	set heading(numbering: "1.", )
 	set math.equation(numbering: "(1)")
 	set par(justify: true)
@@ -74,8 +73,8 @@
 		if el != none and el.func() == eq {
 			// Override equation references.
 			link(el.location(),numbering(
-			el.numbering,
-			..counter(eq).at(el.location())
+        el.numbering,
+        ..counter(eq).at(el.location())
 			))
 		} else {
 			// Other references as usual.
@@ -85,8 +84,8 @@
 
 	align(center)[
 		#block(text(weight: 700, 1.75em, title))
-		#block(text(weight: 200, 1em, authors))
-		#v(2em)
+		#block(text(authors, weight: 200, size: 1em))
+    #block(text(date.display(), weight: 200, size: 1em))
 	]
 
 	outline(indent: auto)
@@ -132,6 +131,7 @@
 #show: project.with(
 	title: "Introduction to Linear Algebra",
 	authors: ("Haoran Li"),
+  date: datetime(year: 2025, month: 6, day: 14),
 )
 
 #pagebreak()
