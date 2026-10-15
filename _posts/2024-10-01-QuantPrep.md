@@ -33,7 +33,7 @@ One hundred tigers and one sheep are put on a magic island that only has grass. 
 
 **A:**
 
-**Q:** Four people, $$A,B,C$$ and $$D$$ need to get across a river. The only way to cross the river is by an old bridge, which holds at most 2 people at a time. Being dark, they can't cross the bridge without a torch, of which they only have one. So each pair can only walk at the speed of the slower person. They need to get all of them across to the other side as quckly as poosible. $$A$$ is the slowerst and takes 10 minutes to cross; $$B$$ takes 5 minutes; $$C$$ takes 2 minutes; and $$D$$ takes 1 minute. What is the minimum time to get all of them across to the other side?
+**Q:** Four people, $A,B,C$ and $D$ need to get across a river. The only way to cross the river is by an old bridge, which holds at most 2 people at a time. Being dark, they can't cross the bridge without a torch, of which they only have one. So each pair can only walk at the speed of the slower person. They need to get all of them across to the other side as quckly as poosible. $A$ is the slowerst and takes 10 minutes to cross; $B$ takes 5 minutes; $C$ takes 2 minutes; and $D$ takes 1 minute. What is the minimum time to get all of them across to the other side?
 
 **A:**
 
@@ -49,7 +49,7 @@ They are given the night to come up with a strategy among themselves to save as 
 
 ## Mathematics
 
-**Q:** Can you pack 53 bricks of dimensions $$1\times1\times4$$ into a $$6\times6\times6$$ box?
+**Q:** Can you pack 53 bricks of dimensions $1\times1\times4$ into a $6\times6\times6$ box?
 
 **Q:** A basketball player is taking 100 free throws. She scores one point if the ball passes through the hoop and zero point if she misses. She has scored on her first throw and missed on her second. For each of the following throw the prababilty of her scoring is the fraction of throws she has made so far. For example, if she has scored 23 points after the 40th throw, the probability that she will score in the 41th throw is 23/40. After 100 throws (including the first and the second), what is the probability that she scores exactly 50 baskets?
 
@@ -67,16 +67,16 @@ $$
 
 **Q:** What is the expected number of cards that need to be turned over in a regular 52-card deck in order to see the first ace?
 
-**A:** Suppose $$X_i$$ is 1 if some card $$i$$ is turned over before 4 aces, then the number of cards turned over until seeing the first ace would be $$X=X_1+\cdots + X_{48}+1$$, and thus
+**A:** Suppose $X_i$ is 1 if some card $i$ is turned over before 4 aces, then the number of cards turned over until seeing the first ace would be $X=X_1+\cdots + X_{48}+1$, and thus
 
 $$
 E(X)=1+\sum_iE(X_i)=1+48\cdot\frac{1}{5}=\frac{53}{5}
 $$
 
-**Q:** There are $$N$$ distinct types of coupons in cereal boxes and each type, independent of prior selections, is equally likely to be in a box.
+**Q:** There are $N$ distinct types of coupons in cereal boxes and each type, independent of prior selections, is equally likely to be in a box.
 
 1. If a child wants to collect a complete set of coupons with at least one of each type, how many coupons(boxes) on average are needed to make such a complete set?
-2. If the child has collected $$n$$ coupons, what is the expected number of distinct coupon types?
+2. If the child has collected $n$ coupons, what is the expected number of distinct coupon types?
 
 **A:**
 
@@ -88,17 +88,17 @@ $$
 
 **A:**
 
-**Q:** You are holding two glass balls in a 100-story building. If a ball is thrown out of the window, it will not break if the floor number is less than $$X$$, and it will always break if the floor number is equal to or greater tan $$X$$. You would like to determine $$X$$. What is the strategy that will minimize the number of drops for the worst case scenario?
+**Q:** You are holding two glass balls in a 100-story building. If a ball is thrown out of the window, it will not break if the floor number is less than $X$, and it will always break if the floor number is equal to or greater tan $X$. You would like to determine $X$. What is the strategy that will minimize the number of drops for the worst case scenario?
 
-**Q:** At a theater ticket office, $$2n$$ people are waiting to buy tickets. $$n$$ of them have only $$ \$ 5$$ bills and the other $$n$$ people have only $$ \$ 10$$ bills. Then ticket seller has no change to start with. If each person buys one $$ \$ 5$$ ticket, what is the probability that all people will be able to buy tickets without having to change positions?
+**Q:** At a theater ticket office, $2n$ people are waiting to buy tickets. $n$ of them have only $ \$ 5$ bills and the other $n$ people have only $ \$ 10$ bills. Then ticket seller has no change to start with. If each person buys one $ \$ 5$ ticket, what is the probability that all people will be able to buy tickets without having to change positions?
 
-**Q:** Assume you have a fair coin. What is the expected number of coin tosses to get $$n$$ heads in a row?
+**Q:** Assume you have a fair coin. What is the expected number of coin tosses to get $n$ heads in a row?
 
-**Q:** The Boston Red Sox and the Colorado Rockes are playing in the World Series finals. In case you are not familiar with the World Series, there are a maximum of 7 games and the first team that wins 4 games claims the championship. You have $$ \$ 100$$ dollars to place a double-or-nothing bet on the Red Sox. Unfortunately, you can only bet on each individual game. not the series as a whole. How much should you bet on each game so that if the Red Sox wins the whole series, you win exactly $$ \$ 100$$, and if Red Sox loses, you lose exactly $$ \$ 100$$?
+**Q:** The Boston Red Sox and the Colorado Rockes are playing in the World Series finals. In case you are not familiar with the World Series, there are a maximum of 7 games and the first team that wins 4 games claims the championship. You have $ \$ 100$ dollars to place a double-or-nothing bet on the Red Sox. Unfortunately, you can only bet on each individual game. not the series as a whole. How much should you bet on each game so that if the Red Sox wins the whole series, you win exactly $ \$ 100$, and if Red Sox loses, you lose exactly $ \$ 100$?
 
-**Q:** A casino comes up with a fancy dice game. It allows you to roll a dice as many times as you want unless a 6 appears. After each roll, if 1 appears, you will win $$ \$ 1$$; if 2 appears, you will win $$ \$ 2$$; ...; if 5 appears, you win $$ \$ 5$$; but if 6 appears all the moneys you have won in the game is lost and the game stops. After each roll, if the dice number is 1-5, you can decide whether to keep the money or keep on rolling. How much are you willing to pay to play the game (if you are risk neutral)?
+**Q:** A casino comes up with a fancy dice game. It allows you to roll a dice as many times as you want unless a 6 appears. After each roll, if 1 appears, you will win $ \$ 1$; if 2 appears, you will win $ \$ 2$; ...; if 5 appears, you win $ \$ 5$; but if 6 appears all the moneys you have won in the game is lost and the game stops. After each roll, if the dice number is 1-5, you can decide whether to keep the money or keep on rolling. How much are you willing to pay to play the game (if you are risk neutral)?
 
-**Q:** Suppose $$X$$ is a Brownian motion with no drift, i.e. $$dX_t=dW_t$$. If $$X$$ starts at 0, what is the probability that $$X$$ hits 3 before hitting -5? What if $$X$$ has drift $$m$$, i,e, $$dX_t=mdt+dW_t$$?
+**Q:** Suppose $X$ is a Brownian motion with no drift, i.e. $dX_t=dW_t$. If $X$ starts at 0, what is the probability that $X$ hits 3 before hitting -5? What if $X$ has drift $m$, i,e, $dX_t=mdt+dW_t$?
 
 **Q:** A couple decide to start having children and keep having children until they have more girls than boys. How many children do they expect to have?
 
@@ -106,7 +106,7 @@ $$
 
 **Q:** Consider a shuffled deck of 52 cards. How many cards on average do you need to draw before you draw a King?
 
-**Q:** Suppose $$S_n$$ is a biased random walk with probability $$p<1/2$$ of moving up and $$1-p$$ of moving down with $$S_0=0$$. What is the expected steps that $$S_n$$ reaches $$\alpha$$ or $$-\beta$$ ($$\alpha,\beta\in\mathbb Z_{\geq1}$$)
+**Q:** Suppose $S_n$ is a biased random walk with probability $p<1/2$ of moving up and $1-p$ of moving down with $S_0=0$. What is the expected steps that $S_n$ reaches $\alpha$ or $-\beta$ ($\alpha,\beta\in\mathbb Z_{\geq1}$)
 
 **A:** First we verify two martingales
 
@@ -128,7 +128,7 @@ $$
 \end{align*}
 $$
 
-Suppose the probability of $$S_n$$ first reaches $$\alpha$$ is $$p_\alpha$$ and $$T$$ is the stopping time, then we have
+Suppose the probability of $S_n$ first reaches $\alpha$ is $p_\alpha$ and $T$ is the stopping time, then we have
 
 $$
 1=\left(\frac{1-p}{p}\right)^0=\mathbb E\left[\left(\frac{1-p}{p}\right)^{S_{T}}\right]=p_\alpha\left(\frac{1-p}{p}\right)^\alpha+(1-p_\alpha)\left(\frac{1-p}{p}\right)^{-\beta}
@@ -152,27 +152,27 @@ $$
 \mathbb E\left[T\right]=\frac{1}{1-2p}\left(\frac{1-\left(\frac{1-p}{p}\right)^{-\beta}}{\left(\frac{1-p}{p}\right)^\alpha-\left(\frac{1-p}{p}\right)^{-\beta}}\alpha - \frac{\left(\frac{1-p}{p}\right)^\alpha-1}{\left(\frac{1-p}{p}\right)^\alpha-\left(\frac{1-p}{p}\right)^{-\beta}}\beta\right)
 $$
 
-**Q:** You play a game with a biased coin where there is a 40% chance of heads and 60% chance of tails. You may place a bet; If heads is flipped then you receive your bet back plus the same in winnings. If tails is flipped then you lose your bet. You have $$ \$ 10$$ and you want to turn this into $$ \$ 20$$ by continuously betting $$ \$ 1$$ at a time, walking away when you either have a total of $$ \$ 20$$ or are bankrupt. What is the probability you will leave with $$ \$ 20$$?
+**Q:** You play a game with a biased coin where there is a 40% chance of heads and 60% chance of tails. You may place a bet; If heads is flipped then you receive your bet back plus the same in winnings. If tails is flipped then you lose your bet. You have $ \$ 10$ and you want to turn this into $ \$ 20$ by continuously betting $ \$ 1$ at a time, walking away when you either have a total of $ \$ 20$ or are bankrupt. What is the probability you will leave with $ \$ 20$?
 
-Properties of characteristic functions $$\varphi_X(t)=E[e^{itx}]$$
+Properties of characteristic functions $\varphi_X(t)=E[e^{itx}]$
 
--   If $$X\sim\mathcal N(\mu,\sigma^2)$$, $$\varphi_X(t)=e^{it\mu-\frac{1}{2}\sigma^2t^2}$$
--   $$E[X^k]=\frac{1}{i^k}\varphi^{(k)}_X(0)$$
--   $$\varphi_{c_1X_1+\cdots c_nX_n+b}(t)=e^{itb}\varphi_{X_1}(c_1t)\cdots\varphi_{X_n}(c_nt)$$ if $$X_i$$ are independent
--   $$\varphi_{X,Y}(s,t)=\varphi_X(s)\varphi_Y(t)$$ if $$X,Y$$ are independent
+-   If $X\sim\mathcal N(\mu,\sigma^2)$, $\varphi_X(t)=e^{it\mu-\frac{1}{2}\sigma^2t^2}$
+-   $E[X^k]=\frac{1}{i^k}\varphi^{(k)}_X(0)$
+-   $\varphi_{c_1X_1+\cdots c_nX_n+b}(t)=e^{itb}\varphi_{X_1}(c_1t)\cdots\varphi_{X_n}(c_nt)$ if $X_i$ are independent
+-   $\varphi_{X,Y}(s,t)=\varphi_X(s)\varphi_Y(t)$ if $X,Y$ are independent
 
 Properties of Fourier transform
 
--   $$\hat f(-\xi)=\overline{\hat f(\xi)}$$
--   $$\widehat{af(x)+bg(x)}=a\hat f(\xi)+b\hat g(\xi)$$
--   $$\widehat{f(x-a)}=\hat f(\xi)e^{-2\pi ia\xi}$$
--   $$\widehat{f(x)e^{2\pi iax}}=\hat f(\xi-a)$$
--   $$\widehat{f(ax)}=\frac{1}{|a|}\hat f(\frac{\xi}{a})$$
--   $$\widehat{\hat f(\xi)}=f(-x)$$
--   $$\widehat{(f*g)(x)}=\hat f(\xi)\hat g(\xi)$$
--   $$\widehat{f(x)g(x)}=(\hat f*\hat g)(\xi)$$
--   $$\widehat{f^{(n)}(x)}=(2\pi i\xi)^n\hat f(\xi)$$
--   $$\widehat{x^nf(x)}=(\frac{i}{2\pi})^n\hat f^{(n)}(\xi)$$
+-   $\hat f(-\xi)=\overline{\hat f(\xi)}$
+-   $\widehat{af(x)+bg(x)}=a\hat f(\xi)+b\hat g(\xi)$
+-   $\widehat{f(x-a)}=\hat f(\xi)e^{-2\pi ia\xi}$
+-   $\widehat{f(x)e^{2\pi iax}}=\hat f(\xi-a)$
+-   $\widehat{f(ax)}=\frac{1}{|a|}\hat f(\frac{\xi}{a})$
+-   $\widehat{\hat f(\xi)}=f(-x)$
+-   $\widehat{(f*g)(x)}=\hat f(\xi)\hat g(\xi)$
+-   $\widehat{f(x)g(x)}=(\hat f*\hat g)(\xi)$
+-   $\widehat{f^{(n)}(x)}=(2\pi i\xi)^n\hat f(\xi)$
+-   $\widehat{x^nf(x)}=(\frac{i}{2\pi})^n\hat f^{(n)}(\xi)$
 
 Common distributions
 
@@ -187,14 +187,14 @@ Common distributions
 
 **A:**
 
-Weak form: $$\dfrac{(X_1+\cdots+X_n)}{n}\xrightarrow{P}\mu$$
+Weak form: $\dfrac{(X_1+\cdots+X_n)}{n}\xrightarrow{P}\mu$
 
 Proof: Chebychev's inequality
 $$
 P(|\bar X - \mu|\geq\epsilon)\leq\dfrac{\sigma^2}{n\epsilon^2}
 $$
 
-Strong form (Needs$$E[X_i^4]<\infty$$):
+Strong form (Needs$E[X_i^4]<\infty$):
 $$
 \dfrac{(X_1+\cdots+X_n)}{n}\xrightarrow{\text{a.s.}}\mu
 $$
@@ -211,15 +211,15 @@ and then Borel-Cantelli lemma
 
 **Q:** What is central limit theorem? Does it imply law of large numbers?
 
-**A:** $$X_i$$ are i.i.d. with $$E[X_i]=\mu$$, $$Var[X_i]=\sigma^2$$
+**A:** $X_i$ are i.i.d. with $E[X_i]=\mu$, $Var[X_i]=\sigma^2$
 
 $$
 Z_n=\frac{\dfrac{X_1+\cdots+X_n}{n}-\mu}{\sigma/\sqrt n}\xrightarrow{\mathcal D}\mathcal N(0,1)
 $$
 
-Note that $$Z_n=\sum_i\dfrac{1}{\sqrt n}Y_i$$, where $$Y_i=\dfrac{X_i-\mu}{\sigma}$$. Then use charateristic function on this.
+Note that $Z_n=\sum_i\dfrac{1}{\sqrt n}Y_i$, where $Y_i=\dfrac{X_i-\mu}{\sigma}$. Then use charateristic function on this.
 
-**Q:** How do you generated a random variables that follow $$\mathcal N(\mu,\sigma^2)$$
+**Q:** How do you generated a random variables that follow $\mathcal N(\mu,\sigma^2)$
 
 **Q:** Variance reduction techniques to improve the efficiency of Monte Carlo simulation
 
@@ -227,83 +227,83 @@ Note that $$Z_n=\sum_i\dfrac{1}{\sqrt n}Y_i$$, where $$Y_i=\dfrac{X_i-\mu}{\sigm
 
 ## Statistics
 
-t distribution: $$\dfrac{\bar X-\mu}{s/\sqrt n}\sim t_{n-p-1}$$
+t distribution: $\dfrac{\bar X-\mu}{s/\sqrt n}\sim t_{n-p-1}$
 
 chi-squared distribution:
 
--   Suppose $$Z_i\sim\mathcal N(0,1)$$, then $$\sum_{i=1}^k Z_i^2\sim\chi^2_k$$
--   $$\sum_{i=1}^n(X_i-\bar X)^2\sim\sigma^2\chi^2_{n-1}$$
--   $$\sum_{i=1}^n(X_i-\hat X)^2\sim\sigma^2\chi^2_{n-p-1}$$
+-   Suppose $Z_i\sim\mathcal N(0,1)$, then $\sum_{i=1}^k Z_i^2\sim\chi^2_k$
+-   $\sum_{i=1}^n(X_i-\bar X)^2\sim\sigma^2\chi^2_{n-1}$
+-   $\sum_{i=1}^n(X_i-\hat X)^2\sim\sigma^2\chi^2_{n-p-1}$
 
 F distribution
 
 **Q:** What is skewness, kurtosis
 
-**A:** They are the third and fourth standardized moment $$\tilde\mu_3$$, $$\tilde\mu_4$$, where $$\tilde\mu_n=\mathbb E[(\frac{X-\mu}{\sigma})^n]$$
+**A:** They are the third and fourth standardized moment $\tilde\mu_3$, $\tilde\mu_4$, where $\tilde\mu_n=\mathbb E[(\frac{X-\mu}{\sigma})^n]$
 
 ## Finance
 
 Let's denote
 
--   $$T$$: maturity date
--   $$t$$: the current time
--   $$\tau=T-t$$: time to maturity
--   $$S$$: stock price at the $$t$$
--   $$r$$: continuous risk-free interest rate
--   $$u$$: continuous dividend yield
--   $$\sigma$$: annulaized asset volality
--   $$c,C,p,P$$: price of a european/american call, european/american put
--   $$D$$: present value of future dividends
--   $$K$$: strike price
--   $$PV$$: present value
+-   $T$: maturity date
+-   $t$: the current time
+-   $\tau=T-t$: time to maturity
+-   $S$: stock price at the $t$
+-   $r$: continuous risk-free interest rate
+-   $u$: continuous dividend yield
+-   $\sigma$: annulaized asset volality
+-   $c,C,p,P$: price of a european/american call, european/american put
+-   $D$: present value of future dividends
+-   $K$: strike price
+-   $PV$: present value
 
-**Q:** How do vanilla european/american option prices change when $$S,K,\tau,\sigma,r,D$$ changes?
+**Q:** How do vanilla european/american option prices change when $S,K,\tau,\sigma,r,D$ changes?
 
 **A:**
 ||c|p|C|P|
 |-|-|-|-|-|
-|$$S \uparrow$$|$$\uparrow$$|$$\downarrow$$|$$\uparrow$$|$$\downarrow$$|
-|$$K \uparrow$$|$$\downarrow$$|$$\uparrow$$|$$\downarrow$$|$$\uparrow$$|
-|$$\tau \uparrow$$|?|?|$$\uparrow$$|$$\uparrow$$|
-|$$\sigma \uparrow$$|$$\uparrow$$|$$\uparrow$$|$$\uparrow$$|$$\uparrow$$|
-|$$r \uparrow$$|$$\uparrow$$|$$\downarrow$$|$$\uparrow$$|$$\downarrow$$|
-|$$D \uparrow$$|$$\downarrow$$|$$\uparrow$$|$$\downarrow$$|$$\uparrow$$|
+|$S \uparrow$|$\uparrow$|$\downarrow$|$\uparrow$|$\downarrow$|
+|$K \uparrow$|$\downarrow$|$\uparrow$|$\downarrow$|$\uparrow$|
+|$\tau \uparrow$|?|?|$\uparrow$|$\uparrow$|
+|$\sigma \uparrow$|$\uparrow$|$\uparrow$|$\uparrow$|$\uparrow$|
+|$r \uparrow$|$\uparrow$|$\downarrow$|$\uparrow$|$\downarrow$|
+|$D \uparrow$|$\downarrow$|$\uparrow$|$\downarrow$|$\uparrow$|
 
 **Q:** Explain call-put parity
 
-**A:** $$c-p=Se^{-y\tau}-Ke^{-r\tau}-D$$, where if we suppose $$Se^{(r-y)\tau}+De^{r\tau}=Se^{r\tau}\Rightarrow S-D=Se^{-y\tau}$$.
+**A:** $c-p=Se^{-y\tau}-Ke^{-r\tau}-D$, where if we suppose $Se^{(r-y)\tau}+De^{r\tau}=Se^{r\tau}\Rightarrow S-D=Se^{-y\tau}$.
 
 **Q:** Why should you never exercise an american call on a non-dividend paying stock before maturity?
 
 **A:**
 
-**Q:** A european put option on a non-dividend paying stock with strike price $$ \$ 80$$ is currently priced at $$ \$ 8$$ and a put option on the same stock with strike price $$ \$ 90$$ is priced at $$ \$ 9$$. Is there an arbitrage opportunity existing in thesee two options?
+**Q:** A european put option on a non-dividend paying stock with strike price $ \$ 80$ is currently priced at $ \$ 8$ and a put option on the same stock with strike price $ \$ 90$ is priced at $ \$ 9$. Is there an arbitrage opportunity existing in thesee two options?
 
 **Q:** What are return on risk and Sharpe ratio
 
-**A:** $$\dfrac{r}{\sigma}$$ and $$\dfrac{r-r_f}{\sigma}$$
+**A:** $\dfrac{r}{\sigma}$ and $\dfrac{r-r_f}{\sigma}$
 
 **Q:** Derive Black-Scholes-Merton differential equation
 
-**A:** Suppose stock price $$S$$ is log-normal
+**A:** Suppose stock price $S$ is log-normal
 
 $$
 dS=\mu Sdt+\sigma SdW
 $$
 
-and $$V=V(S,t)$$ is a derivative, then by ito's lemma
+and $V=V(S,t)$ is a derivative, then by ito's lemma
 
 $$
 dV=\left(\frac{\partial V}{\partial t}+\mu S\frac{\partial V}{\partial S}+\frac{1}{2}\sigma^2S^2\frac{\partial^2 V}{\partial S^2}\right)dt+\sigma S\frac{\partial V}{\partial S}dW
 $$
 
-Consider portfolio $$\Pi=V-\frac{\partial V}{\partial S}S$$, then
+Consider portfolio $\Pi=V-\frac{\partial V}{\partial S}S$, then
 
 $$
 d\Pi=dV-\frac{\partial V}{\partial S}dS=\left(\frac{\partial V}{\partial t}+\sigma^2S^2\frac{1}{2}\frac{\partial^2 V}{\partial S^2}\right)dt
 $$
 
-Since there are diffusion term, this should have risk-free rate of return: $$d\Pi=r\left(V-\dfrac{\partial V}{\partial S}S\right)dt$$. Therefore
+Since there are diffusion term, this should have risk-free rate of return: $d\Pi=r\left(V-\dfrac{\partial V}{\partial S}S\right)dt$. Therefore
 
 $$
 \frac{\partial V}{\partial t}+rS\frac{\partial V}{\partial S}+\frac{1}{2}\sigma^2S^2\frac{\partial^2 V}{\partial S^2}=rV
@@ -327,15 +327,15 @@ $$
 
 Where
 
--   $$\mu$$ is the mean return rate
--   $$\sigma$$ is the volatility
--   $$r$$ is the interest rate
--   $$X_t$$ is the price of the derivative at time $$t$$
--   $$W_t$$ is a Wiener process
--   $$f$$ is the running payoff
--   $$\phi$$ is the final time payoff
+-   $\mu$ is the mean return rate
+-   $\sigma$ is the volatility
+-   $r$ is the interest rate
+-   $X_t$ is the price of the derivative at time $t$
+-   $W_t$ is a Wiener process
+-   $f$ is the running payoff
+-   $\phi$ is the final time payoff
 
-Then $$u$$ solves
+Then $u$ solves
 
 $$
 \frac{\partial u}{\partial t}(x,t)+\mu(x,t)\frac{\partial u}{\partial x}(x,t)+\frac{1}{2}\sigma(x,t)^2\frac{\partial^2 u}{\partial x^2}(x,t)-r(x,t)u(x,t)+f(x,t)=0,\quad u(x,T)=\phi(x)
@@ -355,23 +355,23 @@ Where $$d_{\pm}=\dfrac{\ln(\frac{S}{K})+(r-y\pm\frac{\sigma^2}{2})\tau}{\sigma\s
 
 **A:**
 
--   Delta $$\Delta$$: partial derivative with respect to $$S$$
+-   Delta $\Delta$: partial derivative with respect to $S$
     $$
     \frac{\partial c}{\partial S}=e^{-y\tau}N(d_+),\quad\frac{\partial p}{\partial S}=-e^{-y\tau}N(-d_+)
     $$
--   Gamma $$\Gamma$$: second partial derivative with respect to $$S$$
+-   Gamma $\Gamma$: second partial derivative with respect to $S$
     $$
     \frac{\partial^2 c}{\partial S^2}=,\quad \frac{\partial^2 p}{\partial S^2}=
     $$
--   Theta $$\Theta$$: partial derivative with respect to $$t$$
+-   Theta $\Theta$: partial derivative with respect to $t$
     $$
     \frac{\partial c}{\partial t}=-\frac{\partial c}{\partial\tau}=,\quad
     $$
--   vega $$\nu$$: partial derivative with respect to $$\sigma$$
+-   vega $\nu$: partial derivative with respect to $\sigma$
     $$
     \frac{\partial c}{\partial \sigma}=,\quad
     $$
--   rho $$\rho$$: partial derivative with respect to $$r$$
+-   rho $\rho$: partial derivative with respect to $r$
     $$
     \frac{\partial c}{\partial r}=,\quad
     $$
@@ -386,7 +386,7 @@ $$
 
 ### Optimization
 
-Suppose problem is to minimize $$f(x)$$, under the condition $$g_i(x)\leq 0$$ and $$h_j(x)=0$$.
+Suppose problem is to minimize $f(x)$, under the condition $g_i(x)\leq 0$ and $h_j(x)=0$.
 
 Consider Lagrange function
 
@@ -394,7 +394,7 @@ $$
 L(x,\lambda_i, \mu_j) = f(x) + \sum_i\lambda_ig_i(x) + \sum_i\mu_ih_i(x)
 $$
 
-So a minimizer of $$f$$ coincide with a minimizer of its Lagrange dual
+So a minimizer of $f$ coincide with a minimizer of its Lagrange dual
 
 $$
 \max_{\lambda_i\leq0,\,\mu_j}L(x,\lambda_i, \mu_j)
@@ -402,24 +402,24 @@ $$
 
 ### Linear optimization
 
-Consider the maximizing $$\mathbf c^T\mathbf x$$ under the condition $$\mathbf x\leq\mathbf0, A\mathbf x=\mathbf b$$. Since
+Consider the maximizing $\mathbf c^T\mathbf x$ under the condition $\mathbf x\leq\mathbf0, A\mathbf x=\mathbf b$. Since
 
 $$
 \min_{\mathbf x\leq \mathbf 0}\max_{\mathbf y\leq 0}-\mathbf c^T\mathbf x + \mathbf y^T(A\mathbf x-\mathbf b)
 = \min_{\mathbf y\leq \mathbf 0}\max_{\mathbf x\leq 0}\mathbf x^T(A^T\mathbf y-\mathbf c)-\mathbf b^T\mathbf y
 $$
 
-The dual problem is maximizing $$\mathbf b^T\mathbf y$$ under the condition $$\mathbf y\leq\mathbf0, \mathbf A^T\mathbf y=\mathbf c$$
+The dual problem is maximizing $\mathbf b^T\mathbf y$ under the condition $\mathbf y\leq\mathbf0, \mathbf A^T\mathbf y=\mathbf c$
 
 ## Coding
 
 ### Master theorem for divide-and-conquer recurrences
 
-A problem with $$n$$ inputs that can be split into $$a$$ subproblems with $$n/b$$ inputs in each subproblem, then the running time is $$T(n)=aT(n/b)+f(n)$$, where $$a\geq1$$, $$b>1$$, $$f(n)\geq0$$.
+A problem with $n$ inputs that can be split into $a$ subproblems with $n/b$ inputs in each subproblem, then the running time is $T(n)=aT(n/b)+f(n)$, where $a\geq1$, $b>1$, $f(n)\geq0$.
 
--   If $$f(n)=O(n^{\log_ba-\epsilon})$$, then $$T(n)=\Theta(n^{\log_ba})$$
--   If $$f(n)=\Theta(n^{\log_ba}\log^kn)$$ for some $$k\geq0$$, then $$T(n)=\Theta(n^{\log_ba}\log^{k+1}n)$$
--   If $$f(n)=\Omega(n^{\log_ba+\epsilon})$$, then $$T(n)=\Theta(f(n))$$
+-   If $f(n)=O(n^{\log_ba-\epsilon})$, then $T(n)=\Theta(n^{\log_ba})$
+-   If $f(n)=\Theta(n^{\log_ba}\log^kn)$ for some $k\geq0$, then $T(n)=\Theta(n^{\log_ba}\log^{k+1}n)$
+-   If $f(n)=\Omega(n^{\log_ba+\epsilon})$, then $T(n)=\Theta(f(n))$
 
 ### Binary search
 
@@ -464,11 +464,11 @@ def merge_sort(a, l=0, r=len(a)):
 
 ### Heap (Priority queue)
 
-A heap is an array $$a$$ such that $$a_k\leq a_{2k+1},a_{2k+2}$$.
+A heap is an array $a$ such that $a_k\leq a_{2k+1},a_{2k+2}$.
 
--   the left and right child of $$a_k$$ is $$a_{2k+1},a_{2k+2}$$
--   the parent of $$a_k$$ is $$a_{(k-1)/2}$$
--   the leaves are $$a_{n/2},\cdots,a_{n-1}$$
+-   the left and right child of $a_k$ is $a_{2k+1},a_{2k+2}$
+-   the parent of $a_k$ is $a_{(k-1)/2}$
+-   the leaves are $a_{n/2},\cdots,a_{n-1}$
 
 ```python
 def sift_down(a, p) {
