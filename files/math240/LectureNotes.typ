@@ -7,6 +7,53 @@
 #import "theorems.typ": * // for theorems
 #import "in-dexter.typ": * // for indices
 #import "@preview/cetz:0.4.0" // for tikz-like drawing
+// Commutative diagrams: nodes are (x, y, content); arrows are
+// (source index, target index, label, style, bend).
+#let commutative-diagram(nodes, arrows) = cetz.canvas(length: 1cm, {
+  import cetz.draw: *
+  for (i, (x, y, body)) in nodes.enumerate() {
+    content((x, y), body, name: str(i), padding: 0.15)
+  }
+  for (source, target, label, style, bend) in arrows {
+    let (x1, y1, _) = nodes.at(source)
+    let (x2, y2, _) = nodes.at(target)
+    let horizontal = calc.abs(x2 - x1) >= calc.abs(y2 - y1)
+    let start = str(source) + if horizontal {
+      if x2 > x1 { ".east" } else { ".west" }
+    } else { if y2 > y1 { ".north" } else { ".south" } }
+    let end = str(target) + if horizontal {
+      if x2 > x1 { ".west" } else { ".east" }
+    } else { if y2 > y1 { ".south" } else { ".north" } }
+    let midpoint = ((x1 + x2) / 2, (y1 + y2) / 2 + bend)
+    if style == "=" {
+      for offset in (-0.04, 0.04) {
+        let delta = if horizontal { (0, offset) } else { (offset, 0) }
+        line((rel: delta, to: start), (rel: delta, to: end), stroke: 0.5pt)
+      }
+    } else {
+      let marks = if style == "<->" {
+        (start: "straight", end: "straight")
+      } else { (end: "straight") }
+      if bend == 0 {
+        line(start, end, mark: marks, stroke: 0.5pt)
+      } else {
+        bezier(start, end,
+          (x1 + (x2 - x1) / 3, y1 + bend * 4 / 3),
+          (x1 + 2 * (x2 - x1) / 3, y2 + bend * 4 / 3),
+          mark: marks, stroke: 0.5pt)
+      }
+      if style == "|->" {
+        content(start, if horizontal { $|$ } else { $-$ })
+      }
+    }
+    if label != none {
+      content(midpoint, label,
+        anchor: if horizontal {
+          if bend < 0 { "north" } else { "south" }
+        } else { "west" }, padding: 0.12)
+    }
+  }
+})
 #import "@preview/subpar:0.2.2" // for subfigures, etc
 #show: thmrules
 
@@ -112,6 +159,9 @@
 
   // appereance of heading
 	show heading: it => [
+    #if it.level == 1 and it.numbering != none {
+      counter(math.equation).update(0)
+    }
 		#v(1em)
 		#it
 	]
@@ -126,6 +176,8 @@
         el.numbering,
         ..counter(eq).at(el.location())
 			))
+    } else if el != none and el.func() == align {
+      link(el.location(), [Diagram])
 		} else {
 			// Other references as usual.
 			it
@@ -295,8 +347,6 @@ Throughout this course, we adopt the following notations:
   ) $ where $s_1,s_2,s_3,...,s_n$ are numbers that make @eq:general-linsys true. The set of all possible solutions is called the #text(fill:blue)[solution set] of the linear system. #text(fill:blue)[To solve] a linear system is to find all its solutions.
 ]
 
-
-
 == Geometric interpretation
 
 #example[
@@ -458,7 +508,7 @@ If we increase the number of variables, we get
 ]
 
 #example[
-  In the previous Example @ex:number-of-solutions, @eq:unique-solution and @eq:inf-solutions are consistent, while @eq:no-solutions is inconsistent
+  In the previous @ex:number-of-solutions, @eq:unique-solution and @eq:inf-solutions are consistent, while @eq:no-solutions is inconsistent
 ]
 
 #exercise[
@@ -484,39 +534,6 @@ If we increase the number of variables, we get
   a_(m 1), a_(m 2), dots.h.c, a_(m n);
   ) $<eq:general-m-by-n-matrix>
   We use the #text(fill:blue)[$(i,j)$-th entry] to mean the entry on the $i$-th row and $j$-column (i.e. $a_(i j)$).
-]
-
-#definition[
-  A matrix is
-  - a #text(fill:blue)[zero matrix]#index[zero matrix] is a matrix with all entries zeros.
-    $ mat(
-      0,0,dots.h.c,0;
-      0,0,dots.h.c,0;
-      dots.v,dots.v,,dots.v;
-      0,0,dots.h.c,0
-     ) $
-  - a #text(fill:blue)[square matrix]#index[square matrix] is a matrix with the same number of rows and columns, i.e. $m=n$.
-    $ mat(
-      a_(11),a_(12),dots.h.c,a_(1 n);
-      a_(21),a_(22),dots.h.c,a_(2 n);
-      dots.v,dots.v,,dots.v;
-      a_(n 1),a_(n 2),dots.h.c,a_(n n)
-     ) $
-  - a #text(fill:blue)[vector]#index[vector] if it only has one column, i.e. $n=1$.
-    $ vec(
-      a_1,a_2,dots.v,a_m
-    ) $
-  - a #text(fill:blue)[row vector]#index[row vector] if it only has one row, i.e. $m=1$.
-    $ mat(
-      a_1,a_2,dots.c.h,a_n
-    ) $
-  - the #text(fill:blue)[identity matrix]#index[identity matrix] if it is a square matrix with diagonal elements 1's, and 0's otherwise. Here the diagonal are the $(i,i)$-th entries.
-    $ mat(
-      1,0,dots.h.c,0;
-      0,1,dots.h.c,0;
-      dots.v,dots.v,dots.down,dots.v;
-      0,0,dots.h.c,1
-    ) $
 ]
 
 #definition[
@@ -566,7 +583,7 @@ If we increase the number of variables, we get
 ]
 
 #example[
-  Let's rewrite the process in Example @ex:chicken-rabbit
+  Let's rewrite the process in @ex:chicken-rabbit
   $ mat(
   1,1,10;
   2,4,26
@@ -584,7 +601,6 @@ If we increase the number of variables, we get
   0,1,3
   ) $
 ]
-
 
 #example[
   Solve $ cases(x_1-x_2+x_3=1, 2x_1-x_3=1,x_1+x_2+x_3=3) $ with augmented matrix.
@@ -653,7 +669,7 @@ If we increase the number of variables, we get
 ]
 
 #example[
-  In Example @ex:example1, $ mat(
+  In @ex:example1, $ mat(
   1,-1,1,1;
   0,2,-3,-1;
   0,2,0,2;
@@ -677,7 +693,7 @@ If we increase the number of variables, we get
 ]
 
 #example[
-  In Example @ex:example1, $ mat(
+  In @ex:example1, $ mat(
   1,-1,1,1;
   0,2,-3,-1;
   0,0,3,3;
@@ -837,7 +853,7 @@ Steps 1-4 are call #text(fill:blue)[forward phase], after which you get an REF. 
 ]
 
 #example[
-  In Example @ex:example3, $x_1,x_2$ are basic variables and $x_3$ is a free variable. And we formally write our solution set as $ cases(
+  In @ex:example3, $x_1,x_2$ are basic variables and $x_3$ is a free variable. And we formally write our solution set as $ cases(
     x_1= 1 / 2 x_3+ 1 / 2,
     x_2= 3 / 2 x_3- 1 / 2,
     x_3 "is free"
@@ -902,7 +918,7 @@ Steps 1-4 are call #text(fill:blue)[forward phase], after which you get an REF. 
 ]<thm:sol-pivot>
 
 #example[
-  - In Example @ex:no-solution-system, the linear system has no solutions since
+  - In @ex:no-solution-system, the linear system has no solutions since
   $
   mat(
   A,bold(b)
@@ -919,7 +935,7 @@ Steps 1-4 are call #text(fill:blue)[forward phase], after which you get an REF. 
   U,bold(d)
   )
   $
-  - In Example  @ex:example1, the linear system has a unique solution since
+  - In @ex:example1, the linear system has a unique solution since
   $
   mat(
   A,bold(b)
@@ -933,7 +949,7 @@ Steps 1-4 are call #text(fill:blue)[forward phase], after which you get an REF. 
   0,0,1,1;
   )=mat(U,bold(d))
   $
-  - In Example @exer:exercise1, the linear system has infinitely many solutions since
+  - In @exer:exercise1, the linear system has infinitely many solutions since
   $
   mat(
   A,bold(b)
@@ -1129,7 +1145,7 @@ How does the size of the augmented matrix affect the solution set?
   0,1;
   0,0
   ) $<eq:ABnotBA>
-  \item
+  #list.item[
   $
   mat(
   a_(11),a_(12),a_(13);
@@ -1145,7 +1161,8 @@ How does the size of the augmented matrix affect the solution set?
   a_(31),a_(32),a_(33);
   )
   $
-  \item
+  ]
+  #list.item[
   $
   mat(
   1,0,0;
@@ -1161,6 +1178,7 @@ How does the size of the augmented matrix affect the solution set?
   a_(31),a_(32),a_(33);
   )
   $
+  ]
 ]
 
 #example[
@@ -1244,7 +1262,6 @@ How does the size of the augmented matrix affect the solution set?
   ) $
 ]<ex:elementary-matrices>
 
-
 #exercise[
   Suppose $A=mat(
   1,1,1;
@@ -1265,7 +1282,7 @@ How does the size of the augmented matrix affect the solution set?
   - Scalar multiplication and matrix multiplication commutes, $A(c B)=c(A B)=(c A)B$. so it makes sense to write $c A_1 A_2 A_3 dots.h.c A_n$
   - Matrix multiplication is _distributive_ over addition, i.e. $A(B+C)=A B+A C$, $(A+B)C=A C+B C$
   - Zero matrix and identity matrix acts as 0 and 1, i.e. $A+0=0+A=A$, $A 0=0 A=0$, $I A=A I=A$
-  - Even if $A!=0$, $B!=0$, $A B$ could still be $0$, take \eqref{ eq:equation1} for an example
+  - Even if $A!=0$, $B!=0$, $A B$ could still be $0$, take @eq:equation1 for an example
   - $A B=A C$ does NOT imply $B=C$
   #set enum(numbering: "1.")
 ]<fact:mat-alg>
@@ -1278,30 +1295,22 @@ How does the size of the augmented matrix affect the solution set?
 
 #definition[
   $A$ is a #text(fill:blue)[partitioned] (or #text(fill:blue)[block]) matrix#index[partitioned matrix] if is divided into smaller submatrix by some horizontal and vertical lines. And the submatrices are the blocks
-  $ [#grid(
-    columns: (2em,)*3,
-    rows: 1.2em,
-    grid.hline(y:1),
-    grid.hline(y:2),
-    grid.vline(x:1),
-    grid.vline(x:2),
-    [$A_(1 1)$],[$A_(1 2)$],[$A_(1 3)$],
-    [$A_(2 1)$],[$A_(2 2)$],[$A_(2 3)$],
-    [$A_(3 1)$],[$A_(3 2)$],[$A_(3 3)$],
-  )] = [#grid(
-    columns: (2em,)*7,
-    rows: 1.2em,
-    grid.hline(y:2),
-    grid.hline(y:3),
-    grid.vline(x:2),
-    grid.vline(x:6),
-    [$a_(11)$],[$a_(12)$],[$a_(13)$],[$a_(1 4)$],[$a_(1 5)$],[$a_(1 6)$],[$a_(1 7)$],
-    [$a_(21)$],[$a_(22)$],[$a_(23)$],[$a_(2 4)$],[$a_(2 5)$],[$a_(2 6)$],[$a_(2 7)$],
-    [$a_(31)$],[$a_(32)$],[$a_(33)$],[$a_(3 4)$],[$a_(3 5)$],[$a_(3 6)$],[$a_(3 7)$],
-    [$a_(4 1)$],[$a_(4 2)$],[$a_(4 3)$],[$a_(4 4)$],[$a_(4 5)$],[$a_(4 6)$],[$a_(4 7)$],
-    [$a_(5 1)$],[$a_(5 2)$],[$a_(5 3)$],[$a_(5 4)$],[$a_(5 5)$],[$a_(5 6)$],[$a_(5 7)$],
-    [$a_(6 1)$],[$a_(6 2)$],[$a_(6 3)$],[$a_(6 4)$],[$a_(6 5)$],[$a_(6 6)$],[$a_(6 7)$],
-  )] $
+  $ mat(
+    augment: #(hline: (1, 2), vline: (1, 2)),
+    row-gap: #0.6em, column-gap: #0.8em,
+    A_(1 1),A_(1 2),A_(1 3);
+    A_(2 1),A_(2 2),A_(2 3);
+    A_(3 1),A_(3 2),A_(3 3)
+  ) = mat(
+    augment: #(hline: (2, 3), vline: (2, 6)),
+    row-gap: #0.6em, column-gap: #0.8em,
+    a_(11),a_(12),a_(13),a_(1 4),a_(1 5),a_(1 6),a_(1 7);
+    a_(21),a_(22),a_(23),a_(2 4),a_(2 5),a_(2 6),a_(2 7);
+    a_(31),a_(32),a_(33),a_(3 4),a_(3 5),a_(3 6),a_(3 7);
+    a_(4 1),a_(4 2),a_(4 3),a_(4 4),a_(4 5),a_(4 6),a_(4 7);
+    a_(5 1),a_(5 2),a_(5 3),a_(5 4),a_(5 5),a_(5 6),a_(5 7);
+    a_(6 1),a_(6 2),a_(6 3),a_(6 4),a_(6 5),a_(6 6),a_(6 7)
+  ) $
   Here the blocks are $A_(1 1)=display(mat(
   a_(11),a_(12);
   a_(21),a_(22)
@@ -1350,41 +1359,28 @@ How does the size of the augmented matrix affect the solution set?
 ]
 
 #example[
-  Consider $ [#grid(
-    columns: (2em,)*2,
-    rows: 1.2em,
-    inset: 2pt,
-    grid.hline(y:1),
-    grid.vline(x:1),
-    [$A_(1 1)$],[$A_(1 2)$],
-    [$A_(2 1)$],[$A_(2 2)$]
-  )] = [#grid(
-    columns: (1em,)*3,
-    rows: 1.2em,
-    inset: 2pt,
-    grid.hline(y:2),
-    grid.vline(x:2),
-    [1],[1],[1],
-    [2],[2],[1],
-    [2],[1],[1]
-  )]$, $ [#grid(
-    columns: (2em,)*2,
-    rows: 1.2em,
-    inset: 2pt,
-    grid.hline(y:1),
-    grid.vline(x:1),
-    [$B_(1 1)$],[$B_(1 2)$],
-    [$B_(2 1)$],[$B_(2 2)$]
-  )] = [#grid(
-    columns: (1em,)*3,
-    rows: 1.2em,
-    inset: 2pt,
-    grid.hline(y:2),
-    grid.vline(x:1),
-    [1],[1],[1],
-    [2],[2],[1],
-    [2],[1],[1]
-  )]$, then
+  Consider
+  $
+  A = mat(
+    augment: #(hline: 1, vline: 1),
+    row-gap: #0.6em, column-gap: #0.8em,
+    A_(1 1),A_(1 2); A_(2 1),A_(2 2)
+  ) = mat(
+    augment: #(hline: 2, vline: 2),
+    row-gap: #0.6em, column-gap: #0.8em,
+    1,1,1; 2,2,1; 2,1,1
+  ), quad
+  B = mat(
+    augment: #(hline: 1, vline: 1),
+    row-gap: #0.6em, column-gap: #0.8em,
+    B_(1 1),B_(1 2); B_(2 1),B_(2 2)
+  ) = mat(
+    augment: #(hline: 2, vline: 1),
+    row-gap: #0.6em, column-gap: #0.8em,
+    1,1,1; 2,2,1; 2,1,1
+  )
+  $
+  Then
   $
   A_(1 1)B_(11)+A_(1 2)B_(21)=mat(
   1,1;
@@ -1441,48 +1437,36 @@ How does the size of the augmented matrix affect the solution set?
   5,4
   )
   $
-  $ [#grid(
-    columns: (2em,)*2,
-    rows: 1.2em,
-    inset: 2pt,
-    grid.hline(y:1),
-    grid.vline(x:1),
-    [$A_(1 1)$],[$A_(1 2)$],
-    [$A_(2 1)$],[$A_(2 2)$]
-  )] [#grid(
-    columns: (2em,)*2,
-    rows: 1.2em,
-    inset: 2pt,
-    grid.hline(y:1),
-    grid.vline(x:1),
-    [$B_(1 1)$],[$B_(1 2)$],
-    [$B_(2 1)$],[$B_(2 2)$]
-  )] = [#grid(
-    columns: (7.8em,)*2,
-    rows: 1.2em,
-    inset: 2pt,
-    grid.hline(y:1),
-    grid.vline(x:1),
-    [$A_11B_11+A_12B_21$],[$A_11B_12+A_12B_22$],
-    [$A_21B_11+A_22B_21$],[$A_21B_12+A_22B_22$],
-  )] = [#grid(
-    columns: (1em,)*3,
-    rows: 1.2em,
-    inset: 2pt,
-    grid.hline(y:2),
-    grid.vline(x:2),
-    [5],[4],[3],
-    [8],[7],[5],
-    [6],[5],[4]
-  )] $
+  $
+  mat(
+    augment: #(hline: 1, vline: 1),
+    row-gap: #0.6em, column-gap: #0.8em,
+    A_(1 1),A_(1 2); A_(2 1),A_(2 2)
+  ) mat(
+    augment: #(hline: 1, vline: 1),
+    row-gap: #0.6em, column-gap: #0.8em,
+    B_(1 1),B_(1 2); B_(2 1),B_(2 2)
+  ) &= mat(
+    augment: #(hline: 1, vline: 1),
+    row-gap: #0.6em, column-gap: #0.8em,
+    A_(1 1) B_(1 1)+A_(1 2) B_(2 1),A_(1 1) B_(1 2)+A_(1 2) B_(2 2);
+    A_(2 1) B_(1 1)+A_(2 2) B_(2 1),A_(2 1) B_(1 2)+A_(2 2) B_(2 2)
+  ) \
+  &= mat(
+    augment: #(hline: 2, vline: 2),
+    row-gap: #0.6em, column-gap: #0.8em,
+    5,4,3; 8,7,5; 6,5,4
+  )
+  $
 ]
 
 #example[
   Suppose $3 times 3$ matrix $A$ can be partitioned into $mat(
-  #`R1`;#`R2`;#`R3`
+  augment: #(hline: (1, 2)),
+  "R1";"R2";"R3"
   )$ or $mat(
   bold(a)_1,bold(a)_2,bold(a)_3
-  )$, then Example @ex:elementary-matrices reads
+  )$, then @ex:elementary-matrices reads
   - $E=mat(
   1,0,-3;
   0,1,0;
@@ -1492,9 +1476,9 @@ How does the size of the augmented matrix affect the solution set?
   0,1,0;
   0,0,1
   )mat(
-  #`R1`;#`R2`;#`R3`
+  "R1";"R2";"R3"
   )=mat(
-  #`R1`-3#`R3`;#`R2`;#`R3`
+  "R1"-3"R3";"R2";"R3"
   )$, $E A$ acts as subtracting 3 times row 3 from row 1.
   - $E=mat(
   1,0,0;
@@ -1518,9 +1502,9 @@ How does the size of the augmented matrix affect the solution set?
   0,2,0;
   0,0,1
   )mat(
-  #`R1`;#`R2`;#`R3`
+  "R1";"R2";"R3"
   )=mat(
-  #`R1`;2#`R2`;#`R3`
+  "R1";2"R2";"R3"
   )$, $E A$ acts as scaling the third row by 2.
   - $E=mat(
   1,0,0;
@@ -1544,9 +1528,9 @@ How does the size of the augmented matrix affect the solution set?
   0,1,0;
   1,0,0
   )mat(
-  #`R1`;#`R2`;#`R3`
+  "R1";"R2";"R3"
   )=mat(
-  #`R3`;#`R2`;#`R1`
+  "R3";"R2";"R1"
   )$, $E A$ acts as interchanging row 1 and row 3.
   - $E=mat(
   0,1,0;
@@ -1661,7 +1645,7 @@ A #text(fill:blue)[vector equation]#index[vector equation] is of the form
 $
 x_1bold(a)_1+x_2bold(a)_2+dots.h.c+x_n bold(a)_n=bold(b)
 $<eq:veceq>
-We can also write the vector equation~\eqref{eq:veceq} as a #text(fill:blue)[matrix equation]#index[matrix equation] with partitioned matrix
+We can also write the vector equation~@eq:veceq as a #text(fill:blue)[matrix equation]#index[matrix equation] with partitioned matrix
  $
 x_1bold(a)_1+x_2bold(a)_2+dots.h.c+x_n bold(a)_n=mat(
 bold(a)_1,bold(a)_2,dots.h.c,bold(a)_n
@@ -1778,7 +1762,7 @@ mat(
 0,0,0,1;
 )
 $
-Since there is a pivot in the last column, by Theorem @thm:sol-pivot, the linear system is inconsistent, hence $bold(b) in.not"Span"{bold(a)_1, bold(a)_2,bold(a)_3}$
+Since there is a pivot in the last column, by @thm:sol-pivot, the linear system is inconsistent, hence $bold(b) in.not"Span"{bold(a)_1, bold(a)_2,bold(a)_3}$
 ]
 
 == Linear independence
@@ -1794,8 +1778,8 @@ $<eq:lindep>
 #remark[
 Equivalence between two different definitions of linear dependence
 
-- If $bold(v)_i=c_1bold(v)_1+dots.h.c+c_{i-1}bold(v)_{i-1}+c_{i+1}bold(v)_{i+1}+dots.h.c+c_n bold(v)_n$, then $c_1bold(v)_1+dots.h.c+(-1)bold(v)_i+dots.h.c+c_n bold(v)_n=bold(0)$
-- If $c_1bold(v)_1+dots.h.c+c_i bold(v)_i+dots.h.c+c_n bold(v)_n=bold(0)$ and $c_i!=0$ (since not all $c_i$'s are zero, we may assume some $c_i$ is nonzero), then $bold(v)_i=- c_1 / c_i bold(v)_1-dots.h.c-c_(i-1)/c_i bold(v)_{i-1}-c_(i+1)/c_i bold(v)_{i+1}-dots.h.c- c_n / c_i bold(v)_n$
+- If $bold(v)_i=c_1bold(v)_1+dots.h.c+c_(i-1)bold(v)_(i-1)+c_(i+1)bold(v)_(i+1)+dots.h.c+c_n bold(v)_n$, then $c_1bold(v)_1+dots.h.c+(-1)bold(v)_i+dots.h.c+c_n bold(v)_n=bold(0)$
+- If $c_1bold(v)_1+dots.h.c+c_i bold(v)_i+dots.h.c+c_n bold(v)_n=bold(0)$ and $c_i!=0$ (since not all $c_i$'s are zero, we may assume some $c_i$ is nonzero), then $bold(v)_i=- c_1 / c_i bold(v)_1-dots.h.c-c_(i-1)/c_i bold(v)_(i-1)-c_(i+1)/c_i bold(v)_(i+1)-dots.h.c- c_n / c_i bold(v)_n$
 
 ]
 
@@ -1881,54 +1865,47 @@ Let $bold(v)_1=mat(
 
 == Geometric interpretation of vectors
 
-We like to identify vectors in $M_{n times 1}(RR)$ with points in $RR^n$. And there are very nice geometric interpretation of vector additions and scalar multiplications.
+We like to identify vectors in $M_(n times 1)(RR)$ with points in $RR^n$. And there are very nice geometric interpretation of vector additions and scalar multiplications.
 
 #example[
 Let $bold(a)=mat(
 1;2
 )$, $bold(b)=mat(
 2;1
-)$, then $bold(a)+bold(b)=mat(
-3;3
-)$, $2bold(a)=mat(
-2;4
-)$, $-bold(b)=(-1)bold(b)=mat(
--2;-1
-)$, $bold(a)-bold(b)=bold(a)+(-bold(b))=mat(
--1;1
-)$.
+)$, then $bold(a)+bold(b)=mat(3;3)$, $2bold(a)=mat(2;4)$, $-bold(b)=(-1)bold(b)=mat(-2;-1)$, $bold(a)-bold(b)=bold(a)+(-bold(b))=mat(-1;1)$.
 #figure(
-    cetz.canvas(length: 1cm, {
-        import cetz.draw: *
-        grid((-5, -3), (5, 5), step: 1, stroke: (dash: "dashed", thickness:0.5pt, paint: gray))
-        line((-5, 0), (5, 0), mark: (end: "straight"))
-        content((), $x_1$, anchor: "west")
-        line((0, -3), (0, 5), mark: (end: "straight"))
-        content((), $x_2$, anchor: "south")
-        let o = (0,0)
-        let a = (1,2)
-        let b = (2,1)
-        line(o, a, mark: (end: "straight"))
-        content((), $bold(a)$, anchor:"south-east")
-        line(o, b, mark: (end: "straight"))
-        content((), $bold(b)$, anchor:"north-west")
-        let neg_b = b.map(x=>-x)
-        line(o, neg_b, mark: (end: "straight"))
-        content((), $-bold(b)$, anchor:"north-east")
-        let two_a = a.map(x=>2*x)
-        line(o, two_a, mark: (end: "straight"))
-        content((), $2bold(a)$, anchor:"south")
-        let a_add_b = (3,3)
-        line(o, a_add_b, mark: (end: "straight"))
-        content((), $bold(a) + bold(b)$, anchor:"south")
-        let a_sub_b = (-1,1)
-        line(o, a_sub_b, mark: (end: "straight"))
-        content((), $bold(a) - bold(b)$, anchor:"south-east")
-        line(a_sub_b, a_add_b, stroke:(dash:"dashed", paint:gray))
-        line(a_sub_b, neg_b, stroke:(dash:"dashed", paint:gray))
-        line(b, a_add_b, stroke:(dash:"dashed", paint:gray))
+  cetz.canvas(length: 1cm, {
+    import cetz.draw: *
+      grid((-5, -3), (5, 5), step: 1,
+        stroke: (dash: "dashed", thickness: 0.5pt, paint: gray))
+      line((-5, 0), (5, 0), mark: (end: "straight"))
+      content((), $x_1$, anchor: "west")
+      line((0, -3), (0, 5), mark: (end: "straight"))
+      content((), $x_2$, anchor: "south")
+      let origin = (0, 0)
+      let a = (1, 2)
+      let b = (2, 1)
+      line(origin, a, mark: (end: "straight"))
+      content(a, $bold(a)$, anchor: "south-east")
+      line(origin, b, mark: (end: "straight"))
+      content(b, $bold(b)$, anchor: "north-west")
+      let neg_b = b.map(x => -x)
+      line(origin, neg_b, mark: (end: "straight"))
+      content(neg_b, $-bold(b)$, anchor: "north-east")
+      let two_a = a.map(x => 2 * x)
+      line(origin, two_a, mark: (end: "straight"))
+      content(two_a, $2 bold(a)$, anchor: "south")
+      let a_add_b = (3, 3)
+      line(origin, a_add_b, mark: (end: "straight"))
+      content(a_add_b, $bold(a) + bold(b)$, anchor: "south")
+      let a_sub_b = (-1, 1)
+      line(origin, a_sub_b, mark: (end: "straight"))
+      content(a_sub_b, $bold(a) - bold(b)$, anchor: "south-east")
+      line(a_sub_b, a_add_b, stroke: (dash: "dashed", paint: gray))
+      line(a_sub_b, neg_b, stroke: (dash: "dashed", paint: gray))
+      line(b, a_add_b, stroke: (dash: "dashed", paint: gray))
     }),
-    caption: $"Vector-point correspondence when" n=2$,
+    caption: [Vector-point correspondence when $n=2$],
 )<fig:two-lines-intersect>
 ]
 
@@ -1949,7 +1926,7 @@ $\{bold(v)_1,bold(v)_2,dots.h.c,bold(v)_n\}$ is said to be a basis for $RR^n$ if
 #theorem[
 Let $A=mat(
 bold(v)_1,bold(v)_2,dots.h.c,bold(v)_n
-)$, then $\{bold(v)_1,bold(v)_2,dots.h.c,bold(v)_n\}$ forms basis of $RR^n<=> A tilde  I_n$, in other words, each row and each column of $A$ has a pivot.
+)$, then $\{bold(v)_1,bold(v)_2,dots.h.c,bold(v)_n\}$ forms basis of $ RR^n<=> A tilde  I_n $, in other words, each row and each column of $A$ has a pivot.
 ]
 
 #definition[
@@ -1975,7 +1952,7 @@ ${bold(e)_1=mat(
 $
 mat(
 x_1;x_2;x_3
-),=mat(
+)&=mat(
 x_1;0;0
 )+mat(
 0;x_2;0
@@ -1987,68 +1964,51 @@ x_1;0;0
 0;1;0
 )+x_3mat(
 0;0;1
-) \ =x_1bold(e)_1+x_2bold(e)_2+x_3bold(e)_3
+) \ &=x_1bold(e)_1+x_2bold(e)_2+x_3bold(e)_3
 $
 ]
 
 == Geometric meaning of spans
 
 #example[
-Consider Example @ex:example4 where $bold(v)_1=mat(
+Consider @ex:example4 where $bold(v)_1=mat(
 1;-1
 )$, $bold(v)_2=mat(
 1;1
-)$, $bold(e)_1=mat(
-1;0
-)$, $bold(e)_2=mat(
-0;1
-)$
-// \begin{center}
-// \begin{tikzpicture}[scale=0.8]
-// \clip(-4.5,-4.5) rectangle (4.5,4.5);
-// \draw[help lines, color=gray!30, dashed] (-4.5,-4.5) grid (4.5,4.5);
-// \foreach \x in {-6,-4,-2,0,2,4,6} {\draw[help lines, color=purple!30, dashed] (-5+\x,-5)--++(10,10); \draw[help lines, color=purple!30, dashed] (-5+\x,5)--++(10,-10);}
-// \draw[->, color=gray!80] (-4.5,0)--(4.5,0) node[right]{$x_1$};
-// \draw[->, color=gray!80] (0,-4.5)--(0,4.5) node[above]{$x_2$};
-// \coordinate (a) at (1,-1); \node at (a)[below left]{\textcolor{purple}{$bold(v)_1$}}; \draw[->, purple, thick] (0,0)--(a);
-// \coordinate (b) at (1,1); \node at (b)[below right]{\textcolor{purple}{$bold(v)_2$}}; \draw[->, purple, thick] (0,0)--(b);
-// \node at (1,0)[above]{$bold(e)_1$}; \draw[->, thick] (0,0)--(1,0);
-// \node at (0,1)[above]{$bold(e)_2$}; \draw[->, thick] (0,0)--(0,1);
-// \node at ($2*(a)+(b)$)[below]{\textcolor{orange}{$ 2bold(v)_1+bold(v)_2 \ =3bold(e)_1-bold(e)_2 $}}; \draw[->, orange, thick] (0,0)--($2*(a)+(b)$);
-// \end{tikzpicture}
-// \end{center}
-$"Span"{bold(v)_1,bold(v)_2, bold(e)_1}$ and $"Span"{bold(v)_1,bold(v)_2}$ are both the plane $RR^2$, $bold(e)_1$ is in the span of $\{bold(v)_1,bold(v)_2\}$ because $bold(e)_1= 1 / 2 bold(v)_1+ 1 / 2 bold(v)_2$. The gray grids illustrate the span of $\{bold(e)_1,bold(e)_2\}$ and the purple grids illustrate the span of $\{bold(v)_1,bold(v)_2\}$.
-]
-
-#exercise[
-Suppose $bold(a)_1=mat(
-1;-3;0
-)$, $bold(a)_2=mat(
-2;-1;5
-)$, $bold(a)_3=mat(
-1;2;3
-)$
-
-- Determine whether $\{bold(a)_1, bold(a)_2, bold(a)_3\}$ forms a basis for $RR^3$.
-- Without performing elementary row operations, how many solutions does $A bold(x)=bold(b)$ have? Where $bold(b)=mat(
-1;45;-9
-)$, what about $bold(b)=mat(
-0;0;0
-)$.
-
-]
-
-== Parametric vector form
-
-#example[
-In @ex:example3, the solution set can be written as #text(fill:blue)[parametric vector form]#index[parametric vector form]
-$
-mat(
-x_1;x_2;x_3
-)=mat(
- 1 / 2 x_3+ 1 / 2 ; 3 / 2 x_3- 1 / 2 ;x_3
-)=mat(
- 1 / 2 x_3; 3 / 2 x_3;x_3
+#figure(
+  cetz.canvas(length: 1cm, {
+    import cetz.draw: *
+    grid((-5, -3), (5, 5), step: 1,
+      stroke: (dash: "dashed", thickness: 0.5pt, paint: gray))
+    line((-5, 0), (5, 0), mark: (end: "straight"))
+    content((), $x_1$, anchor: "west")
+    line((0, -3), (0, 5), mark: (end: "straight"))
+    content((), $x_2$, anchor: "south")
+    let origin = (0, 0)
+    let a = (1, 2)
+    let b = (2, 1)
+    line(origin, a, mark: (end: "straight"))
+    content(a, $bold(a)$, anchor: "south-east")
+    line(origin, b, mark: (end: "straight"))
+    content(b, $bold(b)$, anchor: "north-west")
+    let neg_b = b.map(x => -x)
+    line(origin, neg_b, mark: (end: "straight"))
+    content(neg_b, $-bold(b)$, anchor: "north-east")
+    let two_a = a.map(x => 2 * x)
+    line(origin, two_a, mark: (end: "straight"))
+    content(two_a, $2 bold(a)$, anchor: "south")
+    let a_add_b = (3, 3)
+    line(origin, a_add_b, mark: (end: "straight"))
+    content(a_add_b, $bold(a) + bold(b)$, anchor: "south")
+    let a_sub_b = (-1, 1)
+    line(origin, a_sub_b, mark: (end: "straight"))
+    content(a_sub_b, $bold(a) - bold(b)$, anchor: "south-east")
+    line(a_sub_b, a_add_b, stroke: (dash: "dashed", paint: gray))
+    line(a_sub_b, neg_b, stroke: (dash: "dashed", paint: gray))
+    line(b, a_add_b, stroke: (dash: "dashed", paint: gray))
+  }),
+  caption: [Vector-point correspondence when $n=2$],
+)
 )+mat(
  1 / 2 ;- 1 / 2 ;0
 )=x_3mat(
@@ -2057,7 +2017,7 @@ x_1;x_2;x_3
  1 / 2 ;- 1 / 2 ;0
 )
 $
-In Example @exer:exercise1, the solution set can be written as
+In @exer:exercise1, the solution set can be written as
  $
 mat(
 x_1;x_2;x_3;x_4
@@ -2155,29 +2115,28 @@ x_2" is free"
 2;1
 )
  $
-// \begin{center}
-// \begin{tikzpicture}[scale=0.8]
-// \begin{scope}
-// \clip(-4.5,-2.5) rectangle (4.5,2.5);
-// \draw[help lines, color=gray!30, dashed] (-4.5,-2.5) grid (4.5,2.5);
-// \draw[orange] (-6,-3)--(6,3);
-// \draw[purple] (-6,-4)--(6,2);
-// \filldraw[blue] (2,0) node[below]{$mat(
-// 2;0
-// )$} circle (1pt);
-// \draw[->,blue] (0,0)--(2,1) node[above]{$mat(
-// 2;1
-// )$};
-// \draw[->,blue] (2,0)--++(2,1);
-// \node at (0,-1)[below right] {$x_1-2x_2=2$};
-// \node at (0,0)[above left] {$x_1-2x_2=0$};
-// \end{scope}
-// \draw[->, color=gray!80] (-4.5,0)--(4.5,0) node[right]{$x_1$};
-// \draw[->, color=gray!80] (0,-2.5)--(0,2.5) node[above]{$x_2$};
-// \draw[dashed,blue] (0,0)--(2,0);
-// \draw[dashed,blue] (2,1)--(4,1);
-// \end{tikzpicture}
-// \end{center}
+#figure(
+  cetz.canvas(length: 1cm, {
+    import cetz.draw: *
+    grid((-4, -2), (4, 3), step: 1,
+      stroke: (dash: "dashed", thickness: 0.4pt, paint: luma(220)))
+    line((-4, 0), (4, 0), mark: (end: "straight"), stroke: (paint: luma(80)))
+    content((4, 0), $x_1$, anchor: "west")
+    line((0, -2), (0, 3), mark: (end: "straight"), stroke: (paint: luma(80)))
+    content((0, 3), $x_2$, anchor: "south")
+    line((-4, -2), (4, 2), stroke: (paint: orange, thickness: 1pt))
+    line((-2, -2), (4, 1), stroke: (paint: purple, thickness: 1.2pt))
+    content((2, -1), $x_1 - 2x_2 = 2$, anchor: "north-west")
+    content((1.5, 1.5), $x_1 - 2x_2 = 0$, anchor: "south-west")
+    line((0, 0), (2, 1), mark: (end: "straight"), stroke: (paint: blue, thickness: 1.2pt))
+    content((2, 1), $mat(2;1)$, anchor: "north")
+    line((2, 0), (4, 1), mark: (end: "straight"), stroke: (paint: blue, thickness: 1.2pt))
+    content((2, 0), $mat(2;0)$, anchor: "south")
+    line((0, 0), (2, 0), stroke: (dash: "dashed", paint: blue))
+    line((2, 1), (4, 1), stroke: (dash: "dashed", paint: blue))
+  }),
+  caption: [A non-homogeneous solution set is a translate of the homogeneous one],
+)
 ]
 
 #example[
@@ -2203,43 +2162,55 @@ x_1;x_2;x_3
 )
  $
 // \begin{center}
-// \begin{tikzpicture}
-// \definecolor{color1}{rgb}{255,0,0}
-// \definecolor{color2}{rgb}{0,0,255}
-// \definecolor{color3}{rgb}{255,0,255}
-// \def\XMAX{3.5}
-// \def\YMAX{3.5}
-// \def\ZMAX{3.5}
-// \newcommand{\planeEq}[2]{#2/3-#1/3}
-// \newcommand{\planeEqq}[2]{#2/3-#1/3+1}
-// \begin{scope}[blend mode=multiply, rotate around x=-90, rotate around z=30]
-// \draw [color1, fill=color1!20] plot (\planeEq{-\YMAX}{-\ZMAX},-\YMAX,-\ZMAX,)node[below left]{$3x_1+x_2-x_3=0$}--(\planeEq{-\YMAX}{\ZMAX},-\YMAX,\ZMAX)--(\planeEq{\YMAX}{\ZMAX},\YMAX,\ZMAX)--(\planeEq{\YMAX}{-\ZMAX},\YMAX,-\ZMAX)--cycle;
-// \draw [color2, fill=color2!20] plot (\planeEqq{-\YMAX}{-\ZMAX},-\YMAX,-\ZMAX,)node[below right]{$3x_1+x_2-x_3=3$}--(\planeEqq{-\YMAX}{\ZMAX},-\YMAX,\ZMAX)--(\planeEqq{\YMAX}{\ZMAX},\YMAX,\ZMAX)--(\planeEqq{\YMAX}{-\ZMAX},\YMAX,-\ZMAX)--cycle;
-// \draw[->] (-\XMAX,0,0)--(\XMAX,0,0) node[right]{$x_1$};
-// \draw[->] (0,-\YMAX,0)--(0,\YMAX,0) node[above]{$x_2$};
-// \draw[->] (0,0,-\ZMAX)--(0,0,\ZMAX) node[below left]{$x_3$};
-// \coordinate (d) at (1,0,0);
-// \coordinate (o) at (0,0,0);
-// \coordinate (v1) at (-1/3,1,0);
-// \coordinate (v2) at (1/3,0,1);
-// \draw[->, ultra thick, color1] (o)--(v1)node[above left]{$bold(v)_1$};
-// \draw[->, ultra thick, color1] (o)--(v2)node[above]{$bold(v)_2$};
-// \draw[->, ultra thick, color2] ($(o)+(d)$)--($(d)+(v1)$)node[above right]{$bold(v)_1$};
-// \draw[->, ultra thick, color2] ($(o)+(d)$)--($(d)+(v2)$)node[above]{$bold(v)_2$};
-// \draw[->, dotted, ultra thick] (o)--(d)node[below]{$tilde(bold(d))$};
-// \end{scope}
-// \end{tikzpicture}
-// \end{center}
-]
-
-= Lecture 6 - Linear transformations
-
-== Linear transformations and matrix transformations
-
-#definition[
-A #text(fill:blue)[Linear transformation] (or #text(fill:blue)[linear mapping])#index[linear transformation] $T$ from $RR^n$ to $RR^m$ is a mapping satisfying
-
-- $T(bold(u)+bold(v))=T(bold(u))+T(bold(v))$ for any $bold(u),bold(v)$ in $RR^n$
+#figure(
+  cetz.canvas(length: 1cm, {
+    import cetz.draw: *
+    grid((-2, -2), (2, 2), step: 0.5, stroke: (dash: "dashed", thickness: 0.35pt, paint: luma(220)))
+    line((-2, 0), (2, 0), mark: (end: "straight"), stroke: (paint: luma(80)))
+    content((2, 0), $x_1$, anchor: "west")
+    line((0, -2), (0, 2), mark: (end: "straight"), stroke: (paint: luma(80)))
+    content((0, 2), $x_2$, anchor: "south")
+    line((1, 0), (0.866, 0.5), (0.5, 0.866), (0, 1), (-0.5, 0.866), (-0.866, 0.5), (-1, 0), (-0.866, -0.5), (-0.5, -0.866), (0, -1), (0.5, -0.866), (0.866, -0.5), (1, 0), stroke: (paint: red, dash: "dashed", thickness: 0.8pt))
+    line((0, 0), (1, 0), mark: (end: "straight"), stroke: 1pt)
+    content((1, 0), $bold(e)_1$, anchor: "south-east")
+    line((0, 0), (0, 1), mark: (end: "straight"), stroke: 1pt)
+    content((0, 1), $bold(e)_2$, anchor: "north-west")
+    line((0, 0), (0.5, 0.866), mark: (end: "straight"), stroke: (paint: purple, thickness: 1.2pt))
+    content((0.5, 0.866), $T(bold(e)_1)$, anchor: "north-east")
+    line((0, 0), (-0.866, 0.5), mark: (end: "straight"), stroke: (paint: blue, thickness: 1.2pt))
+    content((-0.866, 0.5), $T(bold(e)_2)$, anchor: "north-west")
+    line((0.5, 0.866), (0.5, 0), stroke: (dash: "dashed", paint: purple))
+    line((0.5, 0.866), (0, 0.866), stroke: (dash: "dashed", paint: purple))
+    line((-0.866, 0.5), (-0.866, 0), stroke: (dash: "dashed", paint: blue))
+    line((-0.866, 0.5), (0, 0.5), stroke: (dash: "dashed", paint: blue))
+  }),
+  caption: [Rotation by $60^circle.small$],
+)
+@@// \begin{center}
+#figure(
+  cetz.canvas(length: 1cm, {
+    import cetz.draw: *
+    grid((-2, -2), (2, 2), step: 0.5, stroke: (dash: "dashed", thickness: 0.35pt, paint: luma(220)))
+    line((-2, 0), (2, 0), mark: (end: "straight"), stroke: (paint: luma(80)))
+    content((2, 0), $x_1$, anchor: "west")
+    line((0, -2), (0, 2), mark: (end: "straight"), stroke: (paint: luma(80)))
+    content((0, 2), $x_2$, anchor: "south")
+    line((1, 0), (0.866, 0.5), (0.5, 0.866), (0, 1), (-0.5, 0.866), (-0.866, 0.5), (-1, 0), (-0.866, -0.5), (-0.5, -0.866), (0, -1), (0.5, -0.866), (0.866, -0.5), (1, 0), stroke: (paint: red, dash: "dashed", thickness: 0.8pt))
+    line((0, 0), (1, 0), mark: (end: "straight"), stroke: 1pt)
+    content((1, 0), $bold(e)_1$, anchor: "south-east")
+    line((0, 0), (0, 1), mark: (end: "straight"), stroke: 1pt)
+    content((0, 1), $bold(e)_2$, anchor: "north-west")
+    line((0, 0), (-0.5, 0.866), mark: (end: "straight"), stroke: (paint: purple, thickness: 1.2pt))
+    content((-0.5, 0.866), $T(bold(e)_1)$, anchor: "north-west")
+    line((0, 0), (0.866, 0.5), mark: (end: "straight"), stroke: (paint: blue, thickness: 1.2pt))
+    content((0.866, 0.5), $T(bold(e)_2)$, anchor: "north-east")
+    line((-0.5, 0.866), (-0.5, 0), stroke: (dash: "dashed", paint: purple))
+    line((-0.5, 0.866), (0, 0.866), stroke: (dash: "dashed", paint: purple))
+    line((0.866, 0.5), (0.866, 0), stroke: (dash: "dashed", paint: blue))
+    line((0.866, 0.5), (0, 0.5), stroke: (dash: "dashed", paint: blue))
+  }),
+  caption: [Rotation followed by reflection over the $x_2$-axis],
+)
 - $T(c bold(u))=c T(bold(u))$ for any scalar $c$ and any $bold(u)$ in $RR^n$
 
 ]
@@ -2264,22 +2235,24 @@ u_1;u_2
 v_1;v_2
 )$, then
 
-\item
+#list.item[
 $
-T(bold(u)+bold(v)),=T(mat(
+T(bold(u)+bold(v))=T(mat(
 u_1+v_1;u_2+v_2
 ))=mat(
 (u_1+v_1)+(u_2+v_2);u_2+v_2
-);
-,=mat(
+) =mat(
 (u_1+u_2)+(v_1+v_2);u_2+v_2
-)=mat(
+) \
+
+=mat(
 u_1+u_2;u_2
 )+mat(
 v_1+v_2;v_2
 )=T(bold(u))+T(bold(v))
 $
-\item
+]
+#list.item[
  $
 T(c bold(u))=T(mat(
 c u_1;c u_2
@@ -2290,15 +2263,16 @@ u_1+u_2;u_2
 )=c T(bold(u))
  $
 ]
+]
 
 #definition[
-A #text(fill:blue)[matrix transformation]#index[matrix transformation] is the mapping defined via matrix multiplication, i.e. $T(bold(x))=A bold(x)$ for some $m times  n$ matrix $A$. It is a linear transformation thanks to Fact @fact:mat-alg c),d) since
+A #text(fill:blue)[matrix transformation]#index[matrix transformation] is the mapping defined via matrix multiplication, i.e. $T(bold(x))=A bold(x)$ for some $m times  n$ matrix $A$. It is a linear transformation thanks to @fact:mat-alg c),d) since
 - $T(bold(u)+bold(v))=A(bold(u)+bold(v))=A bold(u)+A bold(v)=T(bold(u))+T(bold(v))$
 - $T(c bold(u))=A(c bold(u))=c(A bold(u))=c T(bold(u))$
 ]
 
 #example[
-In fact, $T$ in Exercise @ex:matrix-transformation is a matrix transformation
+In fact, $T$ in @ex:matrix-transformation is a matrix transformation
  $
 T(mat(
 x_1;x_2
@@ -2328,7 +2302,7 @@ T(bold(e)_1),dots.h.c ,T(bold(e)_n)
 ]
 
 #example[
-In Exercise @ex:matrix-transformation
+In @ex:matrix-transformation
  $
 T(bold(e)_1)=T(mat(
 1;0
@@ -2380,17 +2354,23 @@ T(bold(e)_1),T(bold(e)_2)
 0,1
 )
  $
-// \begin{center}
-// \begin{tikzpicture}[scale=0.8]
-// \def\XMAX{2.5};\def\YMAX{2.5};
-// \draw[help lines, color=gray!30, dashed] (-\XMAX,-\YMAX) grid (\XMAX,\YMAX);
-// \draw[->, color=gray!80] (-\XMAX,0)--(\XMAX,0) node[right]{$x_1$};
-// \draw[->, color=gray!80] (0,-\YMAX)--(0,\YMAX) node[above]{$x_2$};
-// \coordinate (a) at (1,0); \node at (a)[below right]{$bold(e)_1$}; \draw[->, thick] (0,0)--(a);
-// \coordinate (b) at (0,1); \node at (b)[above right]{$bold(e)_2=T(bold(e)_2)$}; \draw[->, thick] (0,0)--(b);
-// \draw[->, purple, thick] (0,0)--($(0,0)-(a)$) node[below left]{$T(bold(e)_1)$};
-// \end{tikzpicture}
-// \end{center}
+#figure(
+  cetz.canvas(length: 1cm, {
+    import cetz.draw: *
+    grid((-3, -3), (3, 3), step: 1, stroke: (dash: "dashed", thickness: 0.4pt, paint: luma(220)))
+    line((-3, 0), (3, 0), mark: (end: "straight"), stroke: (paint: luma(80)))
+    content((3, 0), $x_1$, anchor: "west")
+    line((0, -3), (0, 3), mark: (end: "straight"), stroke: (paint: luma(80)))
+    content((0, 3), $x_2$, anchor: "south")
+    line((0, 0), (1, 0), mark: (end: "straight"), stroke: 1pt)
+    content((1, 0), $bold(e)_1$, anchor: "south-east")
+    line((0, 0), (0, 1), mark: (end: "straight"), stroke: 1pt)
+    content((0, 1), $bold(e)_2 = T(bold(e)_2)$, anchor: "north-east")
+    line((0, 0), (-1, 0), mark: (end: "straight"), stroke: (paint: purple, thickness: 1.2pt))
+    content((-1, 0), $T(bold(e)_1)$, anchor: "south-west")
+  }),
+  caption: [Reflection over the $x_2$-axis],
+)
 - Suppose $T$ is the rotation by $60^circle.small$ counter-clockwise, then the standard matrix for $T$ is
  $
 A=mat(
@@ -2400,27 +2380,27 @@ T(bold(e)_1),T(bold(e)_2)
 sqrt(3)/2, 1 / 2
 )
  $
-// \begin{center}
-// \begin{tikzpicture}[scale=2]
-// \def\XMAX{1.5};\def\YMAX{1.5};
-// \draw[help lines, color=gray!30, dashed] (-\XMAX,-\YMAX) grid (\XMAX,\YMAX);
-// \draw[->, color=gray!80] (-\XMAX,0)--(\XMAX,0) node[right]{$x_1$};
-// \draw[->, color=gray!80] (0,-\YMAX)--(0,\YMAX) node[above]{$x_2$};
-// \draw[opacity=0.6, red, dashed] (0,0) circle (1);
-// \coordinate (a) at (1,0); \node at (a)[below right]{$bold(e)_1$}; \draw[->, thick] (0,0)--(a);
-// \coordinate (b) at (0,1); \node at (b)[above right]{$bold(e)_2$}; \draw[->, thick] (0,0)--(b);
-// \coordinate (c) at ($cos(60)*(1,0)+sin(60)*(0,1)$); \node at (c)[above right]{\textcolor{purple}{$T(bold(e)_1)=mat(
-//  cos 60^circle.small; sin 60^circle.small
-// )$}}; \draw[->, purple, thick] (0,0)--(c);
-// \coordinate (d) at ($cos(150)*(1,0)+sin(150)*(0,1)$); \node at (d)[above left]{#text(fill:blue){$mat(
-//  cos 150^circle.small; sin 150^circle.small
-// )=T(bold(e)_2)$}}; \draw[->, blue, thick] (0,0)--(d);
-// \draw[opacity=0.6, purple, dashed] (c)--($cos(60)*(1,0)$);
-// \draw[opacity=0.6, purple, dashed] (c)--($sin(60)*(0,1)$);
-// \draw[opacity=0.6, blue, dashed] (d)--($cos(150)*(1,0)$);
-// \draw[opacity=0.6, blue, dashed] (d)--($sin(150)*(0,1)$);
-// \end{tikzpicture}
-// \end{center}
+#align(center, cetz.canvas(length: 1.5cm, {
+  import cetz.draw: *
+  grid((-1.5, -1.5), (1.5, 1.5), step: 0.5, stroke: (paint: luma(220), dash: "dashed"))
+  line((-1.5, 0), (1.5, 0), mark: (end: "straight"), stroke: gray)
+  line((0, -1.5), (0, 1.5), mark: (end: "straight"), stroke: gray)
+  content((1.5, 0), $x_1$, anchor: "west", padding: 0.1)
+  content((0, 1.5), $x_2$, anchor: "south", padding: 0.1)
+  circle((0, 0), radius: 1, stroke: (paint: std.rgb("#ff4136").transparentize(40%), dash: "dashed"))
+  for (point, body, anchor, paint) in (
+    ((1, 0), $bold(e)_1$, "north-west", black),
+    ((0, 1), $bold(e)_2$, "south-west", black),
+    ((0.5, calc.sqrt(3)/2), $T(bold(e)_1)=mat(cos 60^#std.sym.circle.small; sin 60^#std.sym.circle.small)$, "south-west", purple),
+    ((-calc.sqrt(3)/2, 0.5), $mat(cos 150^#std.sym.circle.small; sin 150^#std.sym.circle.small)=T(bold(e)_2)$, "south-east", blue),
+  ) {
+    line((0, 0), point, mark: (end: "straight"), stroke: (paint: paint, thickness: 1pt))
+    content(point, text(fill: paint, body), anchor: anchor, padding: 0.12)
+  }
+  for (point, paint) in (((0.5, calc.sqrt(3)/2), purple), ((-calc.sqrt(3)/2, 0.5), blue)) {
+    line((point.at(0), 0), point, (0, point.at(1)), stroke: (paint: paint.transparentize(40%), dash: "dashed"))
+  }
+}))
 ]<ex:refl>
 
 #exercise[
@@ -2437,31 +2417,27 @@ T(bold(e)_1),T(bold(e)_2)
 sqrt(3)/2, 1 / 2
 )
  $
-// \begin{center}
-// \begin{tikzpicture}[scale=2]
-// \def\XMAX{1.5};\def\YMAX{1.5};
-// \draw[help lines, color=gray!30, dashed] (-\XMAX,-\YMAX) grid (\XMAX,\YMAX);
-// \draw[->, color=gray!80] (-\XMAX,0)--(\XMAX,0) node[right]{$x_1$};
-// \draw[->, color=gray!80] (0,-\YMAX)--(0,\YMAX) node[above]{$x_2$};
-// \draw[opacity=0.6, red, dashed] (0,0) circle (1);
-// \coordinate (a) at (1,0); \node at (a)[below right]{$bold(e)_1$}; \draw[->, thick] (0,0)--(a);
-// \coordinate (b) at (0,1); \node at (b)[above right]{$bold(e)_2$}; \draw[->, thick] (0,0)--(b);
-// \coordinate (c) at ($sin(60)*(0,1)-cos(60)*(1,0)$); \node at (c)[above left]{\textcolor{purple}{$T(bold(e)_1)=mat(
-// - cos 60^circle.small; sin 60^circle.small
-// )=mat(
-//  cos 120^circle.small; sin 120^circle.small
-// )$}}; \draw[->, purple, thick] (0,0)--(c);
-// \coordinate (d) at ($sin(150)*(0,1)-cos(150)*(1,0)$); \node at (d)[above right]{#text(fill:blue){$T(bold(e)_2)=mat(
-// - cos 150^circle.small; sin 150^circle.small
-// )=mat(
-//  cos 30^circle.small; sin 30^circle.small
-// )$}}; \draw[->, blue, thick] (0,0)--(d);
-// \draw[opacity=0.6, purple, dashed] (c)--($(0,0)-cos(60)*(1,0)$);
-// \draw[opacity=0.6, purple, dashed] (c)--($sin(60)*(0,1)$);
-// \draw[opacity=0.6, blue, dashed] (d)--($(0,0)-cos(150)*(1,0)$);
-// \draw[opacity=0.6, blue, dashed] (d)--($sin(150)*(0,1)$);
-// \end{tikzpicture}
-// \end{center}
+#align(center, cetz.canvas(length: 1.3cm, {
+  import cetz.draw: *
+  grid((-1.5, -1.5), (1.5, 1.5), step: 0.5, stroke: (paint: luma(220), dash: "dashed"))
+  line((-1.5, 0), (1.5, 0), mark: (end: "straight"), stroke: gray)
+  line((0, -1.5), (0, 1.5), mark: (end: "straight"), stroke: gray)
+  content((1.5, 0), $x_1$, anchor: "west", padding: 0.1)
+  content((0, 1.5), $x_2$, anchor: "south", padding: 0.1)
+  circle((0, 0), radius: 1, stroke: (paint: std.rgb("#ff4136").transparentize(40%), dash: "dashed"))
+  for (point, body, anchor, paint) in (
+    ((1, 0), $bold(e)_1$, "north-west", black),
+    ((0, 1), $bold(e)_2$, "south-west", black),
+    ((-0.5, calc.sqrt(3)/2), $T(bold(e)_1)=mat(-cos 60^#std.sym.circle.small; sin 60^#std.sym.circle.small)=mat(cos 120^#std.sym.circle.small; sin 120^#std.sym.circle.small)$, "south-east", purple),
+    ((calc.sqrt(3)/2, 0.5), $T(bold(e)_2)=mat(-cos 150^#std.sym.circle.small; sin 150^#std.sym.circle.small)=mat(cos 30^#std.sym.circle.small; sin 30^#std.sym.circle.small)$, "south-west", blue),
+  ) {
+    line((0, 0), point, mark: (end: "straight"), stroke: (paint: paint, thickness: 1pt))
+    content(point, text(fill: paint, body), anchor: anchor, padding: 0.12)
+  }
+  for (point, paint) in (((-0.5, calc.sqrt(3)/2), purple), ((calc.sqrt(3)/2, 0.5), blue)) {
+    line((point.at(0), 0), point, (0, point.at(1)), stroke: (paint: paint.transparentize(40%), dash: "dashed"))
+  }
+}))
 ]
 
 == Properties of linear transformations
@@ -2512,9 +2488,9 @@ T(mat(
  $
 The set of vectors with image $bold(b)=mat(
 1;1;3
-)$ under $T$ is the solution set to $T(bold(x))=A bold(x)=bold(b)$ (this is Example  @ex:example1), which is ${mat(
+)$ under $T$ is the solution set to $T(bold(x))=A bold(x)=bold(b)$ (this is @ex:example1), which is ${mat(
 1;1;1
-)}$. And since there is a pivot in each row, by Theorem @thm:matsol, the range of $T$ is $RR^3$
+)}$. And since there is a pivot in each row, by @thm:matsol, the range of $T$ is $RR^3$
 ]
 
 #definition[
@@ -2544,7 +2520,7 @@ x_1-x_2+x_3; 2x_1-x_3
 ]
 
 #solution[
-This is the Example @ex:example3. The standard matrix for $T$ is $A=mat(
+This is the @ex:example3. The standard matrix for $T$ is $A=mat(
 1,-1,1;
 2,0,-1
 )xarrow(#`R2`-> #`R2`-2#`R1`)mat(
@@ -2559,7 +2535,7 @@ This is the Example @ex:example3. The standard matrix for $T$ is $A=mat(
 ]<exer:R2R3-1to1-onto>
 
 #solution[
-Both no! Due to Theorem @thm:1to1-onto-byeq
+Both no! Due to @thm:1to1-onto-byeq
 
 - Since $A$ is a $2 times 3$ matrix, there will be at most 2 pivots (only 2 rows), so there won't be enough pivots to fill all columns.
 - Since $A$ is a $3 times 2$ matrix, there will be at most 2 pivots (only 2 columns), so there won't be enough pivots to fill all rows.
@@ -2599,11 +2575,11 @@ Suppose
 - $T_2:RR^n->RR^m$ is a linear transformation with standard matrix $A_2$ (which should be $m times  n$)
 
 Define the #text(fill:blue)[composition]#index[composition] $T_2circle.small T_1$ of $T_1$ and $T_2$ as $(T_2circle.small T_1)(bold(x))=T_2(T_1(bold(x)))$
-\begin{center}
-\begin{tikzcd}
-RR^p \arrow[r, "T_1"] \arrow[rr, "T_2circle.small T_1"', bend right] , RR^n \arrow[r, "T_2"] , RR^m
-\end{tikzcd}
-\end{center}
+#align(center, commutative-diagram(
+  ((0, 0, $RR^p$), (3, 0, $RR^n$), (6, 0, $RR^m$)),
+  ((0, 1, $T_1$, "->", 0), (1, 2, $T_2$, "->", 0),
+   (0, 2, $T_2 circle.small T_1$, "->", -1)),
+))
 Then $T_2circle.small T_1:RR^p->RR^m$ is also a linear transformation (Why? Verify this). For $bold(x) in RR^p$,
  $
 (T_2circle.small T_1)(bold(x))=T_2(T_1(bold(x)))=A_2(T_1(bold(x)))=A_2(A_1bold(x))=(A_2A_1)bold(x)
@@ -2616,7 +2592,7 @@ You should compose maps to the left.
 ]
 
 #example[
-Consider Example @ex:refl., If we let $T_1:RR^2->RR^2$ to denote the rotation by $60^circle.small$ counter-clockwise, $T_2:RR^2->RR^2$ to denote reflection over $x_2$-axis, and their standard matrices are
+Consider @ex:refl., If we let $T_1:RR^2->RR^2$ to denote the rotation by $60^circle.small$ counter-clockwise, $T_2:RR^2->RR^2$ to denote reflection over $x_2$-axis, and their standard matrices are
  $
 mat(
  1 / 2 ,-sqrt(3)/2;sqrt(3)/2, 1 / 2
@@ -2624,7 +2600,7 @@ mat(
 -1,0;0,1
 )
  $
-Then look at Exercise @exer:rotate60deg-refl, this is the composition $T_2circle.small T_1$, which has the standard matrix
+Then look at @exer:rotate60deg-refl, this is the composition $T_2circle.small T_1$, which has the standard matrix
  $
 A_2A_1=mat(
 -1,0;0,1
@@ -2640,17 +2616,17 @@ sqrt(3)/2, 1 / 2
 #question[
 Suppose $A=mat(
  1 / 2 ,-sqrt(3)/2;sqrt(3)/2, 1 / 2
-)$ is the standard matrix for the linear transformation of rotating $60^circle.small$ counter-clockwise (Example @ex:refl). What is $A^7$?
+)$ is the standard matrix for the linear transformation of rotating $60^circle.small$ counter-clockwise (@ex:refl). What is $A^7$?
 ]
 
 #answer[
 $A^7=A A A A A A A$ is the standard matrix for composition of linear transformations $T circle.small T circle.small T circle.small T circle.small T circle.small T circle.small T$ which is rotate $7 times 60^circle.small=420^circle.small$, but that is the same as rotating $420^circle.small-360^circle.small=60^circle.small$ which is the same linear transformation as $T$, so $A^7=A$
-// \begin{center}
-// \begin{tikzcd}
-// A^7=AAAAAAA \arrow[rr,equal]                                                                                                       ,  , A                                      ;
-// T^{circle.small7}=T circle.small T circle.small T circle.small T circle.small T circle.small T circle.small T \arrow[rr,equal, ""same effect""'] \arrow[u, rightsquigarrow, ""Standard matrix""] ,  , T \arrow[u, rightsquigarrow, ""Standard matrix""']
-// \end{tikzcd}
-// \end{center}
+#align(center, commutative-diagram(
+((0, 2, $A^7=A A A A A A A$), (8, 2, $A$),
+(0, 0, $T^(circle.small 7)=T circle.small T circle.small T circle.small T circle.small T circle.small T circle.small T$), (8, 0, $T$)),
+((0, 1, none, "=", 0), (2, 3, [same effect], "=", 0),
+(2, 0, [Standard matrix], "->", 0), (3, 1, [Standard matrix], "->", 0)),
+))
 ]
 
 #exercise[
@@ -2667,7 +2643,7 @@ a_(11),a_(12),dots.h.c,a_(1 n);
 a_(21),a_(22),dots.h.c,a_(2 n);
 dots.v,dots.v,,dots.v;
 a_(m 1),a_(m 2),dots.h.c,a_(m n)
-)$ is a $m times  n$ matrix, we define its #text(fill:blue)[transpose]#index[transpose] by flipping it over the diagonal, and this is the $n times  m$ matrix
+)$ is a $ m times  n $ matrix, we define its #text(fill:blue)[transpose]#index[transpose] by flipping it over the diagonal, and this is the $n times  m$ matrix
  $
 A^T=mat(
 a_(11),a_(21),dots.h.c,a_(m 1);
@@ -2701,27 +2677,21 @@ For any $bold(v)=mat(
 v_1;v_2;dots.v;v_n
 ),bold(w)=mat(
 w_1;w_2;dots.v;w_n
-) in RR^n$, we can define the #text(fill:blue)[dot product]#index[dot product] to be $bold(v) dot.c bold(w)=bold(v)^T bold(w)=v_1w_1+dots.h.c+v_n w_n$. $|bold(v)|=sqrt(bold(v)^T bold(v))=sqrt(v_1^2+dots.h.c+v_n^2)$ is the length $bold(v)$
+) in RR^n$, we can define the #text(fill:blue)[dot product]#index[dot product] to be $ bold(v) dot.c bold(w)=bold(v)^T bold(w)=v_1w_1+dots.h.c+v_n w_n $. $|bold(v)|=sqrt(bold(v)^T bold(v))=sqrt(v_1^2+dots.h.c+v_n^2)$ is the length $bold(v)$
 ]
 
 #remark[
 There is a nice geometric interpretation of dot product. Suppose the angle between $bold(v)$ and $bold(w)$ is $theta$, then $bold(v) dot.c bold(w)=|bold(v)||bold(w)| cos theta$.
 % With a bit of trigonometry, we see it is the product of one vector and the projection of the other onto the first one.
-// \begin{center}
-// \begin{tikzpicture}[scale=3]
-// \coordinate (a) at ($cos(30)*(1,0)+sin(30)*(0,1)$);
-// \coordinate (b) at ($(1.2,0)$);
-// \draw[->, thick] (0,0)--(a);
-// \draw[->, thick] (0,0)--(b);
-// % \draw[dotted] (a)--(a|-0,0);
-// % \draw[->] (0,0)--(a|-0,0);
-// \draw (0.2,0) arc (0:30:0.2);
-// \node at (a)[right] {$bold(v)$};
-// \node at (b)[right] {$bold(w)$};
-// \node at (0.2,0)[above right] {$theta$};
-// % \node at (a|-0,0)[below] {$bold(u)$};
-// \end{tikzpicture}
-// \end{center}
+#align(center, cetz.canvas(length: 3cm, {
+  import cetz.draw: *
+  line((0, 0), (calc.sqrt(3)/2, 0.5), mark: (end: "straight"), stroke: 1pt)
+  line((0, 0), (1.2, 0), mark: (end: "straight"), stroke: 1pt)
+  arc((0.2, 0), start: 0deg, stop: 30deg, radius: 0.2)
+  content((calc.sqrt(3)/2, 0.5), $bold(v)$, anchor: "west", padding: 0.1)
+  content((1.2, 0), $bold(w)$, anchor: "west", padding: 0.1)
+  content((0.3, 0.08), $theta$, anchor: "west")
+}))
 % Here $bold(u)$ is the projection of $bold(v)$ onto $bold(w)$
 ]
 
@@ -2739,17 +2709,17 @@ Let $bold(v)=mat(
 ]
 
 #question[
-Have you wondered about how linear algebra would look like if we make the identification of row vectors $M_{1 times  n}(RR^n)$ and $RR^n$ instead of column vectors.
+Have you wondered about how linear algebra would look like if we make the identification of row vectors $M_(1 times  n)(RR^n)$ and $RR^n$ instead of column vectors.
 ]
 
 #answer[
 The standard basis for $RR^n$ would be $\{bold(e)_1^T,bold(e)_2^T,dots.h.c,bold(e)_n^T\}$, where $bold(e)_j^T=mat(
 0,dots.h.c,1,dots.h.c,0
-)$, where every entry is 0 except the $j$-th entry being 1. For any $bold(x)^T in RR^n$ and any linear transformation $T:RR^n->RR^m$, we have
+)$, where every entry is 0 except the $j$-th entry being 1. For any $ bold(x)^T in RR^n $ and any linear transformation $T:RR^n->RR^m$, we have
 $
-T(bold(x)^T),=T(bold(x))^T=(x_1T(bold(e)_1)+x_2T(bold(e)_2)+dots.h.c+x_n T(bold(e)_n))^T;
-,=x_1T(bold(e)_1)^T+x_2T(bold(e)_2)^T+dots.h.c+x_n T(bold(e)_n)^T;
-,=mat(
+T(bold(x)^T)&=T(bold(x))^T=(x_1T(bold(e)_1)+x_2T(bold(e)_2)+dots.h.c+x_n T(bold(e)_n))^T\
+&=x_1T(bold(e)_1)^T+x_2T(bold(e)_2)^T+dots.h.c+x_n T(bold(e)_n)^T\
+&=mat(
 x_1,x_2,dots.h.c,x_n
 )mat(
 T(bold(e)_1)^T;T(bold(e)_2)^T;dots.v;T(bold(e)_n)^T
@@ -2769,19 +2739,19 @@ On the other hand, we should know that $(T_2circle.small T_1)(bold(x)^T)=bold(x)
 == Matrix inverse
 
 #definition[
-Suppose linear transformation $T:RR^n->RR^m$ is both onto and one-to-one (i.e. for each vector $bold(b)$ in the codomain $RR^m$ there is a unique preimage, which we denote as $T^(-1)(bold(b))$). Suppose $A$ is the standard matrix for $T$, then $m$ necessarily equal $n$ as shown in Exercise @exer:R2R3-1to1-onto, so $A$ must be a square matrix. We know $T(bold(x))=bold(b)$ always has a unique solution which should be $T^(-1)(bold(b))$, it can be shown that $T^(-1):RR^n->RR^n$ as mapping is actually also a linear transformation (Why? See if you can figure this out). Then the standard matrix of $T^(-1)$ is defined to be $A^(-1)$ (the #text(fill:blue)[inverse matrix]#index[inverse matrix] of $A$). Note that
+Suppose linear transformation $T:RR^n->RR^m$ is both onto and one-to-one (i.e. for each vector $bold(b)$ in the codomain $RR^m$ there is a unique preimage, which we denote as $T^(-1)(bold(b))$). Suppose $A$ is the standard matrix for $T$, then $m$ necessarily equal $n$ as shown in @exer:R2R3-1to1-onto, so $A$ must be a square matrix. We know $T(bold(x))=bold(b)$ always has a unique solution which should be $T^(-1)(bold(b))$, it can be shown that $T^(-1):RR^n->RR^n$ as mapping is actually also a linear transformation (Why? See if you can figure this out). Then the standard matrix of $T^(-1)$ is defined to be $A^(-1)$ (the #text(fill:blue)[inverse matrix]#index[inverse matrix] of $A$). Note that
 $
-,(T circle.small T^(-1))(bold(b))=T(T^(-1)(bold(b)))=T(bold(x))=bold(b);
-,(T^(-1)circle.small T)(bold(x))=T^(-1)(T(bold(x)))=T^(-1)(bold(b))=bold(x)
+&(T circle.small T^(-1))(bold(b))=T(T^(-1)(bold(b)))=T(bold(x))=bold(b) \
+&(T^(-1)circle.small T)(bold(x))=T^(-1)(T(bold(x)))=T^(-1)(bold(b))=bold(x)
 $
-Since $T circle.small T^(-1)$, $T^(-1)circle.small T$ work like the identity mappings, so $A A^(-1)=A^(-1)A=I$. In this case, we see that $A$ is equivalent to the identity matrix (because of Theorem @ex:example4, $A$ has a pivot in each row and column).
+Since $T circle.small T^(-1)$, $T^(-1)circle.small T$ work like the identity mappings, so $A A^(-1)=A^(-1)A=I$. In this case, we see that $A$ is equivalent to the identity matrix (because of @ex:example4, $A$ has a pivot in each row and column).
 ]
 
 #remark[
 Because we can write elementary row operations as left elementary matrix multiplications, so we know there are elementary matrices $E_1,E_2,dots.h.c,E_k$ such that
 $
-A,tilde  E_1A tilde  E_2E_1A tilde  E_3E_2E_1A tilde dots.h.c;
-,tilde  E_k E_(k-1)dots.h.c E_2E_1A=I
+A&tilde  E_1A tilde  E_2E_1A tilde  E_3E_2E_1A tilde dots.h.c\
+&tilde  E_k E_(k-1)dots.h.c E_2E_1A=I
 $
 If we multiply $A^(-1)$ on the right on both sides, we get $E_k E_(k-1)dots.h.c E_2E_1=A^(-1)$. Thanks to this observation, we introduce an algorithm for computing matrix inverses. Let's consider the RREF of the following partitioned matrix
 
@@ -2823,12 +2793,12 @@ Hence $A^(-1)=mat(
 -1,0;0,1
 )$
 - $
-,mat(
+&mat(
 1,2,1,0;
 3,5,0,1; augment:#(-1))xarrow(#`R2`-> #`R2`-3#`R1`)mat(
 1,2,1,0;
-0,-1,-3,1; augment:#(-1));
-,xarrow(#`R1`-> #`R1`+2#`R2`)mat(
+0,-1,-3,1; augment:#(-1)) \
+&xarrow(#`R1`-> #`R1`+2#`R2`)mat(
 1,0,-5,2;
 0,-1,-3,1
 ; augment:#(-1))xarrow(#`R2`->(-1)#`R2`)mat(
@@ -2901,7 +2871,7 @@ If $A=mat(
  1 / 2 ,sqrt(3)/2;-sqrt(3)/2, 1 / 2
 )$, then
  $
-A^(-1)=\dfrac{1}{ 1 / 2  1 / 2 -sqrt(3)/2(-sqrt(3)/2)}mat(
+A^(-1)=(1) / ( 1 / 2  1 / 2 -sqrt(3)/2(-sqrt(3)/2))mat(
  1 / 2 ,-sqrt(3)/2;sqrt(3)/2, 1 / 2
 )=mat(
  1 / 2 ,-sqrt(3)/2;sqrt(3)/2, 1 / 2
@@ -2950,11 +2920,11 @@ Here are some properties of matrix inverse
 ]<thm:invmat-property>
 
 #exercise[
-What is $(A^T)^(-1)$ in Exercise @exer:inv-mat, c)?
+What is $(A^T)^(-1)$ in @exer:inv-mat, c)?
 ]
 
 #solution[
-Use Theorem @thm:invmat-property, we know
+Use @thm:invmat-property, we know
  $
 (A^T)^(-1)=(A^(-1))^T=mat(
  1 / 6 , 1 / 3 , 1 / 6 ;
@@ -2985,7 +2955,7 @@ Suppose $T:RR^3->RR^3$ is a linear transformation with standard matrix $A=mat(
 1,2,3;
 0,-1,-2;
 0,0,1
-)$. Is $A^(-1)$ invertible? Is $T$ one-to-one? Is $A^T$ invertible? If so, what is $(A^T)^(-1)$? If so, what is $(A^(-1))^(-1)$. Is $T$ invertible (i.e. does $T^(-1)$ exist)? What is the standard matrix of $T^(-1)$? Is $T$ onto?
+)$. Is $A^(-1)$ invertible? Is $T$ one-to-one? Is $ A^T $ invertible? If so, what is $(A^T)^(-1)$? If so, what is $(A^(-1))^(-1)$. Is $T$ invertible (i.e. does $T^(-1)$ exist)? What is the standard matrix of $T^(-1)$? Is $T$ onto?
 ]
 
 #solution[
@@ -3017,7 +2987,7 @@ So $A^(-1)=mat(
 1,2,1;
 0,-1,-2;
 0,0,1
-)$. By Theorem @thm:invmat-property, we know
+)$. By @thm:invmat-property, we know
  $
 (A^(-1))^(-1)=A=mat(
 1,2,3;
@@ -3099,7 +3069,7 @@ Now let's introduce #text(fill:blue)[determinants] #index[determinant] (#text(fi
 #definition[
 The determinant of $A=mat(
 bold(a)_1,dots.h.c,bold(a)_n
-)$ (Usually denoted $"det "A$ or $|A|=| mat( bold(a)_1,dots.h.c,bold(a)_n ) |$, replacing brackets with vertical lines) as _signed_ volumes of $P$ . Therefore we have $"Vol"(P)=|"det "A|$, i.e. actual volume is the absolute value of the determinant.
+)$ (Usually denoted $"det "A$ or $|A|= mat(delim: "|",  bold(a)_1,dots.h.c,bold(a)_n )$, replacing brackets with vertical lines) as _signed_ volumes of $P$ . Therefore we have $"Vol"(P)=|"det "A|$, i.e. actual volume is the absolute value of the determinant.
 ]
 
 #example[[$n=1$]
@@ -3209,7 +3179,7 @@ Determinant has following three properties:
 // \end{scope}
 // \end{tikzpicture}
 // \end{center}
-// - Scaling $bold(a)_1$ scales the determinant. Namely $ "det" mat(c bold(a)_1,bold(a)_2)=c "det" mat(bold(a)_1,bold(a)_2)$
+- Scaling $bold(a)_1$ scales the determinant. Namely $ "det" mat(c bold(a)_1,bold(a)_2)=c "det" mat(bold(a)_1,bold(a)_2)$
 // \begin{center}
 // \begin{tikzpicture}[scale=0.8]
 // \begin{scope}[xshift=-5cm]
@@ -3235,7 +3205,7 @@ Determinant has following three properties:
 // \end{scope}
 // \end{tikzpicture}
 // \end{center}
-// - Adding a multiple of $bold(a)_1$ to $bold(a)_2$ doesn't change the determinant. Namely $ "det" mat(bold(a)_1,bold(a)_2+c bold(a)_1)= "det" mat(bold(a)_1,bold(a)_2)$
+- Adding a multiple of $bold(a)_1$ to $bold(a)_2$ doesn't change the determinant. Namely $ "det" mat(bold(a)_1,bold(a)_2+c bold(a)_1)= "det" mat(bold(a)_1,bold(a)_2)$
 // \begin{center}
 // \begin{tikzpicture}[scale=0.8]
 // \def\XMAX{2.5};\def\YMAX{2.5};
@@ -3318,14 +3288,14 @@ Determinant of a triangular matrix is the product of the diagonal elements.
 \end{corollary}
 
 #proof[
-Apply Theorem @thm:det-A-theorem repeatedly.
+Apply @thm:det-A-theorem repeatedly.
 ]
 
 #theorem[
 $"det"(A)="det"(A^T)$
 ]<thm:detAdetAT>
 
-Thanks to Theorem @thm:detAdetAT, we can compute determinants via elementary row and column operations.
+Thanks to @thm:detAdetAT, we can compute determinants via elementary row and column operations.
 
 #example[
 Use elementary row operations to evaluate the following (Note that we omit the backward phase (which are replacements) since it doesn't change the determinants)
@@ -3429,8 +3399,8 @@ T(bold(e)_1),T(bold(e)_2)
 )$. What is the area of the image of the unit circle under $T$?
 ]
 
-// #answer[
-// We sketch the unit circle and its image
+#answer[
+We sketch the unit circle and its image
 // \begin{center}
 // \begin{tikzpicture}
 // \def\XMAX{2};\def\YMAX{2};
@@ -3463,8 +3433,8 @@ T(bold(e)_1),T(bold(e)_2)
 // \end{scope}
 // \end{tikzpicture}
 // \end{center}
-// Since every small blue squares has been deformed into small parallelograms which are congruent to the gray square, parallelogram respectively and are of the same (signed) ratio $"det "A$, so any area gets scaled by $"det "A=2 dot.c 2-1 dot.c 1=3$ under $T$.
-// ]
+Since every small blue squares has been deformed into small parallelograms which are congruent to the gray square, parallelogram respectively and are of the same (signed) ratio $"det "A$, so any area gets scaled by $"det "A=2 dot.c 2-1 dot.c 1=3$ under $T$.
+]
 
 #remark[
 In multi-variable calculus, this is known as the #text(fill:blue)[Jacobian].
@@ -3479,11 +3449,11 @@ Suppose $T_1,T_2$ are linear transformations with standard matrices $A,B$, respe
 ]
 
 #theorem[
-$A$ is invertible $<=>"det "A!=0$. In addition, $"det"(A^(-1))=\dfrac{1}{"det "A}$.
+$A$ is invertible $<=>"det "A!=0$. In addition, $"det"(A^(-1))=(1) / ("det "A)$.
 ]
 
 #proof[
-If $A$ is invertible, then $A^(-1)$ is well-defined, then $1="det "I="det"(A A^(-1))=("det "A)("det"(A^(-1))) =>  "det"(A^(-1))=\dfrac{1}{"det "A}$, so $"det "A!=0$. Conversely, if $"det "A!=0$, $A$ would have $n$ pivots, so a pivot in each row and column, thus $A$ will be invertible.
+If $A$ is invertible, then $A^(-1)$ is well-defined, then $1="det "I="det"(A A^(-1))=("det "A)("det"(A^(-1))) =>  "det"(A^(-1))=(1) / ("det "A)$, so $"det "A!=0$. Conversely, if $"det "A!=0$, $A$ would have $n$ pivots, so a pivot in each row and column, thus $A$ will be invertible.
 ]
 
 #exercise[
@@ -3556,7 +3526,7 @@ We use $a_(i j)$ to be denote the $(i,j)$-th entry of the matrix $A$, and $A_(i 
 // ,,,,,;
 // ,,,,,;
 // ,,,,,;
-// ,,\,\,\,\,\,\,\,,,,;
+// ,, thin  thin  thin  thin  thin  thin  thin ,,,;
 // ,,,,,;
 // ,,,,,
 // )$};
@@ -3564,10 +3534,10 @@ We use $a_(i j)$ to be denote the $(i,j)$-th entry of the matrix $A$, and $A_(i 
 // \draw[fill=black] (0.2,-1.3)--(0.4,-1.3)--(0.4,1.3)--(0.2,1.3)--cycle;
 // \end{tikzpicture}
 // \end{center}
-We define the #text(fill:blue)[$(i,j)$-cofactor]#index[cofactor] to be $C_(i j)=(-1)^{i+j}"det "A_(i j)$ (we also call $"det "A_(i j)$ a #text(fill:blue)[minor]#index[minor]).
+We define the #text(fill:blue)[$(i,j)$-cofactor]#index[cofactor] to be $C_(i j)=(-1)^(i+j)"det "A_(i j)$ (we also call $"det "A_(i j)$ a #text(fill:blue)[minor]#index[minor]).
 ]
 
-For $n>=2$, with the help of Lemma "lemma:det-A-lemma", we derive cofactor expansion formula.
+For $n>=2$, with the help of @thm:det-A-theorem, we derive the cofactor expansion formula.
 
 The #text(fill:blue)[cofactor expansion]#index[cofactor expansion] across the $i$-th row is
  $
@@ -3596,7 +3566,7 @@ The cofactor expansion across the $j$-th column is
 // \end{tikzpicture}
 // \end{center}
 
-#proof[[Proof of Theorem @thm:detAdetAT]
+#proof[[Proof of @thm:detAdetAT]
 Note that row cofactor expansion of $A$ is the same as column cofactor expansion of $A^T$. Hence we can prove this inductively on the size of the matrix.
 ]
 
@@ -3607,7 +3577,7 @@ $
 0,3,-1,0;
 -1,2,1,2;
 2,-3,1,0
- ) )xequal("cofactor expansion across last column")2(-1)^{3+4}abs( mat(delim:#none,
+ ) )xequal("cofactor expansion across last column")2(-1)^(3+4)abs( mat(delim:#none,
 1,2,3;
 0,3,-1;
 2,-3,1
@@ -3616,7 +3586,7 @@ $
 1,2,3;
 0,3,-1;
 0,-7,-5
- ) )xequal("cofactor expansion across first column")(-2) dot.c 1(-1)^{1+1}abs( mat(delim:#none,
+ ) )xequal("cofactor expansion across first column")(-2) dot.c 1(-1)^(1+1)abs( mat(delim:#none,
 3,-1;
 -7,-5
  ) ) \
@@ -3644,27 +3614,27 @@ When use the cofactor expansion, we want to apply it to rows/columns with more 0
 #solution[
 $
 "det "A&=a_(11)C_(11)+a_(12)C_(12)+a_(13)C_(13) \
-&=a_(11)(-1)^{1+1}"det "A_(1 1)+a_(12)(-1)^{1+2}"det "A_(1 2)+a_(13)(-1)^{1+3}"det "A_(1 3) \
-&=1 dot.c (-1)^{1+1}| mat(
+&=a_(11)(-1)^(1+1)"det "A_(1 1)+a_(12)(-1)^(1+2)"det "A_(1 2)+a_(13)(-1)^(1+3)"det "A_(1 3) \
+&=1 dot.c (-1)^(1+1) mat(delim: "|",
 0,-1;1,1
- ) |+(-1) dot.c (-1)^{1+2}| mat(
+ )+(-1) dot.c (-1)^(1+2) mat(delim: "|",
 2,-1;1,1
- ) |+1 dot.c (-1)^{1+3}| mat(
+ )+1 dot.c (-1)^(1+3) mat(delim: "|",
 2,0;1,1
- ) | \
+ ) \
 &=1 dot.c (0 dot.c 1-(-1) dot.c 1)+(-1) dot.c (2 dot.c 1-(-1) dot.c 1)+1 dot.c (-1)(2 dot.c 1-(-1) dot.c 1) \
 &=6
 $
 $
 "det "A&=a_(12)C_(12)+a_(22)C_(22)+a_(32)C_(32) \
-&=a_(11)(-1)^{1+1}"det "A_(1 1)+a_(12)(-1)^{1+2}"det "A_(1 2)+a_(13)(-1)^{1+3}"det "A_(1 3) \
-&=(-1) dot.c (-1)^{1+2}| mat(
+&=a_(11)(-1)^(1+1)"det "A_(1 1)+a_(12)(-1)^(1+2)"det "A_(1 2)+a_(13)(-1)^(1+3)"det "A_(1 3) \
+&=(-1) dot.c (-1)^(1+2) mat(delim: "|", 
 2,-1;1,1
- ) |+0 dot.c (-1)^{2+2}| mat(
+ )+0 dot.c (-1)^(2+2) mat(delim: "|", 
 1,1;1,1
- ) |+1 dot.c (-1)^{3+2}| mat(
+ )+1 dot.c (-1)^(3+2) mat(delim: "|", 
 1,1;2,-1
- ) | \
+ ) \
 &=(-1) dot.c (-1)(2 dot.c 1-(-1) dot.c 1)+0 dot.c (1 dot.c 1-1 dot.c 1)+1 dot.c (-1)(1 dot.c (-1)-1 dot.c 2) \
 &=6
 $
@@ -3681,15 +3651,15 @@ Suppose $A=mat(
 #solution[
 $
 "det "A&=a_(21)C_(21)+a_(22)C_(22)+a_(23)C_(23) \
-&=a_(21)(-1)^{2+1}"det "A_(2 1)+a_(22)(-1)^{2+2}"det "A_(2 2)+a_(23)(-1)^{2+3}"det "A_(2 3);
-&=1 dot.c (-1)^{2+1}| mat(
+&=a_(21)(-1)^(2+1)"det "A_(2 1)+a_(22)(-1)^(2+2)"det "A_(2 2)+a_(23)(-1)^(2+3)"det "A_(2 3) \
+&=1 dot.c (-1)^(2+1) mat(delim: "|", 
 2,1;2,1
- ) |+0 dot.c (-1)^{2+2}| mat(
+ )+0 dot.c (-1)^(2+2) mat(delim: "|", 
 1,1;-1,1
- ) |+(-1) dot.c (-1)^{2+3}| mat(
+ )+(-1) dot.c (-1)^(2+3) mat(delim: "|", 
 2,1;2,1
- ) | \
-,=1 dot.c (-1)(2 dot.c 1-1 dot.c 2)+0 dot.c (1 dot.c 1-1 dot.c (-1))+(-1) dot.c (-1)(1 dot.c 2-2 dot.c (-1)) \
+ ) \
+&=1 dot.c (-1)(2 dot.c 1-1 dot.c 2)+0 dot.c (1 dot.c 1-1 dot.c (-1))+(-1) dot.c (-1)(1 dot.c 2-2 dot.c (-1)) \
 &=4
 $
 ]
@@ -3710,19 +3680,22 @@ Suppose $A=mat(
 #solution[
 Note that $A$ is upper triangular, so we could do cofactor expansions across first columns multiple times
 $
-| mat(
+lr( mat(delim: "|", 
 2,-1,3,1;
 0,-2,0,-1;
 0,0,3,1;
 0,0,0,1
- ) |=2(-1)^{1+1}| mat(
+ ))&=2 dot.c (-1)^(1+1) dot.c lr( mat(delim: "|", 
 -2,0,-1;
 0,3,1;
 0,0,1
- ) |=2 dot.c (-2)(-1)^{1+1}| mat(
+ )) \
+&=2 dot.c (-2) dot.c (-1)^(1+1) dot.c lr( mat(delim: "|", 
 3,1;
 0,1
- ) |=2 dot.c (-2) dot.c 3 dot.c (-1)^{1+1}1=-12
+ )) \
+&=2 dot.c (-2) dot.c 3 dot.c (-1)^(1+1) dot.c 1 \
+&=-12
 $
 ]
 
@@ -3739,7 +3712,7 @@ a,b;c,d
 ]
 
 #solution[
-$A_(1 1)=[d],A_(1 2)=[c],A_(2 1)=[b],A_(2 2)=[a]$ are all 1 by 1 matrices. $C_(11)=(-1)^{1+1}"det "A_(1 1)=d,C_(12)=(-1)^{1+2}"det "A_(2 1)=-c,C_(21)=(-1)^{2+1}"det "A_(2 1)=-b,C_(22)=(-1)^{2+2}"det "A_(2 2)=a$. So the cofactor expansions are
+$A_(1 1)=[d],A_(1 2)=[c],A_(2 1)=[b],A_(2 2)=[a]$ are all 1 by 1 matrices. $C_(11)=(-1)^(1+1)"det "A_(1 1)=d,C_(12)=(-1)^(1+2)"det "A_(2 1)=-c,C_(21)=(-1)^(2+1)"det "A_(2 1)=-b,C_(22)=(-1)^(2+2)"det "A_(2 2)=a$. So the cofactor expansions are
 
 - $"det "A=a C_(11)+b C_(12)=a d-b c$
 - $"det "A=c C_(21)+d C_(22)=-b c+a d$
@@ -3760,27 +3733,32 @@ To motivate the definition of a vector space, let's consider the following examp
 #example[
 Let $PP_n$ denote the set of (real) polynomials of degree less or equal to $n$. For example $PP_0=RR$ is just the set of real numbers, and
 $
-PP_1,={a_0+a_1t|a_0,a_1 in RR} \
-PP_2,={a_0+a_1t+a_2t^2|a_0,a_1,a_2 in RR} \
-PP_3,={a_0+a_1t+a_2t^2+a_3t^3|a_0,a_1,a_2,a_3 in RR} \
-,dots.v;
-PP_n,={a_0+a_1t+a_2t^2+dots.h.c+a_n t^n|a_0,a_1,a_2,dots.h.c,a_n in RR}
+PP_1&={a_0+a_1t|a_0,a_1 in RR} \
+PP_2&={a_0+a_1t+a_2t^2|a_0,a_1,a_2 in RR} \
+PP_3&={a_0+a_1t+a_2t^2+a_3t^3|a_0,a_1,a_2,a_3 in RR} \
+&dots.v \
+PP_n&={a_0+a_1t+a_2t^2+dots.h.c+a_n t^n|a_0,a_1,a_2,dots.h.c,a_n in RR}
 $
 You may soon realize that $PP_n$ can be identified with $RR^(n+1)$.
-// \begin{center}
-// \begin{tikzcd}
-// PP_1 \arrow[r,equal,"tilde "]        , RR^2   ;
-// \{a_0+a_1t\} \arrow[r, leftrightsquigarrow] \arrow[u, equal] , {mat(a_0;a_1)} \arrow[u, equal]
-// \end{tikzcd}
-// \begin{tikzcd}
-// PP_2 \arrow[r,equal,"tilde "]        , RR^3;
-// \{a_0+a_1t+a_2t^2\} \arrow[r, leftrightsquigarrow] \arrow[u, equal] , {mat(a_0;a_1;a_2)} \arrow[u, equal]
-// \end{tikzcd}
-// \begin{tikzcd}
-// PP_n \arrow[r,equal,"tilde "]        , RR^(n+1)          ;
-// \{a_0+a_1t+a_2t^2+dots.h.c+a_n t^n\} \arrow[r, leftrightsquigarrow] \arrow[u, equal] , {mat(a_0;a_1;dots.v;a_n)} \arrow[u, equal]
-// \end{tikzcd}
-// \end{center}
+#align(center, commutative-diagram(
+((0, 2, $PP_1$), (4, 2, $RR^2$),
+(0, 0, ${a_0+a_1 t}$), (4, 0, ${mat(a_0; a_1)}$)),
+((0, 1, $tilde$, "=", 0), (2, 3, none, "<->", 0),
+(2, 0, none, "=", 0), (3, 1, none, "=", 0)),
+))
+#align(center, commutative-diagram(
+((0, 2, $PP_2$), (4, 2, $RR^3$),
+(0, 0, ${a_0+a_1 t+a_2 t^2}$), (4, 0, ${mat(a_0; a_1; a_2)}$)),
+((0, 1, $tilde$, "=", 0), (2, 3, none, "<->", 0),
+(2, 0, none, "=", 0), (3, 1, none, "=", 0)),
+))
+#align(center, commutative-diagram(
+((0, 2, $PP_n$), (6, 2, $RR^(n+1)$),
+(0, 0, ${a_0+a_1 t+a_2 t^2+dots.h.c+a_n t^n}$),
+(6, 0, ${mat(a_0; a_1; dots.v; a_n)}$)),
+((0, 1, $tilde$, "=", 0), (2, 3, none, "<->", 0),
+(2, 0, none, "=", 0), (3, 1, none, "=", 0)),
+))
 More concrete examples could be
 - For $PP_1 tilde.equiv RR^2$, $1+2t arrow.squiggly mat(
 1;2
@@ -3827,112 +3805,87 @@ We call ${1,t,t^2,dots.h.c,t^n}$ the _standard basis_ of $PP_n$, corresponding t
 #example[
 ${1,t,t^2}$ is the standard basis for $PP_2$, and
 $
-p(t),=a_0+a_1t+a_2t^2=a_0 dot.c  1+a_1 dot.c  t+a_2 dot.c  t^2
+p(t)&=a_0+a_1t+a_2t^2=a_0 dot.c  1+a_1 dot.c  t+a_2 dot.c  t^2
 $
 ]
 
 #example[
 Let's denote $M_(m times  n)(RR)$ the set of $m times  n$ matrices. For example
 $
-M_{2 times 2}(RR),={mat(
+M_(2 times 2)(RR)&={mat(
 a_(11),a_(12);
 a_(21),a_(22)
 )mid(|)a_(11),a_(12),a_(21),a_(22) in RR}	\
-M_{3 times 2}(RR),={mat(
+M_(3 times 2)(RR)&={mat(
 a_(11),a_(12);
 a_(21),a_(22);
 a_(31),a_(32)
 )mid(|)a_(11),a_(12),a_(21),a_(22),a_(31),a_(32) in RR}	\
-M_{2 times 3}(RR),={mat(
+M_(2 times 3)(RR)&={mat(
 a_(11),a_(12),a_(13);
 a_(21),a_(22),a_(23)
 )mid(|)a_(11),a_(12),a_(13),a_(21),a_(22),a_(23) in RR}	\
-,dots.v;
-M_(m times  n)(RR),={mat(
+&dots.v \
+M_(m times  n)(RR)&={mat(
 a_(11),a_(12),dots.h.c,a_(1 n);
 a_(21),a_(22),dots.h.c,a_(2 n);
 dots.v,dots.v,,dots.v;
 a_(m 1),a_(m 2),dots.h.c,a_(m n);
 )mid(|)a_(11),dots.h.c,a_(1 n),dots.h.c,a_(m 1),dots.h.c,a_(m n) in RR}.
 $
-You may realize that $M_(m times  n)(RR)$ can be identified with $RR^{m n}$
-// \begin{center}
-// \begin{tikzcd}
-// M_{2 times  2}(RR) \arrow[r,equal,"tilde "]        , RR^{4}   ;
-// {mat(
-// a_(11),a_(12);
-// a_(21),a_(22)
-// )} \arrow[r, leftrightsquigarrow] \arrow[u, equal] , {mat(a_(11);a_(12);a_(21);a_(22))} \arrow[u, equal]
-// \end{tikzcd}
-// \begin{tikzcd}
-// M_{3 times  2}(RR) \arrow[r,equal,"tilde "]        , RR^{6}   ;
-// {mat(
-// a_(11),a_(12);
-// a_(21),a_(22);
-// a_(31),a_(32)
-// )} \arrow[r, leftrightsquigarrow] \arrow[u, equal] , {mat(a_(11);a_(12);a_(21);a_(22);a_(31);a_(32))} \arrow[u, equal]
-// \end{tikzcd}
-// \begin{tikzcd}
-// M_{2 times  3}(RR) \arrow[r,equal,"tilde "]        , RR^{6}   ;
-// {mat(
-// a_(11),a_(12),a_(13);
-// a_(21),a_(22),a_(23)
-// )} \arrow[r, leftrightsquigarrow] \arrow[u, equal] , {mat(a_(11);a_(12);a_(13);a_(21);a_(22);a_(23))} \arrow[u, equal]
-// \end{tikzcd}
-// \begin{tikzcd}
-// M_(m times  n)(RR) \arrow[r,equal,"tilde "]        , RR^{m n}   ;
-// {mat(
-// a_(11),a_(12),dots.h.c,a_(1 n);
-// a_(21),a_(22),dots.h.c,a_(2 n);
-// dots.v,dots.v,,dots.v;
-// a_(m 1),a_(m 2),dots.h.c,a_(m n);
-// )} \arrow[r, leftrightsquigarrow] \arrow[u, equal] , {mat(a_(11);dots.v;a_(1 n);dots.v;a_(m 1);dots.v;a_(m n))} \arrow[u, equal]
-// \end{tikzcd}
-// \end{center}
-// In more concrete terms, addition and scalar multiplication can be identified as the following
-// \begin{center}
-// \begin{tikzpicture}
-// \tikzset{<-squig->/.style={to-to, decorate, decoration= zigzag,segment length=5,amplitude=1,pre=lineto,post=lineto,post length=2pt,pre length=2pt}}
-// \node at (0,1) {$mat(
-// 1,0;1,1
-// )+mat(
-// -1,0;2,3
-// )=mat(
-// 0,0;4,6
-// )$};
-// \node at (0,-1) {$mat(
-// 1;0;1;1
-// )+mat(
-// -1;0;2;3
-// )=mat(
-// 0;0;4;6
-// )$};
-// \draw[<-squig->] (-1.6,0.5)--(-1.2,-0.1);
-// \draw[<-squig->] (0,0.5)--(0,-0.1);
-// \draw[<-squig->] (1.6,0.5)--(1.2,-0.1);
-// \end{tikzpicture}
-// quad
-// \begin{tikzpicture}
-// \tikzset{<-squig->/.style={to-to, decorate, decoration= zigzag,segment length=5,amplitude=1,pre=lineto,post=lineto,post length=2pt,pre length=2pt}}
-// \node at (0,1) {$2 dot.c mat(
-// -1,0;2,3
-// )=mat(
-// -2,0;4,6
-// )$};
-// \node at (0,-1) {$2 dot.c mat(
-// -1;0;2;3
-// )=mat(
-// -2;0;4;6
-// )$};
-// \draw[<-squig->] (-0.6,0.5)--(-0.5,-0.1);
-// \draw[<-squig->] (1.1,0.5)--(0.9,-0.1);
-// \end{tikzpicture}
-// \end{center}
-So we may conclude that addition and scalar multiplication in $M_(m times  n)(RR)$ can be identically translated to addition and scalar multiplication in $RR^{m n}$
+You may realize that $M_(m times  n)(RR)$ can be identified with $RR^(m n)$
 ]<ex:Mmn-as-vectsp>
+#pagebreak()
+#align(center, commutative-diagram(
+((0, 3, $M_(2 times 2)(RR)$), (5, 3, $RR^4$),
+(0, 0, ${mat(a_(11),a_(12); a_(21),a_(22))}$),
+(5, 0, ${mat(a_(11);a_(12);a_(21);a_(22))}$)),
+((0, 1, $tilde$, "=", 0), (2, 3, none, "<->", 0),
+(2, 0, none, "=", 0), (3, 1, none, "=", 0)),
+))
+#align(center, commutative-diagram(
+((0, 3, $M_(3 times 2)(RR)$), (5, 3, $RR^6$),
+(0, 0, ${mat(a_(11),a_(12); a_(21),a_(22); a_(31),a_(32))}$),
+(5, 0, ${mat(a_(11);a_(12);a_(21);a_(22);a_(31);a_(32))}$)),
+((0, 1, $tilde$, "=", 0), (2, 3, none, "<->", 0),
+(2, 0, none, "=", 0), (3, 1, none, "=", 0)),
+))
+#pagebreak()
+#align(center, commutative-diagram(
+((0, 3, $M_(2 times 3)(RR)$), (5, 3, $RR^6$),
+(0, 0, ${mat(a_(11),a_(12),a_(13); a_(21),a_(22),a_(23))}$),
+(5, 0, ${mat(a_(11);a_(12);a_(13);a_(21);a_(22);a_(23))}$)),
+((0, 1, $tilde$, "=", 0), (2, 3, none, "<->", 0),
+(2, 0, none, "=", 0), (3, 1, none, "=", 0)),
+))
+#align(center, commutative-diagram(
+((0, 4, $M_(m times n)(RR)$), (7, 4, $RR^(m n)$),
+(0, 0, ${mat(a_(11),a_(12),dots.h.c,a_(1 n); a_(21),a_(22),dots.h.c,a_(2 n); dots.v,dots.v,,dots.v; a_(m 1),a_(m 2),dots.h.c,a_(m n))}$),
+(7, 0, ${mat(a_(11);dots.v;a_(1 n);dots.v;a_(m 1);dots.v;a_(m n))}$)),
+((0, 1, $tilde$, "=", 0), (2, 3, none, "<->", 0),
+(2, 0, none, "=", 0), (3, 1, none, "=", 0)),
+))
+#pagebreak()
+In more concrete terms, addition and scalar multiplication can be identified as the following
+#align(center, commutative-diagram(
+((0, 3, $mat(1,0;1,1)$), (3, 3, $mat(-1,0;2,3)$),
+(6, 3, $mat(0,0;3,4)$),
+(0, 0, $mat(1;0;1;1)$), (3, 0, $mat(-1;0;2;3)$),
+(6, 0, $mat(0;0;3;4)$),
+(1.5, 3, $+$), (4.5, 3, $=$), (1.5, 0, $+$), (4.5, 0, $=$)),
+((0, 3, none, "<->", 0), (1, 4, none, "<->", 0),
+(2, 5, none, "<->", 0)),
+))
+#align(center, commutative-diagram(
+((0, 3, $2 dot.c mat(-1,0;2,3)$), (4, 3, $mat(-2,0;4,6)$),
+(0, 0, $2 dot.c mat(-1;0;2;3)$), (4, 0, $mat(-2;0;4;6)$),
+(2, 3, $=$), (2, 0, $=$)),
+((0, 2, none, "<->", 0), (1, 3, none, "<->", 0)),
+))
+So we may conclude that addition and scalar multiplication in $M_(m times  n)(RR)$ can be identically translated to addition and scalar multiplication in $RR^(m n)$
 
 #remark[
-We call ${E_(i j)}$ the _standard basis_ of $M_(m times  n)(RR)$, corresponding to the standard basis for $RR^{m n}$. Here $E_(i j)$ is the $m times  n$ matrix that only has a single 1 in the $(i,j)$-th spot, but 0's elsewhere.
+We call ${E_(i j)}$ the _standard basis_ of $M_(m times  n)(RR)$, corresponding to the standard basis for $RR^(m n)$. Here $E_(i j)$ is the $m times  n$ matrix that only has a single 1 in the $(i,j)$-th spot, but 0's elsewhere.
 ]
 
 #example[
@@ -3944,7 +3897,7 @@ $ {E_(11)=mat(
 0,0;1,0
 ),E_(22)=mat(
 0,0;0,1
-)} $ is the standard basis for $M_{2 times 2}(RR)$, and
+)} $ is the standard basis for $M_(2 times 2)(RR)$, and
 $
 mat(
 a_(11),a_(12);a_(21),a_(22)
@@ -3971,38 +3924,38 @@ $
 ]
 
 #definition[
-A #text(fill:blue)[(real) vector space]#index[vector space] is a set $V$ of objects, called _vectors_, on which are defined two operations, called _addition_ $"fatplus"$ and _(left) scalar multiplication_ $"fatdot"$, subject to axioms
-\begin{enumerate}\setcounter{enumi}{-1}
-- $\bm u"fatplus"\bm v$ and $c"fatdot"\bm v$ are still in $V$
-- $\bm u"fatplus"\bm v=\bm v"fatplus"\bm u$
-- $(\bm u"fatplus"\bm v)"fatplus"\bm w=\bm u"fatplus"(\bm v"fatplus"\bm w)$
-- There is a _zero vector_ $\bm 0$ such that $\bm u"fatplus"\bm 0=\bm u$
-- For each $\bm u$ in $V$, there is a vector $"fatminus"\bm u$ in $V$ such that $\bm u"fatplus"("fatminus"\bm u)=\bm 0$
-- $c"fatdot"(\bm u"fatplus"\bm v)=c"fatdot"\bm u"fatplus" c"fatdot"\bm v$
-- $(c+d)"fatdot"\bm u=c"fatdot"\bm u"fatplus" d"fatdot"\bm u$
-- $c"fatdot"(d"fatdot"\bm u)=(c d)"fatdot"\bm u$
-- $1"fatdot"\bm u=\bm u$
+A #text(fill:blue)[(real) vector space]#index[vector space] is a set $V$ of objects, called _vectors_, on which are defined two operations, called _addition_ $plus.o$ and _(left) scalar multiplication_ $dot.o$, subject to axioms
++ $bold(u) plus.o bold(v)$ and $c dot.o bold(v)$ are still in $V$
++ $bold(u) plus.o bold(v)=bold(v) plus.o bold(u)$
++ $(bold(u) plus.o bold(v)) plus.o bold(w)=bold(u) plus.o (bold(v) plus.o bold(w))$
++ There is a _zero vector_ $\bm 0$ such that $bold(u) plus.o \bm 0=bold(u)$
++ For each $bold(u)$ in $V$, there is a vector $ bold(-) bold(u)$ in $V$ such that $bold(u) plus.o ( bold(-) bold(u))=\bm 0$
++ $c dot.o (bold(u) plus.o bold(v))=c dot.o bold(u) plus.o c dot.o bold(v)$
++ $(c+d) dot.o bold(u)=c dot.o bold(u) plus.o d dot.o bold(u)$
++ $c dot.o (d dot.o bold(u))=(c d) dot.o bold(u)$
++ $1 dot.o bold(u)=bold(u)$
 ]
 
 #example[
-Set $V$ to be $RR^n$, $"fatplus"$ to be addition $+$ for vectors, $"fatdot"$ to be scalar multiplication $ dot.c $ for vectors, then this is a vector space
+Set $V$ to be $RR^n$, $plus.o$ to be addition $+$ for vectors, $dot.o$ to be scalar multiplication $ dot.c $ for vectors, then this is a vector space
 ]
 
 #example[[non-example]
-Suppose $V=RR$, $a"fatplus" b=a+b+1$, $c"fatdot" a=c dot.c  a=c a$, we can check
-\begin{enumerate}\setcounter{enumi}{-1}
-- $a"fatplus" b=a+b+1 in RR$, $c"fatdot" a=c a in RR$
-- $a"fatplus" b=a+b+1=b+a+1=b"fatplus" a$
-- $(a"fatplus" b)"fatplus" c=(a+b+1)+c+1=a+(b+c+1)+1=a"fatplus"(b"fatplus" c)$
-- There is a _zero vector_ $\bm 0=-1$ such that $a"fatplus"\bm 0=a+(-1)+1=a$
-- For each $a$, we have $"fatminus" a=-a-2$ such that $a"fatplus"("fatminus" a)=a+(-a-2)+1=-1=\bm 0$
-However $2"fatdot"(a"fatplus" b)=2(a+b+1)!= 2a+2b+1=2"fatdot" a"fatplus" 2"fatdot" b$. Therefore, this is not a vector space
+Suppose $V=RR$, $a plus.o b=a+b+1$, $c dot.o a=c dot.c  a=c a$, we can check
+#set enum(start: 0)
++ $a plus.o b=a+b+1 in RR$, $c dot.o a=c a in RR$
++ $a plus.o b=a+b+1=b+a+1=b plus.o a$
++ $(a plus.o b) plus.o c=(a+b+1)+c+1=a+(b+c+1)+1=a plus.o (b plus.o c)$
++ There is a _zero vector_ $\bm 0=-1$ such that $a plus.o \bm 0=a+(-1)+1=a$
++ For each $a$, we have $ bold(-)  a=-a-2$ such that $a plus.o ( bold(-)  a)=a+(-a-2)+1=-1=\bm 0$
+
+However $2 dot.o (a plus.o b)=2(a+b+1)!= 2a+2b+1=2 dot.o a plus.o 2 dot.o b$. Therefore, this is not a vector space
 ]
 
 == Subspace
 
 #definition[
-Suppose $V$ is a vector space with addition $"fatplus"$ and scalar multiplication $"fatdot"$. A #text(fill:blue)[subspace]#index[subspace] $H$ is a non-empty subset which closed under addition and scalar multiplication, i.e. for any $\bm u,\bm v in  H$, $c in RR$, $\bm u"fatplus"\bm v,c"fatdot"\bm u in  H$
+Suppose $V$ is a vector space with addition $ bold(+) $ and scalar multiplication $ bold(dot.c) $. A #text(fill:blue)[subspace]#index[subspace] $H$ is a non-empty subset which closed under addition and scalar multiplication, i.e. for any $bold(u),bold(v) in  H$, $c in RR$, $bold(u) bold(+) bold(v),c bold(dot.c) bold(u) in  H$
 ]
 
 #remark[
@@ -4010,7 +3963,7 @@ It is easy to check that a subspace $H$ is again a vector space.
 ]
 
 #exercise[
-Recall that $M_{2 times 2}(RR)$ is the set of 2 by 2 matrices, and that a square matrix $A$ is _symmetric_ if $A^T=A$. Consider a subset $V$ consists of 2 by 2 symmetric matrices, i.e. $V={A in  M_{2 times 2}(RR) mid(|)A^T=A}$
+Recall that $M_(2 times 2)(RR)$ is the set of 2 by 2 matrices, and that a square matrix $A$ is _symmetric_ if $A^T=A$. Consider a subset $V$ consists of 2 by 2 symmetric matrices, i.e. $V={A in  M_(2 times 2)(RR) mid(|)A^T=A}$
 - Show that $V$ is a vector space.
 - Find a basis for $V$.
 ]<exer:2by2sym-as-vectsp>
@@ -4020,14 +3973,14 @@ Recall that $M_{2 times 2}(RR)$ is the set of 2 by 2 matrices, and that a square
  $
 (A+B)^T=A^T+B^T=A+B,quad (c A)^T=c A^T=c A
  $
-Therefore $V$ is a subspace of $M_{2 times 2}(RR)$, and thus a vector space
+Therefore $V$ is a subspace of $M_(2 times 2)(RR)$, and thus a vector space
 - Suppose $A=mat(
 a_(11),a_(12);a_(21),a_(22)
-) in  M_{2 times 2}(RR)$, then $a_(12)=a_(21)$, so we may conclude that
+) in  M_(2 times 2)(RR)$, then $a_(12)=a_(21)$, so we may conclude that
  $
 V={mat(
 a,b;b,c
-) in  M_{2 times 2}(RR) mid(|)a,b,c in RR}
+) in  M_(2 times 2)(RR) mid(|)a,b,c in RR}
  $
 Note that
 $
@@ -4057,7 +4010,7 @@ And that linear combination~@eq:2by2mat-decomp is the zero matrix $<=> a=b=c=0$,
 ]
 
 #exercise[
-Suppose $H=\{p(t)=a_0+a_1t+a_2t^2 in PP_2|a_0+a_1+a_2=0\}$ is the set of polynomials of degree $\leq 2$ and sum of coefficients zero. Show that $H$ is a vector space.
+Suppose $H=\{p(t)=a_0+a_1t+a_2t^2 in PP_2|a_0+a_1+a_2=0\}$ is the set of polynomials of degree $<= 2$ and sum of coefficients zero. Show that $H$ is a vector space.
 ]<kerT-sum-coef-of-poly>
 
 #example[
@@ -4070,27 +4023,33 @@ Consider the vector space $V=RR^2$, and $H$ is the set of solutions to the linea
 )$ is not in $H$, nor is $2bold(u)=mat(
 -2;0
 )$
-// \begin{center}
-// \begin{tikzpicture}
-// \def\XMAX{2.5};\def\YMAX{2.5};\def\ZMAX{4.5};
-// \begin{scope}
-// \clip(-\XMAX,-\YMAX) rectangle (\XMAX,\YMAX);
-// \draw (-3,-4)--(3,8);
-// \draw[blue] (-3,-6)--(3,6);
-// \end{scope}
-// \draw[help lines, color=gray!30, dashed] (-\XMAX,-\YMAX) grid (\XMAX,\YMAX);
-// \draw[->, color=gray!80] (-\XMAX,0)--(\XMAX,0) node[right]{$x_1$};
-// \draw[->, color=gray!80] (0,-\YMAX)--(0,\YMAX) node[above]{$x_2$};
-// \coordinate (u) at (-1,0); \node at (u)[below right]{$bold(u)$}; \draw[->,thick] (0,0)--(u);
-// \coordinate (v) at (0,2); \node at (v)[below right]{$bold(v)$}; \draw[->,thick] (0,0)--(v);
-// \draw[->,thick,blue] (0,0)--(1,2);
-// \node at ($2*(u)$)[below right]{$2bold(u)$}; \draw[->] (0,0)--($2*(u)$);
-// \node at ($(u)+(v)$)[below left]{$bold(u)+bold(v)$}; \draw[->] (0,0)--($(u)+(v)$);
-// % \draw[dashed] (u)--($(u)+(v)$); \draw[dashed] (v)--($(u)+(v)$);
-// \node at (-2,-2)[left] {$H$};
-// \node at (1,2)[below right] {$H_1$};
-// \end{tikzpicture}
-// \end{center}
+#figure(
+  cetz.canvas(length: 1cm, {
+    import cetz.draw: *
+    grid((-4, -2), (4, 4), step: 1,
+      stroke: (dash: "dashed", thickness: 0.4pt, paint: luma(220)))
+    line((-4, 0), (4, 0), mark: (end: "straight"), stroke: (paint: luma(80)))
+    content((4, 0), $x_1$, anchor: "west")
+    line((0, -2), (0, 4), mark: (end: "straight"), stroke: (paint: luma(80)))
+    content((0, 4), $x_2$, anchor: "south")
+    line((-2.25, -2.5), (0.25, 2.5), stroke: (paint: red, thickness: 1.2pt))
+    line((-1.25, -2.5), (1.25, 2.5), stroke: (paint: blue, thickness: 1.2pt))
+    content((-2, -2), $H$, anchor: "east")
+    content((1, 2), $H_1$, anchor: "south-west")
+    line((0, 0), (-1, 0), mark: (end: "straight"), stroke: 1pt)
+    line((0, 0), (0, 2), mark: (end: "straight"), stroke: 1pt)
+    line((0, 0), (1, 2), mark: (end: "straight"), stroke: (paint: blue, thickness: 1.2pt))
+    line((0, 0), (-2, 0), mark: (end: "straight"), stroke: 0.8pt)
+    line((0, 0), (-1, 2), mark: (end: "straight"), stroke: 0.8pt)
+    line((-1, 0), (-1, 2), stroke: (dash: "dashed", paint: luma(100)))
+    line((0, 2), (-1, 2), stroke: (dash: "dashed", paint: luma(100)))
+    content((-1, 0), $bold(u)$, anchor: "south-east")
+    content((0, 2), $bold(v)$, anchor: "west")
+    content((-2, 0), $2 bold(u)$, anchor: "south-east")
+    content((-1, 2), $bold(u) + bold(v)$, anchor: "north-east")
+  }),
+  caption: [The affine set $H$ is parallel to the subspace $H_1$],
+)
 The reason is that $H$ is not homogeneous. If we consider $H_1$ to be solution set of the homogeneous equation $2x_1-x_2=0$, we see that $H_1$ is a subspace as it is the span of a single vector $mat(
 1;2
 )$.
@@ -4101,7 +4060,7 @@ The reason is that $H$ is not homogeneous. If we consider $H_1$ to be solution s
 == Null space, Column Space and Row space
 
 #definition[
-Suppose $V$ is a vector space, $\{\bm v_1,\bm v_2,dots.h.c,\bm v_n\} subset.eq V$ is a set of linearly independent vectors that span $V$, we define the #text(fill:blue)[dimension]#index[dimension] of $V$ to be $"dim" V=n$.
+Suppose $V$ is a vector space, $\{bold(v)_1,bold(v)_2,dots.h.c,bold(v)_n\} subset.eq V$ is a set of linearly independent vectors that span $V$, we define the #text(fill:blue)[dimension]#index[dimension] of $V$ to be $"dim" V=n$.
 ]
 
 #definition[
@@ -4163,13 +4122,13 @@ x_1;x_2;x_3
 ]
 
 #remark[
-As discussed in Example @ex:hyperplane-not-subsp, in general, the solution set of $A bold(x)=bold(b)$ is not a subspace of $RR^n$ unless $bold(b)=bold(0)$. And in fact, any subspace of $RR^n$ is the null space for some $m times  n$ matrix $A$, i.e. the intersection of hyperplanes passing through the origin
+As discussed in @ex:hyperplane-not-subsp, in general, the solution set of $A bold(x)=bold(b)$ is not a subspace of $RR^n$ unless $bold(b)=bold(0)$. And in fact, any subspace of $RR^n$ is the null space for some $m times  n$ matrix $A$, i.e. the intersection of hyperplanes passing through the origin
 ]
 
 #definition[
 Suppose $A=mat(
 bold(a)_1,bold(a)_2,dots.h.c,bold(a)_n
-)$ is an $m times  n$ matrix, then the #text(fill:blue)[column space]#index[column space] (denote as $"Col"A$) is the subspace $"Span"{bold(a)_1,bold(a)_2,dots.h.c,bold(a)_n}$ in $RR^m$. Suppose $A=mat(
+)$ is an $ m times  n $ matrix, then the #text(fill:blue)[column space]#index[column space] (denote as $"Col"A$) is the subspace $"Span"{bold(a)_1,bold(a)_2,dots.h.c,bold(a)_n}$ in $ RR^m $. Suppose $A=mat(
 #`R1`;#`R2`;dots.v;#`Rm`
 )$, then the #text(fill:blue)[row space]#index[row space] (denote as $"Row"A$) is the subspace spaned by row vectors $"Span"{#`R1`,#`R2`,dots.h.c, #`Rm`}$ in $RR^n$ written horizontally.
 ]
@@ -4217,7 +4176,7 @@ $A=mat(
 1,0,- 1 / 2 ;
 0,1,- 3 / 2 ;
 0,0,0
-)$, which is an REF and an RREF respectively. There is only one free variable $x_3$, so the nullity is 1, and the 1st, 2nd columns are pivot columns, so the rank is 2. We see that Theorem @thm:rank-nul holds as $3=1+2$, and
+)$, which is an REF and an RREF respectively. There is only one free variable $x_3$, so the nullity is 1, and the 1st, 2nd columns are pivot columns, so the rank is 2. We see that @thm:rank-nul holds as $3=1+2$, and
  $
 "Nul"A="Span"{mat(
  1 / 2 ; 3 / 2 ;1
@@ -4255,7 +4214,7 @@ $A=mat(
 0,0,0,0,1;
 0,0,0,0,0
 )$
-Note that here we have 2 free variables $x_2,x_4$, so the nullity is 2, and the 1st, 3rd, 5th columns are pivot columns, so the rank is 3. We see that Theorem @thm:rank-nul holds as $5=2+3$, and
+Note that here we have 2 free variables $x_2,x_4$, so the nullity is 2, and the 1st, 3rd, 5th columns are pivot columns, so the rank is 3. We see that @thm:rank-nul holds as $5=2+3$, and
  $
 "Nul"A="Span"{mat(
 -2;1;0;0;0
@@ -4316,19 +4275,19 @@ Suppose $A=mat(
 #definition[
 Suppose $V,W$ are vector spaces, a _linear transformation_ is a mapping $T:V-> W$ such that
 
-- $T(\bm u"fatplus"\bm v)=T(\bm u)"fatplus" T(\bm v)$
-- $T(c"fatdot" u)=c"fatdot" T(\bm u)$
+- $T(bold(u) bold(+) bold(v))=T(bold(u)) bold(+)  T(bold(v))$
+- $T(c bold(dot.c)  u)=c bold(dot.c)  T(bold(u))$
 
-Just as before, we call $V$ the _domain_ of $T$, $W$ the _codomain_ of $T$, the _image_ of $\bm x$ under $T$ is $T(\bm x)$, the set of images $\{T(\bm x)|\bm x in  V\}$ the _range_ (denoted as $"Range "T$), and the set $\{\bm x|T(\bm x)=\bm b\}$ the preimage of $\bm b$ under $T$. We still say that $T$ is _one-to-one_ if any $\bm b in  W$, there is at most one $\bm x in  V$ such that $T(\bm x)=\bm b$. $T$ is _onto_ the range is the codomain. $T$ is said to be _invertible_ if $T$ has a inverse (this happens if and only if $T$ is both one-to-one and onto, and we can easily check that $T^(-1)$ is also an linear transformation), in this case we also call $T$ an #text(fill:blue)[isomorphism]#index[isomorphism].
+Just as before, we call $V$ the _domain_ of $T$, $W$ the _codomain_ of $T$, the _image_ of $bold(x)$ under $T$ is $T(bold(x))$, the set of images $\{T(bold(x))|bold(x) in  V\}$ the _range_ (denoted as $"Range "T$), and the set $\{bold(x)|T(bold(x))=bold(b)\}$ the preimage of $bold(b)$ under $T$. We still say that $T$ is _one-to-one_ if any $bold(b) in  W$, there is at most one $bold(x) in  V$ such that $T(bold(x))=bold(b)$. $T$ is _onto_ the range is the codomain. $T$ is said to be _invertible_ if $T$ has a inverse (this happens if and only if $T$ is both one-to-one and onto, and we can easily check that $T^(-1)$ is also an linear transformation), in this case we also call $T$ an #text(fill:blue)[isomorphism]#index[isomorphism].
 ]
 
 #definition[
-We call $\{\bm x|T(\bm x)=bb(0)\}$ the #text(fill:blue)[kernel]#index[kernel] (or #text(fill:blue)[null space]) of $T$, and denote it as $"ker" T$.
+We call $\{bold(x)|T(bold(x))=bb(0)\}$ the #text(fill:blue)[kernel]#index[kernel] (or #text(fill:blue)[null space]) of $T$, and denote it as $"ker" T$.
 ]
 
-#remark[\label{14:24/06/30/2022}
+#remark[
 Suppose $T:RR^n->RR^m$, $T(bold(x))=A bold(x)$ is a matrix transformation, then $"ker" T="Nul"A$, $"Range "T="Col"A$
-]
+]<ref-14:24-06-30-2022>
 
 #example[
 The identification
@@ -4348,7 +4307,7 @@ a_0;a_1;a_2
 #example[
 The identification
  $
-T:M_{2 times 2}(RR)->RR^4,quad
+T:M_(2 times 2)(RR)->RR^4,quad
 T(mat(
 a,b;c,d
 ))=mat(
@@ -4357,7 +4316,7 @@ a;b;c;d
  $
 in Eaxmple @ex:Mmn-as-vectsp is an invertible linear transformation with inverse linear transformation
  $
-T^(-1):RR^4-> M_{2 times 2}(RR),quad
+T^(-1):RR^4-> M_(2 times 2)(RR),quad
 T^(-1)(mat(
 a;b;c;d
 ))=mat(
@@ -4377,34 +4336,34 @@ Suppose $T:V-> W$ is a linear transformation between vector spaces, then
 #proof[
 
 
-- Suppose $\bm u,\bm v in "ker" T$, then by definition $T(\bm u)=bb(0)$, $T(\bm v)=bb(0)$, so $T(\bm u"fatplus"\bm v)=T(\bm u)"fatplus" T(\bm v)=bb(0)$. And for any $c in RR$, $T(c"fatdot"\bm u)=c"fatdot" T(\bm u)=bb(0)$. In other words, we have shown that $\bm u"fatplus"\bm v, c"fatdot"\bm u in  "ker" T$, so $"ker" T$ is a subspace.
-- For any $T(\bm u),T(\bm v) in "Range "T$, $T(\bm u)"fatplus" T(\bm v)=T(\bm u"fatplus"\bm v) in "Range "T$, and for any $c in RR$, $c"fatdot" T(\bm u)=T(c"fatdot"\bm u) in "Range "T$, so $"Range "T$ is a subspace
+- Suppose $bold(u),bold(v) in "ker" T$, then by definition $T(bold(u))=bb(0)$, $T(bold(v))=bb(0)$, so $T(bold(u) bold(+) bold(v))=T(bold(u)) bold(+)  T(bold(v))=bb(0)$. And for any $c in RR$, $T(c bold(dot.c) bold(u))=c bold(dot.c)  T(bold(u))=bb(0)$. In other words, we have shown that $bold(u) bold(+) bold(v), c bold(dot.c) bold(u) in  "ker" T$, so $"ker" T$ is a subspace.
+- For any $T(bold(u)),T(bold(v)) in "Range "T$, $T(bold(u)) bold(+)  T(bold(v))=T(bold(u) bold(+) bold(v)) in "Range "T$, and for any $c in RR$, $c bold(dot.c)  T(bold(u))=T(c bold(dot.c) bold(u)) in "Range "T$, so $"Range "T$ is a subspace
 
 ]
 
 #exercise[
-Suppose $T:PP_2->RR$ takes the sum of coefficients, i.e. $T(a_0+a_1t+a_2t^2)=a_0+a_1+a_2$. Show that $T$ is a linear transformation, and $H$ in Exercise @kerT-sum-coef-of-poly is a vector space.
+Suppose $T:PP_2->RR$ takes the sum of coefficients, i.e. $T(a_0+a_1t+a_2t^2)=a_0+a_1+a_2$. Show that $T$ is a linear transformation, and $H$ in @kerT-sum-coef-of-poly is a vector space.
 ]<exer:2degpoly-lintrans>
 
 #solution[
 since for any $p(t)=a_0+a_1+a_2,q(t)=b_0+b_1t+b_2t^2 in PP_2$, $c in RR$, we have
 $
-T(p+q),=T((a_0+b_0)+(a_1+b_1)t+(a_2+b_2)t^2)=(a_0+b_0)+(a_1+b_1)+(a_2+b_2);
-,=(a_0+a_1+a_2)+(b_0+b_1+b_2)=T(p)+T(q)
+T(p+q)&=T((a_0+b_0)+(a_1+b_1)t+(a_2+b_2)t^2)=(a_0+b_0)+(a_1+b_1)+(a_2+b_2) \
+&=(a_0+a_1+a_2)+(b_0+b_1+b_2)=T(p)+T(q)
 $
  $
 T(c p)=T((c a_0)+(c a_1)t+(c a_2)t^2)=(c a_0)+(c a_1)+(c a_2)=c(a_0+a_1+a_2)=c T(p)
  $
-// So $V="ker" T$ is a subspace of $V$ by Theorem @(18:15-06/27/2022)
+So $V="ker" T$ is a subspace of $V$ by @thm:ker-range-are-subsp
 ]
 
-// #exercise[
-// Suppose $T:M_{2 times 2}(RR)->RR$ takes the sum of diagonal, i.e. $T(mat(
-// a,b;c,d
-// ))=a+d$. Show that $T$ is a linear transformation, and the set $H={mat(
-// a,b;c,d
-// ) mid(|)a+d=0}$ of $2 times 2$ matrix with #text(fill:blue)[trace]#index[trace](sum of diagonal element) 0 is a vector space.
-// ]
+#exercise[
+Suppose $T:M_(2 times 2)(RR)->RR$ takes the sum of diagonal, i.e. $T(mat(
+a,b;c,d
+))=a+d$. Show that $T$ is a linear transformation, and the set $H={mat(
+a,b;c,d
+) mid(|)a+d=0}$ of $2 times 2$ matrix with #text(fill:blue)[trace]#index[trace] (sum of diagonal element) 0 is a vector space.
+]
 
 == Matrices of linear transformations
 
@@ -4414,158 +4373,158 @@ Can we realize a general linear transformation $T$ as a matrix transformation?
 
 #answer[
 Just need to know its effect on any basis! Suppose $bold(v)_1,bold(v)_2,dots.h.c,bold(v)_n$ is a basis of $RR^n$, then any vector $bold(v)$ can be written as $c_1bold(v)_1+c_2bold(v)_2+dots.h.c+c_n bold(v)_n$, and by linearality, we have
-// $ \label{19:13-06/07/2022}
-// T(bold(v))=T(c_1bold(v)_1+c_2bold(v)_2+dots.h.c+c_n bold(v)_n)=c_1T(bold(v)_1)+c_2T(bold(v)_2)+dots.h.c+c_nT(bold(v)_n)
-// $
+$
+T(bold(v))=T(c_1bold(v)_1+c_2bold(v)_2+dots.h.c+c_n bold(v)_n)=c_1 T(bold(v)_1)+c_2 T(bold(v)_2)+dots.h.c+c_n T(bold(v)_n)
+$ <ref-19:13-06-07-2022>
 ]
 
-#theorem[[Unique representation theorem]\label{12:53-06/28/2022}
-Suppose $cal(B)=\{\bm b_1,dots.h.c,\bm b_n\}$ is a basis of a vector sapce $V$, then any vector $\bm v in  V$ can be uniquely represented as a linear combination $x_1"fatdot"\bm b_1"fatplus"dots.h.c"fatplus" x_n"fatdot"\bm b_n$
+#theorem[[Unique representation theorem]
+Suppose $cal(B)=\{bold(b)_1,dots.h.c,bold(b)_n\}$ is a basis of a vector sapce $V$, then any vector $bold(v) in  V$ can be uniquely represented as a linear combination $x_1 bold(dot.c) bold(b)_1 bold(+) dots.h.c bold(+)  x_n bold(dot.c) bold(b)_n$
+]<ref-12:53-06-28-2022>
+
+#remark[
+Here $[bold(v)]_(cal(B))=mat(
+x_1;dots.v;x_n
+)$ is called the #text(fill:blue)[$cal(B)$-coordinate vector]#index[coordinat vector] (or #text(fill:blue)[coordinate vector relative to the basis $cal(B)$]) of $bold(v)$
 ]
 
-// #remark[
-// Here $[\bm v]_{cal(B)}=mat(
-// x_1;dots.v;x_n
-// )$ is called the #text(fill:blue)[$cal(B)$-coordinate vector]#index[coordinat vector] (or #text(fill:blue)[coordinate vector relative to the basis $cal(B)$]) of $\bm v$
-// ]
+#proof[
+Suppose $bold(v)=c_1 bold(dot.c) bold(b)_1 bold(+) dots.h.c bold(+)  c_n bold(dot.c) bold(b)_n=d_1 bold(dot.c) bold(b)_1 bold(+) dots.h.c bold(+)  d_n bold(dot.c) bold(b)_n$ are two linear combinations that express $bold(v)$, then we have $(c_1-d_1) bold(dot.c) bold(b)_1 bold(+) dots.h.c bold(+) (c_n-d_n) bold(dot.c) bold(b)_n=bb(0)$, since $\{bold(b)_1,dots.h.c,bold(b)_n\}$ is linearly independent, we have $c_1=d_1,dots.h.c,c_n=d_n$. Therefore the expression is unique.
+]
 
-// #proof[
-// Suppose $\bm v=c_1"fatdot"\bm b_1"fatplus"dots.h.c"fatplus" c_n"fatdot"\bm b_n=d_1"fatdot"\bm b_1"fatplus"dots.h.c"fatplus" d_n"fatdot"\bm b_n$ are two linear combinations that express $\bm v$, then we have $(c_1-d_1)"fatdot"\bm b_1"fatplus"dots.h.c"fatplus"(c_n-d_n)"fatdot"\bm b_n=bb(0)$, since $\{\bm b_1,dots.h.c,\bm b_n\}$ is linearly independent, we have $c_1=d_1,dots.h.c,c_n=d_n$. Therefore the expression is unique.
-// ]
+#definition[
+We call $[ quad]_(cal(B)):V->RR^n$ the #text(fill:blue)[coordinate mapping]#index[coordinate mapping]
+]
 
-// #definition[
-// We call $[\quad]_{cal(B)}:V->RR^n$ the #text(fill:blue)[coordinate mapping]#index[coordinate mapping]
-// ]
+#theorem[
+The coordinate mapping $[ quad]_(cal(B)):V->RR^n$ is an isomorphism
+]
 
-// #theorem[
-// The coordinate mapping $[\quad]_{cal(B)}:V->RR^n$ is an isomorphism
-// ]
+#example[
+The identifications in @ex:P_n and @ex:Mmn-as-vectsp are coordinate mappings $[ quad]_(cal(E)):PP_2->RR^3$ with standard basis $cal(E)=\{1,t,t^2\}$ and $[ quad]_(cal(E)):M_(2 times 2)(RR)->RR^4$ with standard basis $cal(E)={mat(
+1,0;0,0
+),mat(
+0,1;0,0
+),mat(
+0,0;1,0
+),mat(
+0,0;0,1
+)}$, respectively
+]
 
-// #example[
-// The identifications in Example @ex:P_n and Example @(ex:Mmn-as-vectsp) are coordinate mappings $[\quad]_{cal(E)}:PP_2->RR^3$ with standard basis $cal(E)=\{1,t,t^2\}$ and $[\quad]_{cal(E)}:M_{2 times 2}(RR)->RR^4$ with standard basis $cal(E)={mat(
-// 1,0;0,0
-// ),mat(
-// 0,1;0,0
-// ),mat(
-// 0,0;1,0
-// ),mat(
-// 0,0;0,1
-// )}$, respectively
-// )
+#example[
+$cal(B)={bold(b)_1=mat(
+1;0
+), bold(b)_2=mat(
+1;2
+)}$ is a basis for $RR^2$, $bold(v)=mat(
+1;6
+)$. Solve linear system $bold(v)=x_1bold(b)_1+x_2bold(b)_2=mat(
+bold(b)_1,bold(b)_2
+)mat(
+x_1;x_2
+)$ we get $[bold(v)]_(cal(B))=mat(
+-2;3
+)$
+]
 
-// #example[
-// $cal(B)={bold(b)_1=mat(
-// 1;0
-// ), bold(b)_2=mat(
-// 1;2
-// )}$ is a basis for $RR^2$, $bold(v)=mat(
-// 1;6
-// )$. Solve linear system $bold(v)=x_1bold(b)_1+x_2bold(b)_2=mat(
-// bold(b)_1,bold(b)_2
-// )mat(
-// x_1;x_2
-// )$ we get $[bold(v)]_{cal(B)}=mat(
-// -2;3
-// )$
-// )
+#remark[
+$bold(x)=[bold(x)]_(cal(E))$ as $bold(x)=x_1bold(e)_1+dots.h.c+x_n bold(e)_n$.
+]
 
-// #remark[
-// $bold(x)=[bold(x)]_{cal(E)}$ as $bold(x)=x_1bold(e)_1+dots.h.c+x_n bold(e)_n$.
-// ]
+#exercise[
 
-// % #exercise[
+]
 
-// % ]
+#question[
+How should we study linear transformations via matrices in general?
+]
 
-// #question[
-// How should we study linear transformations via matrices in general?
-// ]
+Assume $T:V-> W$ is a linear transformation between vector spaces, $\{bold(b)_1,dots.h.c,bold(b)_n\}$ is a basis for $V$ and $\{bold(c)_1,dots.h.c,bold(c)_m\}$ is a basis for $W$, then for any
+$
+bold(v)=x_1 bold(dot.c) bold(b)_1 bold(+) dots.h.c bold(+)  x_n bold(dot.c) bold(b)_n=mat(
+bold(b)_1,dots.h.c,bold(b)_n
+)mat(
+x_1;dots.v;x_n
+)=mat(
+bold(b)_1,dots.h.c,bold(b)_n
+)[bold(v)]_(cal(B))
+$
+We have
+$
+T(bold(v))&=T(x_1 bold(dot.c) bold(b)_1 bold(+) dots.h.c bold(+)  x_n bold(dot.c) bold(b)_n)=x_1 bold(dot.c)  T(bold(b)_1) bold(+) dots.h.c bold(+)  x_n bold(dot.c)  T(bold(b)_n)=x_1 bold(dot.c)  T(bold(b)_1) bold(+) dots.h.c bold(+)  x_n bold(dot.c)  T(bold(b)_n) \
+&=mat(
+T(bold(b)_1),dots.h.c,T(bold(b)_n)
+)mat(
+x_1;dots.v;x_n
+)=mat(
+T(bold(b)_1),dots.h.c,T(bold(b)_n)
+)[bold(v)]_(cal(B))
+$
+By @ref-12:53-06-28-2022, we can write
+$
+T(bold(b)_1)&=a_(11) bold(dot.c) bold(c)_1+a_(21) bold(dot.c) bold(c)_2+dots.h.c+a_(m 1) bold(dot.c) bold(c)_m \
+T(bold(b)_2)&=a_(12) bold(dot.c) bold(c)_1+a_(22) bold(dot.c) bold(c)_2+dots.h.c+a_(m 2) bold(dot.c) bold(c)_m \
+&dots.v \
+T(bold(b)_n)&=a_(1 n) bold(dot.c) bold(c)_1+a_(2 n) bold(dot.c) bold(c)_2+dots.h.c+a_(m n) bold(dot.c) bold(c)_m
+$
+Therefore we have
+$
+mat(
+T(bold(b)_1),dots.h.c,T(bold(b)_n)
+)=mat(
+bold(c)_1,dots.h.c,bold(c)_m
+)mat(
+a_(11),a_(12),dots.h.c,a_(1 n);
+a_(21),a_(22),dots.h.c,a_(2 n);
+dots.v,dots.v,,dots.v;
+a_(m 1),a_(m 2),dots.h.c,a_(m n)
+)=mat(
+bold(c)_1,dots.h.c,bold(c)_m
+)A
+$ <ref-13:44-06-28-2022>
+Where
+$
+A=mat(
+[T(bold(b)_1)]_(cal(C)),dots.h.c,[T(bold(b)_n)]_(cal(C))
+)
+$ <ref-12:55-06-29-2022>
+is called the #text(fill:blue)[matrix of $T$ relative to bases $cal(B)$ and $cal(C)$], thus
+$
+T(bold(v))=mat(
+bold(c)_1,dots.h.c,bold(c)_m
+)A[bold(v)]_(cal(B))
+$
+On the other hand, we should have
+$ T(bold(v))=mat(
+bold(c)_1,dots.h.c,bold(c)_m
+)[T(bold(v))]_(cal(C)) $
+So we may also conclude that
+$
+[T(bold(v))]_(cal(C))=A[bold(v)]_(cal(B))
+$ <ref-14:19-06-29-2022>
+The above discussion can be summerized by the following commutative diagram
+#align(center, commutative-diagram(
+((0, 2, $V$), (4, 2, $W$), (0, 0, $RR^n$), (4, 0, $RR^m$)),
+((0, 1, $T$, "->", 0), (0, 2, $[quad]_(cal(B))$, "->", 0),
+(1, 3, $[quad]_(cal(C))$, "->", 0), (2, 3, $A$, "->", 0)),
+)) <ref-16:03-06-29-2022>
+#align(center, commutative-diagram(
+((0, 2, $bold(v)$), (6, 2, $T(bold(v))$),
+(0, 0, $[bold(v)]_(cal(B))$), (6, 0, $A[bold(v)]_(cal(B))=[T(bold(v))]_(cal(C))$)),
+((0, 1, none, "|->", 0), (0, 2, none, "|->", 0),
+(1, 3, none, "|->", 0), (2, 3, none, "|->", 0)),
+))
 
-// Assume $T:V-> W$ is a linear transformation between vector spaces, $\{\bm b_1,dots.h.c,\bm b_n\}$ is a basis for $V$ and $\{\bm c_1,dots.h.c,\bm c_m\}$ is a basis for $W$, then for any
-// $
-// \bm v=x_1"fatdot"\bm b_1"fatplus"dots.h.c"fatplus" x_n"fatdot"\bm b_n=mat(
-// \bm b_1,dots.h.c,\bm b_n
-// )mat(
-// x_1;dots.v;x_n
-// )=mat(
-// \bm b_1,dots.h.c,\bm b_n
-// )[\bm v]_{cal(B)}
-// $
-// We have
-// $
-// T(\bm v),=T(x_1"fatdot"\bm b_1"fatplus"dots.h.c"fatplus" x_n"fatdot"\bm b_n)=x_1"fatdot" T(\bm b_1)"fatplus"dots.h.c"fatplus" x_n"fatdot" T(\bm b_n)=x_1"fatdot" T(\bm b_1)"fatplus"dots.h.c"fatplus" x_n"fatdot" T(\bm b_n);
-// ,=mat(
-// T(\bm b_1),dots.h.c,T(\bm b_n)
-// )mat(
-// x_1;dots.v;x_n
-// )=mat(
-// T(\bm b_1),dots.h.c,T(\bm b_n)
-// )[\bm v]_{cal(B)}
-// $
-// By Theorem @(12:53-06/28/2022), we can write
-// $
-// T(\bm b_1),=a_(11)"fatdot"\bm c_1+a_(21)"fatdot"\bm c_2+dots.h.c+a_(m 1)"fatdot"\bm c_m;
-// T(\bm b_2),=a_(12)"fatdot"\bm c_1+a_(22)"fatdot"\bm c_2+dots.h.c+a_(m 2)"fatdot"\bm c_m;
-// ,dots.v;
-// T(\bm b_n),=a_(1 n)"fatdot"\bm c_1+a_(2 n)"fatdot"\bm c_2+dots.h.c+a_(m n)"fatdot"\bm c_m
-// $
-// Therefore we have
-// $ \label{13:44-06/28/2022}
-// mat(
-// T(\bm b_1),dots.h.c,T(\bm b_n)
-// )=mat(
-// \bm c_1,dots.h.c,\bm c_m
-// )mat(
-// a_(11),a_(12),dots.h.c,a_(1 n);
-// a_(21),a_(22),dots.h.c,a_(2 n);
-// dots.v,dots.v,,dots.v;
-// a_(m 1),a_(m 2),dots.h.c,a_(m n)
-// )=mat(
-// \bm c_1,dots.h.c,\bm c_m
-// )A
-// $
-// Where
-// $ \label{12:55-06/29/2022}
-// A=mat(
-// [T(\bm b_1))_{cal(C)},dots.h.c,[T(\bm b_n)]_{cal(C)}
-// ]
-// $
-// is called the #text(fill:blue)[matrix of $T$ relative to bases $cal(B)$ and $cal(C)$], thus
-//  $
-// T(\bm v)=mat(
-// \bm c_1,dots.h.c,\bm c_m
-// )A[\bm v]_{cal(B)}
-//  $
-// On the other hand, we should have
-//  $ T(\bm v)=mat(
-// \bm c_1,dots.h.c,\bm c_m
-// )[T(\bm v)]_{cal(C)} $
-// So we may also conclude that
-// $ \label{14:19-06/29/2022}
-// [T(\bm v)]_{cal(C)}=A[\bm v]_{cal(B)}
-// $
-// The above discussion can be summerized by the following commutative diagram
-// $ \label{16:03-06/29/2022}
-// \begin{tikzcd}
-// V \arrow[r, "T"] \arrow[d, "{[\quad]_{cal(B)}}"'] , W \arrow[d, "{[\quad]_{cal(C)}}"] ;
-// RR^n \arrow[r, "A"]                            , RR^m
-// \end{tikzcd}
-// \quad
-// \begin{tikzcd}
-// \bm v \arrow[r, maps to] \arrow[d, maps to] , T(\bm v) \arrow[d, maps to]                     ;
-// {[\bm v]_{cal(B)}} \arrow[r, maps to]   , {A[\bm v]_{cal(B)}=[T(\bm v)]_{cal(C)}}
-// \end{tikzcd}
-// $
+#remark[
+The philosophy here is that any statement about a general linear transformation can be converted to a corresponding statement about matrix transformation.
+]
 
-// #remark[
-// The philosophy here is that any statement about a general linear transformation can be converted to a corresponding statement about matrix transformation.
-// ]
-
-// #example[
-// Suppose $V=RR^n$, $W=RR^m$ with bases $\{bold(e)_1,dots.h.c,bold(e)_n\}$, $\{bold(e)_1,dots.h.c,bold(e)_m\}$, then \eqref{13:44-06/28/2022} reads $A=mat(
-// T(bold(e)_1),dots.h.c,T(bold(e)_n)
-// )$ is the standard matrix
-// )
+#example[
+Suppose $V=RR^n$, $W=RR^m$ with bases $\{bold(e)_1,dots.h.c,bold(e)_n\}$, $\{bold(e)_1,dots.h.c,bold(e)_m\}$, then @ref-13:44-06-28-2022 reads $A=mat(
+T(bold(e)_1),dots.h.c,T(bold(e)_n)
+)$ is the standard matrix
+]
 
 #example[
 Consider linear transformation
@@ -4574,7 +4533,7 @@ T:PP_2->RR^3,quad T(a_0+a_1t+a_2t^2)=mat(
 a_0;a_1;a_2
 )
  $
-and $cal(B)=\{1+t,t+t^2,1+t^2\}$ is a basis for $PP_2$, $cal(E)$ is the standard basis for $RR^3$, then matrix of $T$ relative to bases $cal(B)$ and $cal(E)$ can be read from \eqref{12:55-06/29/2022} as
+and $cal(B)=\{1+t,t+t^2,1+t^2\}$ is a basis for $PP_2$, $cal(E)$ is the standard basis for $RR^3$, then matrix of $T$ relative to bases $cal(B)$ and $cal(E)$ can be read from @ref-12:55-06-29-2022 as
  $
 A=mat(
 T(1+t),T(t+t^2),T(1+t^2)
@@ -4586,60 +4545,68 @@ T(1+t),T(t+t^2),T(1+t^2)
  $
 ]
 
-// #example[
-// Consider linear transformation $T:RR^2->RR^2$ is defined by $T(mat(
-// x_1;x_2
-// ))=mat(
-// x_1+2x_2;x_2
-// )$, $cal(B)={mat(
-// 1;1
-// ), mat(
-// 1;-1
-// )}$, $cal(C)={mat(
-// -1;1
-// ), mat(
-// -1;-1
-// )}$ are bases for $RR^2$. Then the matrix of $T$ relative to bases $cal(B)$ and $cal(C)$ can be read from~\eqref{13:44-06/28/2022}
-// $
-// mat(
-// -1,-1;1,-1
-// )A=mat(
-// 3,-1;1,-1
-// ), =>  A=mat(
-// -1,-1;1,-1
-// )^(-1)mat(
-// 3,-1;1,-1
-// )=mat(
-// -1,0;-2,1
-// )
-// $
-// )
+#example[
+Consider linear transformation $T:RR^2->RR^2$ is defined by $T(mat(
+x_1;x_2
+))=mat(
+x_1+2x_2;x_2
+)$, $cal(B)={mat(
+1;1
+), mat(
+1;-1
+)}$, $cal(C)={mat(
+-1;1
+), mat(
+-1;-1
+)}$ are bases for $RR^2$. Then the matrix of $T$ relative to bases $cal(B)$ and $cal(C)$ can be read from~@ref-13:44-06-28-2022
+$
+mat(
+-1,-1;1,-1
+)A=mat(
+3,-1;1,-1
+)& =>  A=mat(
+-1,-1;1,-1
+)^(-1)mat(
+3,-1;1,-1
+)=mat(
+-1,0;-2,1
+)
+$
+]
 
-// #exercise[
+#exercise[
 
-// ]
+]
 
-// #remark[\label{17:02-06/29/2022}
-// Suppose $T:V-> W$ and $S:W-> U$ are linear transformations between vector spaces, $cal(B)=\{\bm b_1,dots.h.c,\bm b_n\}$ is a basis for $V$, $cal(C)=\{\bm c_1,dots.h.c,\bm c_n\}$ is a basis for $W$ and $cal(D)=\{\bm d_1,dots.h.c,\bm d_n\}$ is a basis for $U$, then the matrix of $Scircle.small T$ relative to bases $cal(B)$, $cal(D)$ is $BA$.
-// \begin{center}
-// \begin{tikzcd}
-// V \arrow[r, "T"] \arrow[d, "{[\quad]_{cal(B)}}"'] \arrow[rr, "Scircle.small T", bend left, shift left=2] , W \arrow[d, "{[\quad]_{cal(C)}}"] \arrow[r, "S"] , U \arrow[d, "{[\quad]_{cal(D)}}"] ;
-// RR^n \arrow[r, "A"] \arrow[rr, "BA", bend right, shift right=2]                                , RR^m \arrow[r, "B"]                           , RR^p
-// \end{tikzcd}
-// \quad
-// \begin{tikzcd}
-// \bm v \arrow[r, maps to] \arrow[d, maps to] , T(\bm v) \arrow[d, maps to] \arrow[r]                              , S(T(\bm v))=(Scircle.small T)(\bm v) \arrow[d, maps to]    ;
-// {[\bm v]_{cal(B)}} \arrow[r, maps to]   , {A[\bm v]_{cal(B)}=[T(\bm v)]_{cal(C)}} \arrow[r, maps to] , {BA[\bm v]_{cal(B)}=[S(T(\bm v))]_{cal(D)}}
-// \end{tikzcd}
-// \end{center}
-// If $T$  is invertible, then the matrix of $T^(-1)$ relative to bases $cal(C)$, $cal(B)$ is $A^(-1)$
-// \begin{center}
-// \begin{tikzcd}
-// V \arrow[r, "T"] \arrow[d, "{[\quad]_{cal(B)}}"'] , W \arrow[d, "{[\quad]_{cal(C)}}"] \arrow[l, "T_{-1}", bend left] ;
-// RR^n \arrow[r, "A"]                            , RR^m \arrow[l, "A^(-1)", bend left]
-// \end{tikzcd}
-// \end{center}
-// ]
+#remark[
+Suppose $T:V-> W$ and $S:W-> U$ are linear transformations between vector spaces, $cal(B)=\{bold(b)_1,dots.h.c,bold(b)_n\}$ is a basis for $V$, $cal(C)=\{bold(c)_1,dots.h.c,bold(c)_n\}$ is a basis for $W$ and $cal(D)=\{bold(d)_1,dots.h.c,bold(d)_n\}$ is a basis for $U$, then the matrix of $S circle.small T$ relative to bases $cal(B)$, $cal(D)$ is $B A$.
+
+#pagebreak
+#align(center, commutative-diagram(
+((0, 2, $V$), (4, 2, $W$), (8, 2, $U$),
+(0, 0, $RR^n$), (4, 0, $RR^m$), (8, 0, $RR^p$)),
+((0, 1, $T$, "->", 0), (1, 2, $S$, "->", 0),
+(0, 2, $S circle.small T$, "->", 1),
+(0, 3, $[quad]_(cal(B))$, "->", 0), (1, 4, $[quad]_(cal(C))$, "->", 0),
+(2, 5, $[quad]_(cal(D))$, "->", 0), (3, 4, $A$, "->", 0),
+(4, 5, $B$, "->", 0), (3, 5, $B A$, "->", -1)),
+))
+#align(center, commutative-diagram(
+((0, 2, $bold(v)$), (7, 2, $T(bold(v))$), (14, 2, $S(T(bold(v)))=(S circle.small T)(bold(v))$),
+(0, 0, $[bold(v)]_(cal(B))$), (7, 0, $A[bold(v)]_(cal(B))=[T(bold(v))]_(cal(C))$),
+(14, 0, $B A[bold(v)]_(cal(B))=[S(T(bold(v)))]_(cal(D))$)),
+((0, 1, none, "|->", 0), (1, 2, none, "->", 0),
+(0, 3, none, "|->", 0), (1, 4, none, "|->", 0), (2, 5, none, "|->", 0),
+(3, 4, none, "|->", 0), (4, 5, none, "|->", 0)),
+))
+If $T$  is invertible, then the matrix of $T^(-1)$ relative to bases $cal(C)$, $cal(B)$ is $A^(-1)$
+#align(center, commutative-diagram(
+((0, 2, $V$), (4, 2, $W$), (0, 0, $RR^n$), (4, 0, $RR^m$)),
+((0, 1, $T$, "->", 0), (1, 0, $T^(-1)$, "->", 0.8),
+(0, 2, $[quad]_(cal(B))$, "->", 0), (1, 3, $[quad]_(cal(C))$, "->", 0),
+(2, 3, $A$, "->", 0), (3, 2, $A^(-1)$, "->", -0.8)),
+))
+]<ref-17:02-06-29-2022>
 
 #exercise[
 Suppose $T:PP_2->RR_3$ is evaluation at $2$, i.e. $T(p(t))=p(2)$ for $p(t) in PP_2$. Show that $T$ is a linear transformation. Is $T$ onto? Is $T$ one-to-one? Is $T$ invertible? Find a basis for $"ker" T$. Find a basis for $"Range "T$.
@@ -4651,832 +4618,846 @@ Suppose $H$ is the set of 2 by 2 matrices that are symmetric with the sum of dia
 
 == Change of basis
 
-// Now let's talk about change of basis. Suppose $V$ is a vector space with two basis $cal(B)=\{\bm b_1,dots.h.c,\bm b_n\}$ and $cal(C)=\{\bm c_1,dots.h.c,\bm c_n\}$, and $\id_V:V-> V$, $\id_V(\bm v)=\bm v$ is the #text(fill:blue)[identity mapping]#index[identity mapping]. Diagram~\eqref{16:03-06/29/2022} becomes
-// $ \label{19:43-06/29/2022}
-// \begin{tikzcd}
-// V \arrow[r, "\id_V", equal] \arrow[d, "{[\quad]_{cal(B)}}"']             , V \arrow[d, "{[\quad]_{cal(C)}}"] ;
-// RR^n \arrow[r, "\underset{cal(C)\leftarrowcal(B)}{P}"] , RR^n
-// \end{tikzcd}
-// $
-// Where equation~\eqref{12:55-06/29/2022} and equation~\eqref{14:19-06/29/2022} become
-//  $
-// \underset{cal(C)\leftarrowcal(B)}{P}=mat(
-// [\bm b_1)_{cal(C)},dots.h.c,[\bm b_n]_{cal(C)}
-// ]
-//  $
-//  $
-// [\bm v]_{cal(C)}=\underset{cal(C)\leftarrowcal(B)}{P}[\bm v]_{cal(B)}
-//  $
-// which is the matrix of $\id_V$ relative to basis $cal(B)$ and $cal(C)$, and we call this the #text(fill:blue)[change of coordinates matrix from $cal(B)$ to $cal(C)$]. Also remark @(17:02-06/29/2022) gives us
-//  $
-// \underset{cal(D)\leftarrowcal(B)}{P}=(\underset{cal(D)\leftarrowcal(C)}{P})(\underset{cal(C)\leftarrowcal(B)}{P}),\quad (\underset{cal(C)\leftarrowcal(B)}{P})^(-1)=\underset{cal(B)\leftarrowcal(C)}{P}
-//  $
+Now let's talk about change of basis. Suppose $V$ is a vector space with two basis $cal(B)=\{bold(b)_1,dots.h.c,bold(b)_n\}$ and $cal(C)=\{bold(c)_1,dots.h.c,bold(c)_n\}$, and $"id"_V:V-> V$, $"id"_V(bold(v))=bold(v)$ is the #text(fill:blue)[identity mapping]#index[identity mapping]. Diagram~@ref-16:03-06-29-2022 becomes
+#align(center, commutative-diagram(
+((0, 2, $V$), (5, 2, $V$), (0, 0, $RR^n$), (5, 0, $RR^n$)),
+((0, 1, $"id"_V$, "=", 0), (0, 2, $[quad]_(cal(B))$, "->", 0),
+(1, 3, $[quad]_(cal(C))$, "->", 0),
+(2, 3, $P_(cal(C) arrow.l cal(B))$, "->", 0)),
+)) <ref-19:43-06-29-2022>
+Where equation~@ref-12:55-06-29-2022 and equation~@ref-14:19-06-29-2022 become
+$
+P_(cal(C)arrow.l cal(B))=mat(
+[bold(b)_1]_(cal(C)),dots.h.c,[bold(b)_n]_(cal(C))
+)
+$
+$
+[bold(v)]_(cal(C))=P_(cal(C)arrow.l cal(B))[bold(v)]_(cal(B))
+$
+which is the matrix of $"id"_V$ relative to basis $cal(B)$ and $cal(C)$, and we call this the #text(fill:blue)[change of coordinates matrix from $cal(B)$ to $cal(C)$]. Also remark @ref-17:02-06-29-2022 gives us
+$
+P_(cal(D)arrow.l cal(B))=(P_(cal(D)arrow.l cal(C)))(P_(cal(C)arrow.l cal(B))), quad (P_(cal(C)arrow.l cal(B)))^(-1)=P_(cal(B)arrow.l cal(C))
+$
 
-// #example[
-// Continue Example @(exer:2by2sym-as-vectsp), we have shown that $cal(B)={mat(
-// 1,0;0,0
-// ),mat(
-// 0,1;1,0
-// ),mat(
-// 0,0;0,1
-// )}= B_1,B_2,B_3$ is a basis for $V$. Let's show that $cal(C)={mat(
-// 1,1;1,0
-// ),mat(
-// 1,0;0,1
-// ),mat(
-// 0,1;1,1
-// )}= C_1,C_2,C_3$ is another basis for $V$. First note that
-//  $
-// C_1=mat(
-// 1,1;1,0
-// )=mat(
-// 1,0;0,0
-// )+mat(
-// 0,1;1,0
-// )=B_1+B_2
-//  $
-//  $
-// C_2=mat(
-// 1,0;0,1
-// )=mat(
-// 1,0;0,0
-// )+mat(
-// 0,0;0,1
-// )=B_1+B_3
-//  $
-//  $
-// C_3=mat(
-// 0,1;1,1
-// )=mat(
-// 0,1;1,0
-// )+mat(
-// 0,0;0,1
-// )=B_2+B_3
-//  $
-// So $\{[C_1]_{cal(B)},[C_2]_{cal(B)},[C_3]_{cal(B)}\}={mat(
-// 1;1;0
-// ),mat(
-// 1;0;1
-// ),mat(
-// 0;1;1
-// )}$, and it is easy to show that this is a basis for $RR^3$, hence $cal(C)$ is a basis for $V$. Also we know that
-//  $
-// \underset{cal(B)\leftarrowcal(C)}{P}=mat(
-// [C_1)_{cal(B)},[C_2]_{cal(B)},[C_3]_{cal(B)}
-// ]=mat(
-// 1,1,0;
-// 1,0,1;
-// 0,1,1
-// )
-//  $
-// And
-//  $
-// \underset{cal(C)\leftarrowcal(B)}{P}=(\underset{cal(B)\leftarrowcal(C)}{P})^(-1)=mat(
-//  1 / 2 , 1 / 2 ,- 1 / 2 ;
-//  1 / 2 ,- 1 / 2 , 1 / 2 ;
-// - 1 / 2 , 1 / 2 , 1 / 2
-// )
-//  $
-// Note that here the diagram~\eqref{19:43-06/29/2022} becomes
-// \begin{center}
-// \begin{tikzcd}
-// V \arrow[r, "\id_V", equal] \arrow[d, "{[\quad]_{cal(B)}}"']             , V \arrow[d, "{[\quad]_{cal(C)}}"] ;
-// RR^3 \arrow[r, "\underset{cal(C)\leftarrowcal(B)}{P}"] , RR^3
-// \end{tikzcd}
-// \end{center}
-// )
+#example[
+Continue @exer:2by2sym-as-vectsp, we have shown that $cal(B)={mat(
+1,0;0,0
+),mat(
+0,1;1,0
+),mat(
+0,0;0,1
+)}= B_1,B_2,B_3$ is a basis for $V$. Let's show that $cal(C)={mat(
+1,1;1,0
+),mat(
+1,0;0,1
+),mat(
+0,1;1,1
+)}= C_1,C_2,C_3$ is another basis for $V$. First note that
+$
+C_1=mat(
+1,1;1,0
+)=mat(
+1,0;0,0
+)+mat(
+0,1;1,0
+)=B_1+B_2
+$
+$
+C_2=mat(
+1,0;0,1
+)=mat(
+1,0;0,0
+)+mat(
+0,0;0,1
+)=B_1+B_3
+$
+$
+C_3=mat(
+0,1;1,1
+)=mat(
+0,1;1,0
+)+mat(
+0,0;0,1
+)=B_2+B_3
+$
+So $\{[C_1]_(cal(B)),[C_2]_(cal(B)),[C_3]_(cal(B))\}={mat(
+1;1;0
+),mat(
+1;0;1
+),mat(
+0;1;1
+)}$, and it is easy to show that this is a basis for $RR^3$, hence $cal(C)$ is a basis for $V$. Also we know that
+$
+P_(cal(B)arrow.l cal(C))=mat(
+[C_1]_(cal(B)),[C_2]_(cal(B)),[C_3]_(cal(B))
+)=mat(
+1,1,0;
+1,0,1;
+0,1,1
+)
+$
+And
+$
+P_(cal(C)arrow.l cal(B))=(P_(cal(B)arrow.l cal(C)))^(-1)=mat(
+1 / 2 , 1 / 2 ,- 1 / 2 ;
+1 / 2 ,- 1 / 2 , 1 / 2 ;
+- 1 / 2 , 1 / 2 , 1 / 2
+)
+$
+Note that here the diagram~@ref-19:43-06-29-2022 becomes
+#align(center, commutative-diagram(
+((0, 2, $V$), (5, 2, $V$), (0, 0, $RR^3$), (5, 0, $RR^3$)),
+((0, 1, $"id"_V$, "=", 0), (0, 2, $[quad]_(cal(B))$, "->", 0),
+(1, 3, $[quad]_(cal(C))$, "->", 0),
+(2, 3, $P_(cal(C) arrow.l cal(B))$, "->", 0)),
+))
+]
 
-// #example[\label{10:24-07/01/2022}
-// Continue Example @(exer:2degpoly-lintrans), let's find a basis for $V="ker" T$ which is supposed to correspond to $"Nul"A$, where $A$ is the matrix relative to both standard bases $cal(E)=\{1,t,t^2\}$ for $PP_2$ and $cal(E)={bold(e)_1=mat(
-// 1;0;0
-// ),bold(e)_2=mat(
-// 0;1;0
-// ),bold(e)_3=mat(
-// 0;0;1
-// )}$ which can be read from~\eqref{14:19-06/29/2022}
-//  $
-// A=mat(
-// [T(1))_{cal(E)},[T(t)]_{cal(E)},[T(t^2)]_{cal(E)}
-// ]=mat(
-// 1,1,1
-// )
-//  $
-// So we get
-//  $
-// "Nul"A="Span"{mat(
-// -1;1;0
-// ),mat(
-// -1;0;1
-// )}
-//  $
-// Which gives a basis $\{-1+t,-1+t^2\}$ for $V$. Note that here the diagram~\eqref{16:03-06/29/2022} becomes
-// \begin{center}
-// \begin{tikzcd}
-// PP_2 \arrow[r, "T"] \arrow[d, "{[\quad]_{cal(E)}}"'] , RR \arrow[d, equal, "{[\quad]_{cal(E)}}"] ;
-// RR^3 \arrow[r, "A"]                            , RR
-// \end{tikzcd}
-// \end{center}
-// )
+#example[
+Continue @exer:2degpoly-lintrans, let's find a basis for $V="ker" T$ which is supposed to correspond to $"Nul"A$, where $A$ is the matrix relative to both standard bases $cal(E)=\{1,t,t^2\}$ for $PP_2$ and $cal(E)={bold(e)_1=mat(
+1;0;0
+),bold(e)_2=mat(
+0;1;0
+),bold(e)_3=mat(
+0;0;1
+)}$ which can be read from~@ref-14:19-06-29-2022
+$
+A=mat(
+[T(1)]_(cal(E)),[T(t)]_(cal(E)),[T(t^2)]_(cal(E))
+)=mat(
+1,1,1
+)
+$
+So we get
+$
+"Nul"A="Span"{mat(
+-1;1;0
+),mat(
+-1;0;1
+)}
+$
+Which gives a basis $\{-1+t,-1+t^2\}$ for $V$. Note that here the diagram~@ref-16:03-06-29-2022 becomes
+#align(center, commutative-diagram(
+((0, 2, $PP_2$), (4, 2, $RR$), (0, 0, $RR^3$), (4, 0, $RR$)),
+((0, 1, $T$, "->", 0), (0, 2, $[quad]_(cal(E))$, "->", 0),
+(1, 3, $[quad]_(cal(E))$, "=", 0), (2, 3, $A$, "->", 0)),
+))
+]<ref-10:24-07-01-2022>
 
-// An algorithm for computing $A^(-1)B$
-//  $
-// mat(
-// A,B
-// ; augment:#(-1))tilde mat(
-// I,A^(-1)B
-// ; augment:#(-1))
-//  $
+An algorithm for computing $A^(-1)B$
+$
+mat(
+A,B
+; augment:#(-1))tilde mat(
+I,A^(-1)B
+; augment:#(-1))
+$
 
-// #exercise[
-// Suppose $cal(B)=\{2t^2-1,3t+1-t^2,3-t\}$ and $cal(C)=\{1+t,t^2,-t\}$ are both bases for $PP_2$. Please find the change of basis matrix form $cal(B)$ to $cal(C)$
-// ]
+#exercise[
+Suppose $cal(B)=\{2t^2-1,3t+1-t^2,3-t\}$ and $cal(C)=\{1+t,t^2,-t\}$ are both bases for $PP_2$. Please find the change of basis matrix form $cal(B)$ to $cal(C)$
+]
 
-// #solution[
-// First let's find the change of basis matrices from $cal(B)$ and $cal(C)$ to the standard basis $cal(E)=\{1,t,t^2\}$. We have
-//  $
-// \underset{cal(E)\leftarrowcal(B)}{P}=mat(
-// [-1+2t^2)_{cal(E)},[1+3t-t^2]_{cal(E)},[3-t]_{cal(E)}
-// ]=mat(
-// -1,1,3;
-// 0,3,-1;
-// 2,-1,0
-// )
-//  $
-// And
-//  $
-// \underset{cal(E)\leftarrowcal(C)}{P}=mat(
-// [1-t)_{cal(E)},[t]_{cal(E)},[t^2]_{cal(E)}
-// ]=mat(
-// 1,0,0;
-// 1,0,-1;
-// 0,1,0
-// )
-//  $
-// Hence we have
-// $
-// \underset{cal(C)\leftarrowcal(B)}{P}=(\underset{cal(C)\leftarrowcal(E)}{P})(\underset{cal(E)\leftarrowcal(B)}{P})=(\underset{cal(E)\leftarrowcal(C)}{P})^(-1)(\underset{cal(E)\leftarrowcal(B)}{P})
-// $
-// Which can computed via the above algorithm
-// $
-// mat(
-// 1,0,0,-1,1,3;
-// 1,0,-1,0,3,-1;
-// 0,1,0,2,-1,0
-// ; augment:#(-1))tilde mat(
-// 1,0,0,-1,1,3;
-// 0,1,0,2,-1,0;
-// 0,0,1,-1,-2,4
-// ; augment:#(-1))
-// $
-// \begin{center}
-// \begin{tikzcd}
-// PP_2 \arrow[r,equal, "\id_V"] \arrow[d, "{[\quad]_{cal(B)}}"']                                                                                             , PP_2 \arrow[d, "{[\quad]_{cal(E)}}"'] \arrow[r,equal, "\id_V"]               , PP_2 \arrow[d, "{[\quad]_{cal(C)}}"]                       ;
-// RR^3 \arrow[r, "\underset{cal(E)\leftarrowcal(B)}{P}"'] \arrow[rr, "\underset{cal(C)\leftarrowcal(B)}{P}", bend right=49, shift right=1] , RR^3 \arrow[r, "\underset{cal(C)\leftarrowcal(E)}{P}", bend left] , RR^3 \arrow[l, "\underset{cal(E)\leftarrowcal(C)}{P}"]
-// \end{tikzcd}
-// \end{center}
-// ]
+#solution[
+First let's find the change of basis matrices from $cal(B)$ and $cal(C)$ to the standard basis $cal(E)=\{1,t,t^2\}$. We have
+$
+P_(cal(E)arrow.l cal(B))=mat(
+[-1+2t^2]_(cal(E)),[1+3t-t^2]_(cal(E)),[3-t]_(cal(E))
+)=mat(
+-1,1,3;
+0,3,-1;
+2,-1,0
+)
+$
+And
+$
+P_(cal(E)arrow.l cal(C))=mat(
+[1-t]_(cal(E)),[t]_(cal(E)),[t^2]_(cal(E))
+)=mat(
+1,0,0;
+1,0,-1;
+0,1,0
+)
+$
+Hence we have
+$
+P_(cal(C)arrow.l cal(B))=(P_(cal(C)arrow.l cal(E)))(P_(cal(E)arrow.l cal(B)))=(P_(cal(E)arrow.l cal(C)))^(-1)(P_(cal(E)arrow.l cal(B)))
+$
+Which can computed via the above algorithm
+$
+mat(
+1,0,0,-1,1,3;
+1,0,-1,0,3,-1;
+0,1,0,2,-1,0
+; augment:#(-1))tilde mat(
+1,0,0,-1,1,3;
+0,1,0,2,-1,0;
+0,0,1,-1,-2,4
+; augment:#(-1))
+$
+#align(center, commutative-diagram(
+((0, 2, $PP_2$), (5, 2, $PP_2$), (10, 2, $PP_2$),
+(0, 0, $RR^3$), (5, 0, $RR^3$), (10, 0, $RR^3$)),
+((0, 1, $"id"_V$, "=", 0), (1, 2, $"id"_V$, "=", 0),
+(0, 3, $[quad]_(cal(B))$, "->", 0), (1, 4, $[quad]_(cal(E))$, "->", 0),
+(2, 5, $[quad]_(cal(C))$, "->", 0),
+(3, 4, $P_(cal(E) arrow.l cal(B))$, "->", 0),
+(3, 5, $P_(cal(C) arrow.l cal(B))$, "->", -1.5),
+(4, 5, $P_(cal(C) arrow.l cal(E))$, "->", 0.8),
+(5, 4, $P_(cal(E) arrow.l cal(C))$, "->", 0)),
+))
+]
 
-// #example[
-// Suppose $RR^2$ has bases $cal(B)={bold(b)_1=mat(
-// 7;5
-// ),bold(b)_2=mat(
-// -3;-1
-// )}$, $cal(C)={bold(c)_1=mat(
-// 1;-5
-// ),bold(c)_2=mat(
-// -2;2
-// )}$. $\underset{cal(C)\leftarrowcal(B)}{P}=(\underset{cal(E)\leftarrowcal(C)}{P})^(-1)(\underset{cal(E)\leftarrowcal(B)}{P})$, which can be computed via
-//  $
-// mat(
-// 1,-2,7,-3;
-// -5,2,5,-1
-// ; augment:#(-1))tilde mat(
-// 1,0,-3,1;
-// 0,1,-5,2
-// ; augment:#(-1))
-//  $
-// So $\underset{cal(C)\leftarrowcal(B)}{P}=mat(
-// -3,1;
-// -5,2
-// )$
-// \begin{center}
-// \begin{tikzcd}
-// RR^2 \arrow[r,equal] \arrow[d, "{[\quad]_{cal(B)}}"']                                                                                           , RR^2 \arrow[d, "{[\quad]_{cal(E)}}"'] \arrow[r,equal]               , RR^2 \arrow[d, "{[\quad]_{cal(C)}}"]                       ;
-// RR^2 \arrow[r,"\underset{cal(E)\leftarrowcal(B)}{P}"'] \arrow[rr, "\underset{cal(C)\leftarrowcal(B)}{P}", bend right=49, shift right] , RR^2 \arrow[r, "\underset{cal(C)\leftarrowcal(E)}{P}", bend left] , RR^2 \arrow[l, "\underset{cal(E)\leftarrowcal(C)}{P}"]
-// \end{tikzcd}
-// \end{center}
-// )
+#example[
+Suppose $RR^2$ has bases $cal(B)={bold(b)_1=mat(
+7;5
+),bold(b)_2=mat(
+-3;-1
+)}$, $cal(C)={bold(c)_1=mat(
+1;-5
+),bold(c)_2=mat(
+-2;2
+)}$. $P_(cal(C)arrow.l cal(B))=(P_(cal(E)arrow.l cal(C)))^(-1)(P_(cal(E)arrow.l cal(B)))$, which can be computed via
+$
+mat(
+1,-2,7,-3;
+-5,2,5,-1
+; augment:#(-1))tilde mat(
+1,0,-3,1;
+0,1,-5,2
+; augment:#(-1))
+$
+So $P_(cal(C)arrow.l cal(B))=mat(
+-3,1;
+-5,2
+)$
+#align(center, commutative-diagram(
+((0, 2, $RR^2$), (5, 2, $RR^2$), (10, 2, $RR^2$),
+(0, 0, $RR^2$), (5, 0, $RR^2$), (10, 0, $RR^2$)),
+((0, 1, none, "=", 0), (1, 2, none, "=", 0),
+(0, 3, $[quad]_(cal(B))$, "->", 0), (1, 4, $[quad]_(cal(E))$, "->", 0),
+(2, 5, $[quad]_(cal(C))$, "->", 0),
+(3, 4, $P_(cal(E) arrow.l cal(B))$, "->", 0),
+(3, 5, $P_(cal(C) arrow.l cal(B))$, "->", -1.5),
+(4, 5, $P_(cal(C) arrow.l cal(E))$, "->", 0.8),
+(5, 4, $P_(cal(E) arrow.l cal(C))$, "->", 0)),
+))
+]
 
-// #theorem[
-// Let's generalize the rank-nullity theorem @thm:rank-nul, with the remark @(14:24/06/30/2022), we have
-//  $
-// "dim" V="dim""Range "T+"dim""ker" T
-//  $
-// ]
+#theorem[
+Let's generalize the rank-nullity theorem @thm:rank-nul, with the remark @ref-14:24-06-30-2022, we have
+$
+"dim" V="dim""Range "T+"dim""ker" T
+$
+]
 
-// #definition[
-// Suppose $T:V-> V$ is a linear transformation, and $cal(B)=\{\bm b_1,dots.h.c,\bm b_n\}$ is a basis for $V$, we can the matrix relative to $cal(B)$ and $cal(B)$ the #text(fill:blue)[$cal(B)$-matrix of $T$]#index[$cal(B)$-matrix] (denoted $[T]_{cal(B)}$), i.e. \eqref{16:03-06/29/2022} becomes
-// \begin{center}
-// \begin{tikzcd}
-// V \arrow[r, "T"] \arrow[d, "{[\quad]_{cal(B)}}"'] , V \arrow[d, "{[\quad]_{cal(B)}}"] ;
-// RR^n \arrow[r, "{[T]_{cal(B)}}"]           , RR^n
-// \end{tikzcd}
-// \quad
-// \begin{tikzcd}
-// \bm v \arrow[r, maps to] \arrow[d, maps to] , T(\bm v) \arrow[d, maps to]                     ;
-// {[\bm v]_{cal(B)}} \arrow[r, maps to]   , {[T]_{cal(B)}[\bm v]_{cal(B)}=[T(\bm v)]_{cal(B)}}
-// \end{tikzcd}
-// \end{center}
-// And \eqref{12:55-06/29/2022} gives $[T]_{cal(B)}=mat(
-// [T(\bm b_1))_{cal(B)},dots.h.c,[T(\bm b_n)]_{cal(B)}
-// ]$
-// Suppose both $cal(B)=\{\bm b_1,dots.h.c,\bm b_n\}$ and $cal(C)=\{\bm c_1,dots.h.c,\bm c_n\}$ form bases for $V$, then
-//  $
-// [T]_{cal(B)}=\underset{cal(B)\leftarrowcal(C)}{P}[T]_{cal(C)}\underset{cal(C)\leftarrowcal(B)}{P}=\underset{cal(B)\leftarrowcal(C)}{P}[T]_{cal(C)}(\underset{cal(B)\leftarrowcal(C)}{P})^(-1)
-//  $
-// is similar via
-// \begin{center}
-// \begin{tikzcd}
-// V \arrow[rrr, "T"] \arrow[rd, "{[\quad]_{cal(B)}}"] \arrow[ddd, "\id"'] , , , V \arrow[ld, "{[\quad]_{cal(B)}}"'] \arrow[ddd, "\id"] ;
-// , RR^n \arrow[r, "{[T]_{cal(B)}}"] , RR^n \arrow[d, "\underset{cal(C)\leftarrowcal(B)}{P}"'] , ;
-// , RR^n \arrow[r, "{[T]_{cal(C)}}"] \arrow[u, "\underset{cal(B)\leftarrowcal(C)}{P}"'] , RR^n , ;
-// V \arrow[ru, "{[\quad]_{cal(C)}}"'] \arrow[rrr, "T"'] , , , V \arrow[lu, "{[\quad]_{cal(C)}}"]
-// \end{tikzcd}
-// \end{center}
-// If $T:RR^n->RR^n$, $T(bold(x))=A bold(x)$ is a matrix transformation, $cal(E)$ is the standard basis, and $cal(C)=\{bold(v)_1,dots.h.c,bold(v)_n\}$ is basis consists of eigenvectors, then $[T]_{cal(C)}=D$ is diagonal with eigenvalues, as shown in Theorem @(09:52-07/07/2022).
-// ]
+#definition[
+Suppose $T:V-> V$ is a linear transformation, and $cal(B)=\{bold(b)_1,dots.h.c,bold(b)_n\}$ is a basis for $V$, we can the matrix relative to $cal(B)$ and $cal(B)$ the #text(fill:blue)[$cal(B)$-matrix of $T$]#index[$cal(B)$-matrix] (denoted $[T]_(cal(B))$), i.e. @ref-16:03-06-29-2022 becomes
+#align(center, commutative-diagram(
+((0, 2, $V$), (4, 2, $V$), (0, 0, $RR^n$), (4, 0, $RR^n$)),
+((0, 1, $T$, "->", 0), (0, 2, $[quad]_(cal(B))$, "->", 0),
+(1, 3, $[quad]_(cal(B))$, "->", 0), (2, 3, $[T]_(cal(B))$, "->", 0)),
+))
+#align(center, commutative-diagram(
+((0, 2, $bold(v)$), (7, 2, $T(bold(v))$),
+(0, 0, $[bold(v)]_(cal(B))$), (7, 0, $[T]_(cal(B))[bold(v)]_(cal(B))=[T(bold(v))]_(cal(B))$)),
+((0, 1, none, "|->", 0), (0, 2, none, "|->", 0),
+(1, 3, none, "|->", 0), (2, 3, none, "|->", 0)),
+))
+And @ref-12:55-06-29-2022 gives $[T]_(cal(B))=mat(
+[T(bold(b)_1)]_(cal(B)),dots.h.c,[T(bold(b)_n)]_(cal(B))
+)$
+Suppose both $cal(B)=\{bold(b)_1,dots.h.c,bold(b)_n\}$ and $cal(C)=\{bold(c)_1,dots.h.c,bold(c)_n\}$ form bases for $V$, then
+$
+[T]_(cal(B))=P_(cal(B)arrow.l cal(C))[T]_(cal(C))P_(cal(C)arrow.l cal(B))=P_(cal(B)arrow.l cal(C))[T]_(cal(C))(P_(cal(B)arrow.l cal(C)))^(-1)
+$
+is similar via
+#align(center, commutative-diagram(
+((0, 6, $V$), (10, 6, $V$), (3, 4, $RR^n$), (7, 4, $RR^n$),
+(3, 2, $RR^n$), (7, 2, $RR^n$), (0, 0, $V$), (10, 0, $V$)),
+((0, 1, $T$, "->", 0), (0, 2, $[quad]_(cal(B))$, "->", 0),
+(1, 3, $[quad]_(cal(B))$, "->", 0),
+(0, 6, $"id"$, "->", 0), (1, 7, $"id"$, "->", 0),
+(2, 3, $[T]_(cal(B))$, "->", 0),
+(3, 5, $P_(cal(C) arrow.l cal(B))$, "->", 0),
+(4, 2, $P_(cal(B) arrow.l cal(C))$, "->", 0),
+(4, 5, $[T]_(cal(C))$, "->", 0),
+(6, 4, $[quad]_(cal(C))$, "->", 0),
+(7, 5, $[quad]_(cal(C))$, "->", 0), (6, 7, $T$, "->", 0)),
+))
+If $T:RR^n->RR^n$, $T(bold(x))=A bold(x)$ is a matrix transformation, $cal(E)$ is the standard basis, and $cal(C)=\{bold(v)_1,dots.h.c,bold(v)_n\}$ is basis consists of eigenvectors, then $[T]_(cal(C))=D$ is diagonal with eigenvalues, as shown in @ref-09:52-07-07-2022.
+]
 
-// #remark[
-// In fact, any two similar matrix can be realized as matrices of the same linear transformation in different basis.
-// ]
+#remark[
+In fact, any two similar matrix can be realized as matrices of the same linear transformation in different basis.
+]
 
 = Lecture 12 - Eigendecomposition
 
 == Eigenvalues, eigenvectors and eigenspaces
 
-// #definition[
-// Suppose $A$ is a square $n times  n$ matrix. A #text(fill:blue)[$ lambda $-eigenvector]#index[eigenvector] of an $n times  n$ matrix $A$ is a nonzero vector $bold(x)$ such that $A bold(x) =  lambda bold(x)$ for some scalar $ lambda $. A scalar $ lambda $ is called an #text(fill:blue)[eigenvalue]#index[eigenvalue] of $A$ has $ lambda $-eigenvectors.
-// ]
+#definition[
+Suppose $A$ is a square $n times  n$ matrix. A #text(fill:blue)[$lambda$-eigenvector]#index[eigenvector] of an $n times  n$ matrix $A$ is a nonzero vector $bold(x)$ such that $A bold(x) =  lambda bold(x)$ for some scalar $lambda$. A scalar $lambda$ is called an #text(fill:blue)[eigenvalue]#index[eigenvalue] of $A$ has $lambda$-eigenvectors.
+]
 
-// #definition[
-// We say that a vector space $V$ is #text(fill:blue)[trivial]#index[trivial vector space] if $V=\{0\}$ is the zero vector space.
-// ]
+#definition[
+We say that a vector space $V$ is #text(fill:blue)[trivial]#index[trivial vector space] if $V=\{0\}$ is the zero vector space.
+]
 
-// #question[
-// How to decide whether a nonzero vector $bold(x)$ is an eigenvector?
-// ]
+#question[
+How to decide whether a nonzero vector $bold(x)$ is an eigenvector?
+]
 
-// #answer[
-// We can evaluate $A bold(x)$ and see if it is a multiple of $bold(x)$
-// ]
+#answer[
+We can evaluate $A bold(x)$ and see if it is a multiple of $bold(x)$
+]
 
-// #example[
-// $A=mat(
-// 1,6;5,2
-// )$, determine whether $bold(u)=mat(
-// 6;-5
-// )$, $bold(v)=mat(
-// 3;-2
-// )$ are eigenvectors of $A$.
-//  $
-// A bold(u)=mat(
-// 1,6;5,2
-// )mat(
-// 6;-5
-// )=mat(
-// -24;20
-// )=(-4)bold(u)
-//  $
-// Hence $bold(u)$ is a $(-4)$-eigenvector of $A$.
-//  $
-// A bold(v)=mat(
-// 1,6;5,2
-// )mat(
-// 3;-2
-// )=mat(
-// -9;11
-// )
-//  $
-// Which is not a multiple of $bold(v)$, so $bold(v)$ is not an eigenvector.
-// )
+#example[
+$A=mat(
+1,6;5,2
+)$, determine whether $bold(u)=mat(
+6;-5
+)$, $bold(v)=mat(
+3;-2
+)$ are eigenvectors of $A$.
+$
+A bold(u)=mat(
+1,6;5,2
+)mat(
+6;-5
+)=mat(
+-24;20
+)=(-4)bold(u)
+$
+Hence $bold(u)$ is a $(-4)$-eigenvector of $A$.
+$
+A bold(v)=mat(
+1,6;5,2
+)mat(
+3;-2
+)=mat(
+-9;11
+)
+$
+Which is not a multiple of $bold(v)$, so $bold(v)$ is not an eigenvector.
+]
 
-// #question[
-// How to decide if $ lambda $ is an eigenvalue of $A$?
-// ]
+#question[
+How to decide if $lambda$ is an eigenvalue of $A$?
+]
 
-// #answer[
-// By definition, we know that $ lambda $ is an eigenvalue of $A<=> A bold(x)= lambda bold(x)$ has a nontrivial solution $<=>  lambda bold(x)-A bold(x)= lambda  Ibold(x)-A bold(x)=( lambda  I-A)bold(x)=bold(0)$ has a nontrivial solution $<=>"Nul "( lambda  I-A)$ is nontrivial $<=>  lambda  I-A$ is invertible $<=>"det"( lambda  I-A)=0$
-// ]
+#answer[
+By definition, we know that $lambda$ is an eigenvalue of $A<=> A bold(x)= lambda bold(x)$ has a nontrivial solution $<=>  lambda bold(x)-A bold(x)= lambda  I bold(x)-A bold(x)=( lambda  I-A)bold(x)=bold(0)$ has a nontrivial solution $<=>"Nul "( lambda  I-A)$ is nontrivial $<=>  lambda  I-A$ is invertible $<=>"det"( lambda  I-A)=0$
+]
 
-// #example[\label{12:54-07/01/2022}
-// $A=mat(
-// 4,-1,6;
-// 2,1,6;
-// 2,-1,8
-// )$. Determine whether $ lambda =2$ is an eigenvalue of $A$
-//  $
-// "det"(2I-A)="det"(2mat(
-// 1,0,0;
-// 0,1,0;
-// 0,0,1
-// )-mat(
-// 4,-1,6;
-// 2,1,6;
-// 2,-1,8
-// ))=| mat(
-// 2,-1,-6;
-// 2,-1,-6;
-// 2,-1,-6
-//  ) |=0
-//  $
-// )
+#example[
+$A=mat(
+4,-1,6;
+2,1,6;
+2,-1,8
+)$. Determine whether $ lambda =2$ is an eigenvalue of $A$
+$
+"det"(2I-A)="det"(2mat(
+1,0,0;
+0,1,0;
+0,0,1
+)-mat(
+4,-1,6;
+2,1,6;
+2,-1,8
+))= mat(delim: "|", 
+2,-1,-6;
+2,-1,-6;
+2,-1,-6
+)=0
+$
+]<ref-12:54-07-01-2022>
 
-// #definition[
-// From above criterion, we see that the set of $ lambda $-vectors is $"Nul "( lambda  I-A)$ which is a subspace of $RR^n$, we call this the #text(fill:blue)[$ lambda $-eigenspace]#index[eigenspace].
-// ]
+#definition[
+From above criterion, we see that the set of $lambda$-vectors is $"Nul "( lambda  I-A)$ which is a subspace of $RR^n$, we call this the #text(fill:blue)[$lambda$-eigenspace]#index[eigenspace].
+]
 
-// #example[
-// Continue Example @(12:54-07/01/2022). Let's find a basis for the $2$-eigenspace of $A$, which is equivalent of finding a basis for $"Nul "(2I-A)$, since $mat(
-// 2I-A,bold(0)
-// ; augment:#(-1))tilde mat(
-// 1,- 1 / 2 ,3,0;
-// 0,0,0,0;
-// 0,0,0,0
-// ; augment:#(-1))$
-// Hence a basis could be ${mat(
-//  1 / 2 ;1;0
-// ),mat(
-// -3;0;1
-// )}$
-// )
+#example[
+Continue @ref-12:54-07-01-2022. Let's find a basis for the $2$-eigenspace of $A$, which is equivalent of finding a basis for $"Nul "(2I-A)$, since $mat(
+2I-A,bold(0)
+; augment:#(-1))tilde mat(
+1,- 1 / 2 ,3,0;
+0,0,0,0;
+0,0,0,0
+; augment:#(-1))$
+Hence a basis could be ${mat(
+1 / 2 ;1;0
+),mat(
+-3;0;1
+)}$
+]
 
 == Characteristic polynomials
 
-// #question[
-// How could we find all the eigenvalues of $A$?
-// ]
+#question[
+How could we find all the eigenvalues of $A$?
+]
 
-// #definition[
-// From above discussion, we see that $ lambda $ is an eigenvalue of $A<=>"det"( lambda  I-A)=0$, this motivates the following definition. We call $"det"(tI-A)$ the #text(fill:blue)[characteristic polynomial]#index[characteristic polynomial] of $A$, and $"det"(tI-A)=0$ the #text(fill:blue)[characteristic equation]#index[characteristic equation]. And the roots of the characteristic polynomial are the eigenvalues of $A$.
-// ]
+#definition[
+From above discussion, we see that $lambda$ is an eigenvalue of $A<=>"det"( lambda  I-A)=0$, this motivates the following definition. We call $"det"(t I-A)$ the #text(fill:blue)[characteristic polynomial]#index[characteristic polynomial] of $A$, and $"det"(t I-A)=0$ the #text(fill:blue)[characteristic equation]#index[characteristic equation]. And the roots of the characteristic polynomial are the eigenvalues of $A$.
+]
 
-// #definition[
-// We call the dimension of the $ lambda $-eigenspace ($"dim""Nul "( lambda  I-A)$) the #text(fill:blue)[geometric multiplicity]#index[geometric multiplicity] of $ lambda $, and the multiplicity of $ lambda $ as a root in the charateristic polynomial $"det"(tI-A)$ the #text(fill:blue)[algebraic multiplicity]#index[algebraic multiplicity] of $ lambda $.
-// ]
+#definition[
+We call the dimension of the $lambda$-eigenspace ($"dim""Nul "( lambda  I-A)$) the #text(fill:blue)[geometric multiplicity]#index[geometric multiplicity] of $lambda$, and the multiplicity of $lambda$ as a root in the charateristic polynomial $"det"(t I-A)$ the #text(fill:blue)[algebraic multiplicity]#index[algebraic multiplicity] of $lambda$.
+]
 
-// #example[
-// Suppose $A=mat(
-// 1,-4;4,2
-// )$, then the characteristic polynomial of $A$ would be
-//  $
-// "det"(tI-A)="det"(tmat(
-// 1,0;0,1
-// )-mat(
-// 1,-4;4,2
-// ))=| mat(
-// t-1,4;-4,t-2
-//  ) |=(t-1)(t-2)-4 dot.c (-4)=t^2-3t+18
-//  $
-// And the characteristic equation is $t^2-3t+18=0$. Since $ Delta=(-3)^2-4 dot.c 1 dot.c 18=-63<0$, this equation has no (real) solutions, $A$ doesn't have (real) eigenvalues
-// )
+#example[
+Suppose $A=mat(
+1,-4;4,2
+)$, then the characteristic polynomial of $A$ would be
+$
+"det"(t I-A)="det"(t mat(
+1,0;0,1
+)-mat(
+1,-4;4,2
+))= mat(delim: "|", 
+t-1,4;-4,t-2
+)=(t-1)(t-2)-4 dot.c (-4)=t^2-3t+18
+$
+And the characteristic equation is $t^2-3t+18=0$. Since $ Delta=(-3)^2-4 dot.c 1 dot.c 18=-63<0$, this equation has no (real) solutions, $A$ doesn't have (real) eigenvalues
+]
 
-// #note[
-// Recall that the quadratic equation $ax^2+bx+c=0$ has no (real) solutions $<=>$ the discriminant $ Delta=b^2-4ac<0$.
-// ]
+#note[
+Recall that the quadratic equation $a x^2+b x+c=0$ has no (real) solutions $<=>$ the discriminant $ Delta=b^2-4 a c<0$.
+]
 
-// #example[
-// Suppose $A=mat(
-// 3,-2;2,-1
-// )$, then the characteristic polynomial of $A$ would be
-//  $
-// "det"(tI-A)="det"(tmat(
-// 1,0;0,1
-// )-mat(
-// 3,-2;2,-1
-// ))=| mat(
-// t-3,2;-2,t+1
-//  ) |=(t-3)(t+1)-2 dot.c (-2)=t^2-2t+1
-//  $
-// And the characteristic equation is $t^2-2t+1=(t-1)^2=0$. Hence the eigenvalues of $A$ is $2$ with algebraic multiplicity 2
-// )
+#example[
+Suppose $A=mat(
+3,-2;2,-1
+)$, then the characteristic polynomial of $A$ would be
+$
+"det"(t I-A)="det"(t mat(
+1,0;0,1
+)-mat(
+3,-2;2,-1
+))= mat(delim: "|", 
+t-3,2;-2,t+1
+)=(t-3)(t+1)-2 dot.c (-2)=t^2-2t+1
+$
+And the characteristic equation is $t^2-2t+1=(t-1)^2=0$. Hence the eigenvalues of $A$ is $2$ with algebraic multiplicity 2
+]
 
-// #example[
-// Suppose $A=mat(
-// 3,-2,3;0,-1,0;6,7,-4
-// )$, then the characteristic polynomial of $A$ would be
-// $
-// "det"(tI-A),=| mat(
-// t-3,2,-3;
-// 0,t+1,0;
-// -6,-7,t+4
-//  ) |xequal("cofactor expansion across the 2nd row")(t+1)(-1)^{2+2}| mat(
-// t-3,-3;
-// -6,t+4
-//  ) |;
-// ,=(t+1)((t-3)(t+4)-(-3) dot.c (-6))=(t+1)(t^2+t-30)=(t+1)(t+6)(t-5)
-// $
-// So we see that the eigenvalues of $A$ are $-1, -6, -5$, all with algebraic multiplicities 1,1,1.
-// )
+#example[
+Suppose $A=mat(
+3,-2,3;0,-1,0;6,7,-4
+)$, then the characteristic polynomial of $A$ would be
+$
+"det"(t I-A)&= mat(delim: "|", 
+t-3,2,-3;
+0,t+1,0;
+-6,-7,t+4
+)xequal("cofactor expansion across the 2nd row")(t+1)(-1)^(2+2) mat(delim: "|", 
+t-3,-3;
+-6,t+4
+) \
+&=(t+1)((t-3)(t+4)-(-3) dot.c (-6))=(t+1)(t^2+t-30)=(t+1)(t+6)(t-5)
+$
+So we see that the eigenvalues of $A$ are $-1, -6, -5$, all with algebraic multiplicities 1,1,1.
+]
 
-// #example[
-// Suppose $A=mat(
-// 0,1,1;
-// 1,0,1;
-// 1,1,0
-// )$, then characteristic polynomial is
-// $
-// "det"(tI-A),=| mat(
-// t,-1,1;
-// -1,t,-1;
-// -1,-1,t
-//  ) |xequal( #`R2`-> #`R1`+t dot.c  #`R2` \ #`R2`-> #`R2`-#`R3` )| mat(
-// 0,-1-t,1+t^2;
-// 0,t+1,-1-t;
-// -1,-1,t
-//  ) |;
-// ,xequal("cofactor expansion across the 1st column")(-1)(-1)^{3+1}| mat(
-// -1-t,1+t^2;
-// t+1,-1-t;
-//  ) |;
-// ,=(-1)((-1-t)^2-(1+t^2)(t+1))=(-1)(t-t^3)=t(t+1)(t-1)
-// $
-// Thus the eigenvalues are $0,1,-1$, with algebraic multiplicities $1,1,1$.
-// )
+#example[
+Suppose $A=mat(
+0,1,1;
+1,0,1;
+1,1,0
+)$, then characteristic polynomial is
+$
+"det"(t I-A)&= mat(delim: "|", 
+t,-1,1;
+-1,t,-1;
+-1,-1,t
+)xequal( #`R2`-> #`R1`+t dot.c  #`R2` \ #`R2`-> #`R2`-#`R3` ) mat(delim: "|", 
+0,-1-t,1+t^2;
+0,t+1,-1-t;
+-1,-1,t
+) \
+&xequal("cofactor expansion across the 1st column")(-1)(-1)^(3+1) mat(delim: "|", 
+-1-t,1+t^2;
+t+1,-1-t;
+) \
+&=(-1)((-1-t)^2-(1+t^2)(t+1))=(-1)(t-t^3)=t(t+1)(t-1)
+$
+Thus the eigenvalues are $0,1,-1$, with algebraic multiplicities $1,1,1$.
+]
 
-// #example[
-// Suppose
-//  $
-// A=mat(
-//  lambda _1,*,dots.h.c,*;
-// 0, lambda _2,dots.h.c,*;
-// dots.v,dots.v,dots.down,dots.v;
-// 0,0,dots.h.c, lambda_n
-// )
-//  $
-// is an $n times  n$ triangular matrix, then the characteristic polynomial of $A$ is
-//  $
-// "det"(tI-A)=| mat(
-// t- lambda _1,*,dots.h.c,*;
-// 0,t- lambda _2,dots.h.c,*;
-// dots.v,dots.v,dots.down,dots.v;
-// 0,0,dots.h.c,t- lambda_n
-//  ) |=(t- lambda _1)(t- lambda _2)dots.h.c(t- lambda_n)
-//  $
-// so the eigenvalues are the diagonal elements $ lambda _1, lambda _2,dots.h.c, lambda_n$. Note that $ lambda _i$'s might not be distinct, so there might be some multiplicities.
-// )
+#example[
+Suppose
+$
+A=mat(
+lambda _1,*,dots.h.c,*;
+0, lambda _2,dots.h.c,*;
+dots.v,dots.v,dots.down,dots.v;
+0,0,dots.h.c, lambda_n
+)
+$
+is an $n times  n$ triangular matrix, then the characteristic polynomial of $A$ is
+$
+"det"(t I-A)= mat(delim: "|", 
+t- lambda _1,*,dots.h.c,*;
+0,t- lambda _2,dots.h.c,*;
+dots.v,dots.v,dots.down,dots.v;
+0,0,dots.h.c,t- lambda_n
+)=(t- lambda _1)(t- lambda _2)dots.h.c(t- lambda_n)
+$
+so the eigenvalues are the diagonal elements $ lambda _1, lambda _2,dots.h.c, lambda_n$. Note that $ lambda _i$'s might not be distinct, so there might be some multiplicities.
+]
 
-// #example[
-// Suppose $A=mat(
-// 1,2,0,-1;
-// 0,2,1,3;
-// 0,0,3,4;
-// 0,0,0,1
-// )$, then the characteristic polynomial is
-//  $
-// "det"(tI-A)=| mat(
-// t-1,-2,0,1;
-// 0,t-2,-1,-3;
-// 0,0,t-3,-4;
-// 0,0,0,t-1
-//  ) |=(t-1)^2(t-2)(t-3)
-//  $
-// And the eigenvalues are $1,2,3$, with multiplicities $2,1,1$ respectively.
-// )
+#example[
+Suppose $A=mat(
+1,2,0,-1;
+0,2,1,3;
+0,0,3,4;
+0,0,0,1
+)$, then the characteristic polynomial is
+$
+"det"(t I-A)= mat(delim: "|", 
+t-1,-2,0,1;
+0,t-2,-1,-3;
+0,0,t-3,-4;
+0,0,0,t-1
+)=(t-1)^2(t-2)(t-3)
+$
+And the eigenvalues are $1,2,3$, with multiplicities $2,1,1$ respectively.
+]
 
 == Similarity
 
-// #definition[
-// $A$ and $B$ are said to be #text(fill:blue)[similar]#index[similar] if there exists an invertible matrix $P$ such that $A=P B P^(-1)$. Note that this definition is _symmetric_ in the sense that we also have $B=P^(-1)A P=(P^(-1))A(P^(-1))^(-1)$. Similarity is _transitive_ in the sense that if $A,B$ are similar, $B,C$ are similar, then so do $A,C$. The reason is that suppose $A=P B P^(-1)$, $B=RCR^(-1)$, we would have $A=P B P^(-1)=PRCR^(-1)P^(-1)=(PR)C(PR)^(-1)$.
-// ]
+#definition[
+$A$ and $B$ are said to be #text(fill:blue)[similar]#index[similar] if there exists an invertible matrix $P$ such that $A=P B P^(-1)$. Note that this definition is _symmetric_ in the sense that we also have $B=P^(-1)A P=(P^(-1))A(P^(-1))^(-1)$. Similarity is _transitive_ in the sense that if $A,B$ are similar, $B,C$ are similar, then so do $A,C$. The reason is that suppose $A=P B P^(-1)$, $B=R C R^(-1)$, we would have $A=P B P^(-1)=P R C R^(-1) P^(-1)=(P R) C (P R)^(-1)$.
+]
 
-// #definition[
-// We can the mapping $A|-> PAP^(-1)$ a #text(fill:blue)[similar transformation]#index[similar transformation]
-// ]
+#definition[
+We can the mapping $A|-> P A P^(-1)$ a #text(fill:blue)[similar transformation]#index[similar transformation]
+]
 
-// #theorem[\label{10:10-07/07/2022}
-// Similar matrices have the same
-//
-// - determinant
-// - characteristic polynomial
-//
-// ]
+#theorem[
+Similar matrices have the same
 
-// #proof[
-// Suppose $A,B$ are similar, $A=P B P^(-1)$, then
-//
-// - $"det"(A)="det"(P B P^(-1))="det"(P)"det"(B)"det"(P^(-1))="det"(P)"det"(B)"det"(P)^(-1)="det"(B)$
-// - Note that $tI-A=tPIP^(-1)-P B P^(-1)=P(tI-A)P^(-1)$, so $tI-A$ and $tI-B$ are similar, so they have the same determinant which is the characteristic polynomial.
-//
-// ]
+- determinant
+- characteristic polynomial
+
+]<ref-10:10-07-07-2022>
+
+#proof[
+Suppose $A,B$ are similar, $A=P B P^(-1)$, then
+
+- $"det"(A)="det"(P B P^(-1))="det"(P)"det"(B)"det"(P^(-1))="det"(P)"det"(B)"det"(P)^(-1)="det"(B)$
+- Note that $t I-A=t P I P^(-1)-P B P^(-1)=P(t I-A)P^(-1)$, so $t I-A$ and $t I-B$ are similar, so they have the same determinant which is the characteristic polynomial.
+
+]
 
 == Eigendecomposition and diagonalization
 
-// #theorem[[diagonalization theorem]\label{09:52-07/07/2022}
-// Suppose $bold(v)_1,dots.h.c,bold(v)_n$ are eigenvectors of $A$ with eigenvalues $ lambda _1,dots.h.c, lambda_n$, then we have
-// $
-// Amat(
-// bold(v)_1, dots.h.c, bold(v)_n
-// ),=mat(
-// A bold(v)_1, dots.h.c,A bold(v)_n
-// )=mat(
-//  lambda _1bold(v)_1, dots.h.c, lambda_n bold(v)_n
-// )=mat(
-// bold(v)_1, dots.h.c, bold(v)_n
-// )mat(
-//  lambda _1,dots.h.c,0;
-// dots.v,dots.down,dots.v;
-// 0,dots.h.c, lambda_n
-// )
-// $
-// Therefore we get a #text(fill:blue)[diagonalization]#index[diagonalization] of $A$, which reads $A=P D P^(-1)$, where $P=mat(
-// bold(v)_1, dots.h.c, bold(v)_n
-// )$ and $D=mat(
-//  lambda _1,dots.h.c,0;
-// dots.v,dots.down,dots.v;
-// 0,dots.h.c, lambda_n
-// )$
-// ]
+#theorem[[diagonalization theorem]
+Suppose $bold(v)_1,dots.h.c,bold(v)_n$ are eigenvectors of $A$ with eigenvalues $ lambda _1,dots.h.c, lambda_n$, then we have
+$
+A mat(
+bold(v)_1, dots.h.c, bold(v)_n
+)&=mat(
+A bold(v)_1, dots.h.c,A bold(v)_n
+)=mat(
+lambda _1bold(v)_1, dots.h.c, lambda_n bold(v)_n
+)=mat(
+bold(v)_1, dots.h.c, bold(v)_n
+)mat(
+lambda _1,dots.h.c,0;
+dots.v,dots.down,dots.v;
+0,dots.h.c, lambda_n
+)
+$
+Therefore we get a #text(fill:blue)[diagonalization]#index[diagonalization] of $A$, which reads $A=P D P^(-1)$, where $P=mat(
+bold(v)_1, dots.h.c, bold(v)_n
+)$ and $D=mat(
+lambda _1,dots.h.c,0;
+dots.v,dots.down,dots.v;
+0,dots.h.c, lambda_n
+)$
+]<ref-09:52-07-07-2022>
 
-// #theorem[\label{17:43-07/06/2022}
-// If $bold(v)_1,dots.h.c,bold(v)_r$ are eigenvectors that correspond to distinct eigenvalues $ lambda _1,dots.h.c, lambda _r$ of an $n times  n$ matrix $A$, then the set $\{bold(v)_1,dots.h.c,bold(v)_r\}$ is linearly independent.
-// ]
+#theorem[
+If $bold(v)_1,dots.h.c,bold(v)_r$ are eigenvectors that correspond to distinct eigenvalues $ lambda _1,dots.h.c, lambda _r$ of an $n times  n$ matrix $A$, then the set $\{bold(v)_1,dots.h.c,bold(v)_r\}$ is linearly independent.
+]<ref-17:43-07-06-2022>
 
-// #proof[
-// Suppose $\{bold(v)_1,dots.h.c,bold(v)_n\}$ is linearly independent, up to reordering the indices, we may assume $bold(v)_r=c_1bold(v)_1+dots.h.c+c_{r-1}bold(v)_{r-1}$
-// ]
+#proof[
+Suppose $\{bold(v)_1,dots.h.c,bold(v)_n\}$ is linearly independent, up to reordering the indices, we may assume $bold(v)_r=c_1bold(v)_1+dots.h.c+c_(r-1)bold(v)_(r-1)$
+]
 
-// #exercise[
-// Diagonalize $A = mat(
-// 1,3,3;
-// -3,-5,-3;
-// 3,3,1
-// )$
-// ]
+#exercise[
+Diagonalize $A = mat(
+1,3,3;
+-3,-5,-3;
+3,3,1
+)$
+]
 
-// #solution[
-// First we want to find all eigenvalues of $A$
-// $
-// "det"(tI-A),=| mat(
-// t-1,-3,-3;
-// 3,t+5,3;
-// -3,-3,t-1
-//  ) |xequal(#`R3`-> #`R3`+#`R2`)| mat(
-// t-1,-3,-3;
-// 3,t+5,3;
-// 0,t+2,t+2
-//  ) |;
-// ,xequal("factor out $(t+2)$ from row 3")(t+2)| mat(
-// t-1,-3,-3;
-// 3,t+5,3;
-// 0,1,1
-//  ) |;
-// ,xequal( #`R1`-> #`R1`+3#`R3` \ #`R2`-> #`R2`-3#`R3` )(t+2)| mat(
-// t-1,0,0;
-// 3,t+2,0;
-// 0,1,1
-//  ) |=(t+2)(t-1)(t+2)(1)=(t+2)^2(t-1)
-// $
-// So the eigenvalues of $A$ are $ lambda _1=1$ with algebraic multiplicity 1 and $ lambda _2= lambda _3=-2$ which is of algebraic multiplicity 2. For a basis of the 1-eigenspace $"Nul "(I-A)$, consider
-// $
-// mat(
-// I-A,bold(0)
-// ; augment:#(-1)),=mat(
-// 0,-3,-3,0;
-// 3,6,3,0;
-// -3,-3,0,0
-// ; augment:#(-1))tilde mat(
-// 1,0,-1,0;
-// 0,1,1,0;
-// 0,0,0,0;
-// ; augment:#(-1))
-// $
-// So it could be ${bold(v)_1=mat(
-// 1;-1;0
-// )}$
-// For a basis of the $(-2)$-eigenspace $"Nul "(-2I-A)$, consider
-// $
-// mat(
-// -2I-A,bold(0)
-// ; augment:#(-1)),=mat(
-// -3,-3,-3,0;
-// 3,3,3,0;
-// -3,-3,-3,0
-// ; augment:#(-1))tilde mat(
-// 1,1,1,0;
-// 0,0,0,0;
-// 0,0,0,0;
-// ; augment:#(-1))
-// $
-// So it could be ${bold(v)_2=mat(
-// -1;1;0
-// ),bold(v)_3=mat(
-// -1;0;1
-// )}$. By Theorem @(17:43-07/06/2022), we know that $\{bold(v)_1,bold(v)_2,bold(v)_3\}$ are linearly independent, thus forming a basis for $RR^3$. And we have a diagonalization
-//  $
-// A=P D P^(-1),\quad P=mat(
-// bold(v)_1,bold(v)_2,bold(v)_3
-// )=mat(
-// 1,-1,-1;
-// -1,1,0;
-// 0,0,1;
-// ),\quad D=mat(
-//  lambda _1,0,0;
-// 0, lambda _2,0;
-// 0,0, lambda _3
-// )=mat(
-// 1,0,0;
-// 0,-2,0;
-// 0,0,-2
-// )
-//  $
-// ]
+#solution[
+First we want to find all eigenvalues of $A$
+$
+"det"(t I-A)&= mat(delim: "|", 
+t-1,-3,-3;
+3,t+5,3;
+-3,-3,t-1
+)xequal(#`R3`-> #`R3`+#`R2`) mat(delim: "|", 
+t-1,-3,-3;
+3,t+5,3;
+0,t+2,t+2
+) \
+&xequal("factor out $(t+2)$ from row 3")(t+2) mat(delim: "|", 
+t-1,-3,-3;
+3,t+5,3;
+0,1,1
+) \
+&xequal( #`R1`-> #`R1`+3#`R3` \ #`R2`-> #`R2`-3#`R3` )(t+2) mat(delim: "|", 
+t-1,0,0;
+3,t+2,0;
+0,1,1
+)=(t+2)(t-1)(t+2)(1)=(t+2)^2(t-1)
+$
+So the eigenvalues of $A$ are $ lambda _1=1$ with algebraic multiplicity 1 and $ lambda _2= lambda _3=-2$ which is of algebraic multiplicity 2. For a basis of the 1-eigenspace $"Nul "(I-A)$, consider
+$
+mat(
+I-A,bold(0)
+; augment:#(-1))&=mat(
+0,-3,-3,0;
+3,6,3,0;
+-3,-3,0,0
+; augment:#(-1))tilde mat(
+1,0,-1,0;
+0,1,1,0;
+0,0,0,0;
+; augment:#(-1))
+$
+So it could be ${bold(v)_1=mat(
+1;-1;0
+)}$
+For a basis of the $(-2)$-eigenspace $"Nul "(-2I-A)$, consider
+$
+mat(
+-2I-A,bold(0)
+; augment:#(-1))&=mat(
+-3,-3,-3,0;
+3,3,3,0;
+-3,-3,-3,0
+; augment:#(-1))tilde mat(
+1,1,1,0;
+0,0,0,0;
+0,0,0,0;
+; augment:#(-1))
+$
+So it could be ${bold(v)_2=mat(
+-1;1;0
+),bold(v)_3=mat(
+-1;0;1
+)}$. By @ref-17:43-07-06-2022, we know that $\{bold(v)_1,bold(v)_2,bold(v)_3\}$ are linearly independent, thus forming a basis for $RR^3$. And we have a diagonalization
+$
+A=P D P^(-1), quad P=mat(
+bold(v)_1,bold(v)_2,bold(v)_3
+)=mat(
+1,-1,-1;
+-1,1,0;
+0,0,1;
+), quad D=mat(
+lambda _1,0,0;
+0, lambda _2,0;
+0,0, lambda _3
+)=mat(
+1,0,0;
+0,-2,0;
+0,0,-2
+)
+$
+]
 
-// #example[\label{09:29-07/07/2022}
-// $A = mat(
-// 2,4,3;
-// -4,-6,-3;
-// 3,3,1
-// )$, the characteristic polynomial of $A$ is
-// $
-// "det"(tI-A),=| mat(
-// t-2,-4,-3;
-// 4,t+6,3;
-// -3,-3,t-1
-//  ) |xequal(#`R1`-> #`R1`+#`R2`)| mat(
-// t+2,t+2,0;
-// 4,t+6,3;
-// -3,-3,t-1
-//  ) |;
-// ,xequal("factor $(t+2)$ from row 1")(t+2)| mat(
-// 1,1,0;
-// 4,t+6,3;
-// -3,-3,t-1
-//  ) |xequal( #`R2`-> #`R2`-4#`R1` \ #`R3`-> #`R3`+3#`R1` )(t+2)| mat(
-// 1,1,0;
-// 0,t+2,3;
-// 0,0,t-1
-//  ) |;
-// ,=(t-1)(t+2)^2
-// $
-// So the eigenvalues of $A$ are $ lambda _1=1$ with algebraic multiplicity 1 and $ lambda _2= lambda _3=-2$ which is of algebraic multiplicity 2. To find a basis for the 1-eigenspace, consider
-// $
-// mat(
-// I-A,bold(0)
-// ; augment:#(-1)),=mat(
-// -1,-4,-3,0;
-// 4,7,3,0;
-// -3,-3,0,0
-// ; augment:#(-1))tilde mat(
-// -1,-4,-3,0;
-// 0,-9,-9,0;
-// 0,9,9,0
-// ; augment:#(-1))tilde mat(
-// -1,-4,-3,0;
-// 0,1,1,0;
-// 0,0,0,0
-// ; augment:#(-1));
-// ,tilde mat(
-// 1,0,-1,0;
-// 0,1,1,0;
-// 0,0,0,0
-// ; augment:#(-1))
-// $
-// It could be ${bold(v)_1=mat(
-// 1;-1;1
-// )}$. To find a basis for the $(-2)$-eigenspace, consider
-// $
-// mat(
-// -2I-A,bold(0)
-// ; augment:#(-1)),=mat(
-// -4,-4,-3,0;
-// 4,4,3,0;
-// -3,-3,-3,0
-// ; augment:#(-1))tilde mat(
-// -4,-4,-3,0;
-// 0,0,0,0;
-// 1,1,1,0
-// ; augment:#(-1));
-// ,tilde mat(
-// 0,0,1,0;
-// 0,0,0,0;
-// 1,1,1,0
-// ; augment:#(-1))tilde mat(
-// 1,1,0,0;
-// 0,0,1,0;
-// 0,0,0,0;
-// ; augment:#(-1))
-// $
-// It could be ${bold(v)_2=mat(
-// -1;1;0
-// )}$. Note that there is not enough eigenvectors ($2<3$!!!) for a basis for $RR^3$. The real reason that this failed to be a basis was that the geometric multiplicity of $-2$ (which is equal to 1) is less that the algebraic multiplicity of $-2$ (which is equal to 2)
-// )
+#example[
+$A = mat(
+2,4,3;
+-4,-6,-3;
+3,3,1
+)$, the characteristic polynomial of $A$ is
+$
+"det"(t I-A)&= mat(delim: "|", 
+t-2,-4,-3;
+4,t+6,3;
+-3,-3,t-1
+)xequal(#`R1`-> #`R1`+#`R2`) mat(delim: "|", 
+t+2,t+2,0;
+4,t+6,3;
+-3,-3,t-1
+) \
+&xequal("factor $(t+2)$ from row 1")(t+2) mat(delim: "|", 
+1,1,0;
+4,t+6,3;
+-3,-3,t-1
+)xequal( #`R2`-> #`R2`-4#`R1` \ #`R3`-> #`R3`+3#`R1` )(t+2) mat(delim: "|", 
+1,1,0;
+0,t+2,3;
+0,0,t-1
+) \
+&=(t-1)(t+2)^2
+$
+So the eigenvalues of $A$ are $ lambda _1=1$ with algebraic multiplicity 1 and $ lambda _2= lambda _3=-2$ which is of algebraic multiplicity 2. To find a basis for the 1-eigenspace, consider
+$
+mat(
+I-A,bold(0)
+; augment:#(-1))&=mat(
+-1,-4,-3,0;
+4,7,3,0;
+-3,-3,0,0
+; augment:#(-1))tilde mat(
+-1,-4,-3,0;
+0,-9,-9,0;
+0,9,9,0
+; augment:#(-1))tilde mat(
+-1,-4,-3,0;
+0,1,1,0;
+0,0,0,0
+; augment:#(-1)) \
+&tilde mat(
+1,0,-1,0;
+0,1,1,0;
+0,0,0,0
+; augment:#(-1))
+$
+It could be ${bold(v)_1=mat(
+1;-1;1
+)}$. To find a basis for the $(-2)$-eigenspace, consider
+$
+mat(
+-2I-A,bold(0)
+; augment:#(-1))&=mat(
+-4,-4,-3,0;
+4,4,3,0;
+-3,-3,-3,0
+; augment:#(-1))tilde mat(
+-4,-4,-3,0;
+0,0,0,0;
+1,1,1,0
+; augment:#(-1)) \
+&tilde mat(
+0,0,1,0;
+0,0,0,0;
+1,1,1,0
+; augment:#(-1))tilde mat(
+1,1,0,0;
+0,0,1,0;
+0,0,0,0;
+; augment:#(-1))
+$
+It could be ${bold(v)_2=mat(
+-1;1;0
+)}$. Note that there is not enough eigenvectors ($2<3$!!!) for a basis for $RR^3$. The real reason that this failed to be a basis was that the geometric multiplicity of $-2$ (which is equal to 1) is less that the algebraic multiplicity of $-2$ (which is equal to 2)
+]<ref-09:29-07-07-2022>
 
-// #theorem[
-// Supoose $A$ is an $n times  n$ matrix. Then the geometric multiplicity of an eigenvalue $ lambda $ is less or equal to the algebraic multiplicity of $ lambda $. $A$ is diagonalizable $<=> A$ has $n$ linearly independent eigenvectors $<=>$ geometric multiplicities are always the same as algebraic multiplicities.
-// ]
+#theorem[
+Supoose $A$ is an $n times  n$ matrix. Then the geometric multiplicity of an eigenvalue $lambda$ is less or equal to the algebraic multiplicity of $lambda$. $A$ is diagonalizable $<=> A$ has $n$ linearly independent eigenvectors $<=>$ geometric multiplicities are always the same as algebraic multiplicities.
+]
 
-// #theorem[\label{13:41-07/08/2022}
-// Combining Theorem @(17:43-07/06/2022), we know that an $n times  n$ matrix with $n$ distinct eigenvalues is diagonalizable.
-// ]
+#theorem[
+Combining @ref-17:43-07-06-2022, we know that an $n times  n$ matrix with $n$ distinct eigenvalues is diagonalizable.
+]<ref-13:41-07-08-2022>
 
-// #definition[
-// By Theorem @(10:10-07/07/2022) we know that similar matrices have the same characteristic polynomials (hence the same eigenvalues) and determinants. So we may define notions like _eigenvalues_, _eigenvectors_, _characteristic polynomials_ and _determinants_ for a linear transformation $T:V-> V$.
-// ]
+#definition[
+By @ref-10:10-07-07-2022 we know that similar matrices have the same characteristic polynomials (hence the same eigenvalues) and determinants. So we may define notions like _eigenvalues_, _eigenvectors_, _characteristic polynomials_ and _determinants_ for a linear transformation $T:V-> V$.
+]
 
-// #example[
-// Suppose $T=\dfrac{d}{dt}:PP_2->PP_2$, $T(a_0+a_1t+a_2t^2)=a_1+2a_2t$ is a linear transformation (verify this!), $cal(E)=\{1,t,t^2\}$ is the standard basis, we have
-//  $
-// D=[T]_{cal(B)}=mat(
-// 0,0,0;
-// 0,1,0;
-// 0,0,2
-// )
-//  $
-// so the characteristic polynomial of $T$ is $"det"(tI-[T]_{cal(E)})=t(t-1)(t-2)$, so the eigenvalues for $T$ will be $ lambda _1=0, lambda _2=1, lambda _3=2$, and the corresponding eigenvectors for $[T]_{cal(E)}$ could be ${bold(v)_1=mat(
-// 1;0;0
-// ),bold(v)_1=mat(
-// 0;1;0
-// ),bold(v)_1=mat(
-// 0;0;1
-// )}$, which in turn corresponds to eigenvectors $\{1,t,t^2\}$ for $T$. However if we choose basis $cal(C)=\{1+t,t,t^2\}$ is the standard basis, we have
-//  $
-// P=\underset{cal(E)\leftarrowcal(C)}{P}=mat(
-// 1,0,0;
-// 1,1,0;
-// 0,0,1
-// ),\quad P^(-1)=\underset{cal(C)\leftarrowcal(E)}{P}=mat(
-// 1,0,0;
-// -1,1,0;
-// 0,0,1
-// )
-//  $
-// and thus
-// $
-// A,=[T]_{cal(C)}=\underset{cal(B)\leftarrowcal(C)}{P}[T]_{cal(C)}(\underset{cal(B)\leftarrowcal(C)}{P})^(-1)=P D P^(-1)=mat(
-// 1,0,0;
-// 1,1,0;
-// 0,0,1
-// )mat(
-// 0,0,0;
-// 0,1,0;
-// 0,0,2
-// )mat(
-// 1,0,0;
-// -1,1,0;
-// 0,0,1
-// )=mat(
-// 0,0,0;
-// -1,1,0;
-// 0,0,2
-// )
-// $
-// The determinant of $T$ is equal to either $"det"([T]_{cal(B)})$ or $"det"([T]_{cal(C)})$, which is zero.
-// )
+#example[
+Suppose $T=(d) / (d t):PP_2->PP_2$, $T(a_0+a_1t+a_2t^2)=a_1+2a_2t$ is a linear transformation (verify this!), $cal(E)=\{1,t,t^2\}$ is the standard basis, we have
+$
+D=[T]_(cal(B))=mat(
+0,0,0;
+0,1,0;
+0,0,2
+)
+$
+so the characteristic polynomial of $T$ is $"det"(t I-[T]_(cal(E)))=t(t-1)(t-2)$, so the eigenvalues for $T$ will be $ lambda _1=0, lambda _2=1, lambda _3=2$, and the corresponding eigenvectors for $[T]_(cal(E))$ could be ${bold(v)_1=mat(
+1;0;0
+),bold(v)_1=mat(
+0;1;0
+),bold(v)_1=mat(
+0;0;1
+)}$, which in turn corresponds to eigenvectors $\{1,t,t^2\}$ for $T$. However if we choose basis $cal(C)=\{1+t,t,t^2\}$ is the standard basis, we have
+$
+P=P_(cal(E)arrow.l cal(C))=mat(
+1,0,0;
+1,1,0;
+0,0,1
+), quad P^(-1)=P_(cal(C)arrow.l cal(E))=mat(
+1,0,0;
+-1,1,0;
+0,0,1
+)
+$
+and thus
+$
+A&=[T]_(cal(C))=P_(cal(B)arrow.l cal(C))[T]_(cal(C))(P_(cal(B)arrow.l cal(C)))^(-1)=P D P^(-1)=mat(
+1,0,0;
+1,1,0;
+0,0,1
+)mat(
+0,0,0;
+0,1,0;
+0,0,2
+)mat(
+1,0,0;
+-1,1,0;
+0,0,1
+)=mat(
+0,0,0;
+-1,1,0;
+0,0,2
+)
+$
+The determinant of $T$ is equal to either $"det"([T]_(cal(B)))$ or $"det"([T]_(cal(C)))$, which is zero.
+]
 
-// #example[
-// $A=mat(
-// 2,1;
-// 2,3
-// )$, let's compute $A^{50}$. First we find the eigenvalues $ lambda _1=1$, $ lambda _2=4$. and we get corresponding eigenvectors $bold(v)_1=mat(
-// -1;1
-// ),bold(v)_2=mat(
-// 1;2
-// )$, so we have $D=mat(
-// 1,0;0,4
-// )$ and $P=mat(
-// -1,1;1,2
-// )$, so $P^(-1)= 1 / 3 mat(
-// -2,1;1,1
-// )$. So we have
-// $
-// A^{50} ,= \overbrace{(P D P^(-1))(P D P^(-1))(P D P^(-1))dots.h.c(P D P^(-1))}^{50};
-// ,=\overbrace{(PD\cancel{P^(-1)})(\cancel PD\cancel{P^(-1)})(\cancel PD\cancel{P^(-1)})dots.h.c(\cancel P D P^(-1))}^{50};
-// ,=PD^{50}P^(-1)= 1 / 3 mat(
-// -1,1;1,2
-// )mat(
-// 1,0;0,4^{50}
-// )mat(
-// -2,1;1,1
-// )
-// $
-// )
+#example[
+$A=mat(
+2,1;
+2,3
+)$, let's compute $A^(50)$. First we find the eigenvalues $ lambda _1=1$, $ lambda _2=4$. and we get corresponding eigenvectors $bold(v)_1=mat(
+-1;1
+),bold(v)_2=mat(
+1;2
+)$, so we have $D=mat(
+1,0;0,4
+)$ and $P=mat(
+-1,1;1,2
+)$, so $P^(-1)= 1 / 3 mat(
+-2,1;1,1
+)$. So we have
+$
+A^(50) &= overbrace((P D P^(-1))(P D P^(-1))(P D P^(-1))dots.h.c(P D P^(-1)), 50) \
+&=overbrace((P D cancel(P^(-1)))(cancel(P) D cancel(P^(-1)))(cancel(P) D cancel(P^(-1)))dots.h.c(cancel(P) D P^(-1)), 50) \
+&=P D^(50) P^(-1)= 1 / 3 mat(
+-1,1;1,2
+)mat(
+1,0;0,4^(50)
+)mat(
+-2,1;1,1
+)
+$
+]
 
 = Lecture 13 - Orthogonalization
 
-// Recall for $bold(u)=mat(
-// u_1;u_2;dots.v;u_n
-// ),bold(v)=mat(
-// v_1;v_2;dots.v;v_n
-// ) in RR^n$, we can define the _dot product_ $bold(u) dot.c bold(v)$ to be $bold(u)^T bold(v)=mat(
-// u_1,u_2,dots.h.c,u_n
-// )mat(
-// v_1;v_2;dots.v;v_n
-// )=u_1v_1+u_2v_2+dots.h.c u_nv_n$. The #text(fill:blue)[length](or #text(fill:blue)[norm]) of a vector $bold(u)$ can be expressed as $|bold(u)|=sqrt(bold(u) dot.c bold(u)}=sqrt(u_1^2+dots.h.c+u_n^2}$. Geometrically, the dot product can interpreted as $bold(u) dot.c bold(v)=|bold(u)||bold(v)| cos theta$, here $theta$ is the angle between $bold(u)$ and $bold(v)$ (which could be between 0 and $\pi$)
-//
-// - If $bold(u) dot.c bold(v)<0$, then $ cos theta<0$, $theta$ is obtuse, if in addition $bold(u) dot.c bold(v)=|bold(u)||bold(v)|$, then $bold(u),bold(v)$ are of the opposite direction.
-// - If $bold(u) dot.c bold(v)=0$, then $ cos theta=0$, $theta= \pi / 2 $, or $bold(u)=bold(0)$, or $bold(v)=bold(0)$. In this case, we say that $bold(u),bold(v)$ are #text(fill:blue)[orthogonal]#index[orthogonal] (denoted $bold(u)perpbold(v)$, $perp$ stands for perpendicular).
-// - If $bold(u) dot.c bold(v)>0$, then $ cos theta>0$, $theta$ is acute, if in addition $bold(u) dot.c bold(v)=|bold(u)||bold(v)|$, then $bold(u),bold(v)$ are of the same direction.
-//
+Recall for $bold(u)=mat(
+u_1;u_2;dots.v;u_n
+),bold(v)=mat(
+v_1;v_2;dots.v;v_n
+) in RR^n$, we can define the _dot product_ $bold(u) dot.c bold(v)$ to be $bold(u)^T bold(v)=mat(
+u_1,u_2,dots.h.c,u_n
+)mat(
+v_1;v_2;dots.v;v_n
+)=u_1 v_1+u_2 v_2+dots.h.c u_n v_n$. The #text(fill:blue)[length] (or #text(fill:blue)[norm]) of a vector $bold(u)$ can be expressed as $|bold(u)|=sqrt(bold(u) dot.c bold(u))=sqrt(u_1^2+dots.h.c+u_n^2)$. Geometrically, the dot product can interpreted as $ bold(u) dot.c bold(v)=|bold(u)||bold(v)| cos theta $, here $ theta $ is the angle between $bold(u)$ and $bold(v)$ (which could be between 0 and $pi$)
+
+- If $bold(u) dot.c bold(v)<0$, then $ cos theta<0$, $theta$ is obtuse, if in addition $bold(u) dot.c bold(v)=|bold(u)||bold(v)|$, then $bold(u),bold(v)$ are of the opposite direction.
+- If $bold(u) dot.c bold(v)=0$, then $ cos theta=0$, $theta= pi / 2 $, or $bold(u)=bold(0)$, or $bold(v)=bold(0)$. In this case, we say that $bold(u),bold(v)$ are #text(fill:blue)[orthogonal]#index[orthogonal] (denoted $bold(u)perp bold(v)$, $perp$ stands for perpendicular).
+- If $bold(u) dot.c bold(v)>0$, then $ cos theta>0$, $theta$ is acute, if in addition $bold(u) dot.c bold(v)=|bold(u)||bold(v)|$, then $bold(u),bold(v)$ are of the same direction.
+
 
 == Orthogonal and orthonormal basis
 
@@ -5507,17 +5488,17 @@ bold(v)_n^T bold(v)_1,bold(v)_n^T bold(v)_2,dots.h.c,bold(v)_n^T bold(v)_n;
 is diagonal (or if $A^T A=I$)
 ]
 
-// #theorem[\label{01:12-07/15/2022}
-// Suppose $cal(B)=\{bold(v)_1,dots.h.c,bold(v)_p\}$ is an orthogonal set of non-zero vectors, then $cal(B)$ is linearly independent
-// ]
+#theorem[
+Suppose $cal(B)=\{bold(v)_1,dots.h.c,bold(v)_p\}$ is an orthogonal set of non-zero vectors, then $cal(B)$ is linearly independent
+]<ref-01:12-07-15-2022>
 
-// #proof[
-// Suppose not, we may assume $bold(0)!=bold(v)_p=c_1bold(v)_1+dots.h.c+r_{p-1}bold(v)_{p-1}$, but then
-//  $
-// 0<|bold(v)_p|^2=bold(v)_p dot.c (c_1bold(v)_1+dots.h.c+r_{p-1}bold(v)_{p-1})=0
-//  $
-// Which is a contradiction.
-// ]
+#proof[
+Suppose not, we may assume $bold(0)!=bold(v)_p=c_1bold(v)_1+dots.h.c+r_(p-1)bold(v)_(p-1)$, but then
+$
+0<|bold(v)_p|^2=bold(v)_p dot.c (c_1bold(v)_1+dots.h.c+r_(p-1)bold(v)_(p-1))=0
+$
+Which is a contradiction.
+]
 
 == Gram-Schmidt process
 
@@ -5528,7 +5509,7 @@ Suppose you have two vectors $bold(u),bold(v)$ (here $bold(v)!=bold(0)$), what i
 #answer[
 First you realize that $"Proj"_(bold(v))bold(u)$ is parallel to $bold(v)$, so we write it as $ lambda bold(v)$, and we know $|"Proj"_(bold(v))bold(u)|= lambda |bold(v)|=|bold(u)| cos theta$, so we may conclude that
  $
- lambda = |bold(u)| (cos theta) / (|bold(v)|) = |bold(u)||bold(v)| (cos theta) /  (|bold(v)|^2) = bold(u) dot.c bold(v) / bold(v) dot.c bold(v)
+ lambda = (|bold(u)| cos theta) / (|bold(v)|) = (|bold(u)||bold(v)| cos theta) / (|bold(v)|^2) = (bold(u) dot.c bold(v)) / (bold(v) dot.c bold(v))
  $
 Therefore we have derived the equation
 $
@@ -5536,28 +5517,28 @@ $
 $
 ]
 
-// #question[
-// If $W$ is a subspace of $RR^n$ with an orthogonal basis $cal(B)=\{bold(u)_1,dots.h.c,bold(u)_p\}$, how could you express the orthogonal projection of a vector $bold(y) in RR^n$ onto $W$ (denoted by $"Proj"_W bold(y)$).
-// ]
+#question[
+If $W$ is a subspace of $RR^n$ with an orthogonal basis $cal(B)=\{bold(u)_1,dots.h.c,bold(u)_p\}$, how could you express the orthogonal projection of a vector $bold(y) in RR^n$ onto $W$ (denoted by $"Proj"_W bold(y)$).
+]
 
-// Suppose $"Proj"_W bold(y)= lambda _1bold(u)_1+dots.h.c+ lambda _pbold(u)_p$, then we should have for any $i$
-//  $
-// 0=(bold(y)-"Proj"_W bold(y)) dot.c bold(u)_i=(bold(y)- lambda _1bold(u)_1+dots.h.c+ lambda _pbold(u)_p) dot.c bold(u)_i=bold(y) dot.c bold(u)- lambda _ibold(u)_1 dot.c bold(u)_1 =>  lambda _i= bold(y) dot.c bold(u)_i / bold(u)_i dot.c bold(u)_i
-//  $
-// There we have the equation
-// $ \label{22:47-07/14/2022}
-// \begin{aligned}
-// "Proj"_W bold(y),="Proj"_{bold(u)_1}bold(y)+dots.h.c+"Proj"_{bold(u)_p}bold(y);
-// ,= bold(y) dot.c bold(u)_1 / bold(u)_1 dot.c bold(u)_1 bold(u)_1+dots.h.c+ bold(y) dot.c bold(u)_p / bold(u)_p dot.c bold(u)_p bold(u)_p
-// \end{aligned}
-// $
+Suppose $"Proj"_W bold(y)= lambda _1bold(u)_1+dots.h.c+ lambda _p bold(u)_p$, then we should have for any $i$
+$
+0=(bold(y)-"Proj"_W bold(y)) dot.c bold(u)_i=(bold(y)- lambda _1bold(u)_1+dots.h.c+ lambda _p bold(u)_p) dot.c bold(u)_i=bold(y) dot.c bold(u)- lambda _i bold(u)_1 dot.c bold(u)_1 =>  lambda _i= (bold(y) dot.c bold(u)_i) / (bold(u)_i dot.c bold(u)_i)
+$
+There we have the equation
+$
 
-// If we further assume that $cal(B)$ is an orthonormal basis, then $bold(u)_1 dot.c bold(u)_1=|bold(u)_i|^2=1$. Let's write $U=mat(
-// bold(u)_1,dots.h.c,bold(u)_p
-// )$. \eqref{22:47-07/14/2022} becomes
-// $ \label{22:51-07/14/2022}
-// "Proj"_W bold(y)=(bold(y) dot.c bold(u)_1)bold(u)_1+dots.h.c+(bold(y) dot.c bold(u)_p)bold(u)_p=UU^T bold(y)
-// $
+"Proj"_W bold(y)&="Proj"_(bold(u)_1)bold(y)+dots.h.c+"Proj"_(bold(u)_p)bold(y) \
+&= (bold(y) dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1) bold(u)_1+dots.h.c+ (bold(y) dot.c bold(u)_p) / (bold(u)_p dot.c bold(u)_p) bold(u)_p
+
+$ <ref-22:47-07-14-2022>
+
+If we further assume that $cal(B)$ is an orthonormal basis, then $bold(u)_1 dot.c bold(u)_1=|bold(u)_i|^2=1$. Let's write $U=mat(
+bold(u)_1,dots.h.c,bold(u)_p
+)$. @ref-22:47-07-14-2022 becomes
+$
+"Proj"_W bold(y)=(bold(y) dot.c bold(u)_1)bold(u)_1+dots.h.c+(bold(y) dot.c bold(u)_p)bold(u)_p=UU^T bold(y)
+$ <ref-22:51-07-14-2022>
 
 #example[
 Consider $cal(B)={bold(u)_1=mat(
@@ -5577,9 +5558,9 @@ bold(u)_1,bold(u)_2
 0,5
 )$ is diagonal, hence $cal(B)$ is an orthogonal set, the orthogonal projection of $bold(y)$ onto $W$ is
 $
-"Proj"_W bold(y),= bold(y) dot.c bold(u)_1 / bold(u)_1 dot.c bold(u)_1 bold(u)_1+ bold(y) dot.c bold(u)_2 / bold(u)_2 dot.c bold(u)_2 bold(u)_2;
-,= 1 dot.c 2+1 dot.c 1+1 dot.c 0 / 2^2+1^2+0^2 bold(u)_1+ 1 dot.c (-1)+1 dot.c 2+1 dot.c 0 / (-1)^2+2^2+0^2 bold(u)_2;
-,= 3 / 5 mat(
+"Proj"_W bold(y)&= (bold(y) dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1) bold(u)_1+ (bold(y) dot.c bold(u)_2) / (bold(u)_2 dot.c bold(u)_2) bold(u)_2 \
+&= (1 dot.c 2+1 dot.c 1+1 dot.c 0) / (2^2+1^2+0^2) bold(u)_1+ (1 dot.c (-1)+1 dot.c 2+1 dot.c 0) / ((-1)^2+2^2+0^2) bold(u)_2 \
+&= 3 / 5 mat(
 2;1;0
 )+ 1 / 5 mat(
 -1;2;0
@@ -5596,14 +5577,14 @@ Suppose we are given arbitrary basis $cal(B)=\{bold(v)_1,dots.h.c,bold(v)_p\}$ f
 #answer[
 We apply the #text(fill:blue)[Gram-Schmidt process]#index[Gram-Schmidt process]
 
-// - $bold(u)_1=bold(v)_1$
-// - $bold(u)_2=bold(v)_2-"Proj"_{bold(u)_1}bold(v)_2$;
-// $\hphantom{bold(u)_2}=bold(v)_2-\dfrac{bold(v)_2 dot.c bold(u)_1}{bold(u)_1 dot.c bold(u)_1}bold(u)_1$
-// - $bold(u)_3=bold(v)_3-"Proj"_{bold(u)_1}bold(v)_3-"Proj"_{bold(u)_2}bold(v)_3$;
-// $\hphantom{bold(u)_3}=bold(v)_3-\dfrac{bold(v)_3 dot.c bold(u)_1}{bold(u)_1 dot.c bold(u)_1}bold(u)_1-\dfrac{bold(v)_3 dot.c bold(u)_2}{bold(u)_2 dot.c bold(u)_2}bold(u)_2$
-// - $\hphantom{bold(u)_4}dots.v$
-// - $bold(u)_p=bold(v)_p-"Proj"_{bold(u)_1}bold(v)_p-dots.h.c-"Proj"_{bold(u)_{p-1}}bold(v)_p$;
-// $\hphantom{bold(u)_p}=bold(v)_p-\dfrac{bold(v)_p dot.c bold(u)_1}{bold(u)_1 dot.c bold(u)_1}bold(u)_1-dots.h.c-\dfrac{bold(v)_p dot.c bold(u)_{p-1}}{bold(u)_{p-1} dot.c bold(u)_{p-1}}bold(u)_{p-1}$
+- $bold(u)_1=bold(v)_1$
+- $bold(u)_2=bold(v)_2-"Proj"_(bold(u)_1)bold(v)_2$;
+$#hide[$bold(u)_2$]=bold(v)_2-(bold(v)_2 dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1)bold(u)_1$
+- $bold(u)_3=bold(v)_3-"Proj"_(bold(u)_1)bold(v)_3-"Proj"_(bold(u)_2)bold(v)_3$;
+$#hide[$bold(u)_3$]=bold(v)_3-(bold(v)_3 dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1)bold(u)_1-(bold(v)_3 dot.c bold(u)_2) / (bold(u)_2 dot.c bold(u)_2)bold(u)_2$
+- $#hide[$bold(u)_4$]dots.v$
+- $bold(u)_p=bold(v)_p-"Proj"_(bold(u)_1)bold(v)_p-dots.h.c-"Proj"_(bold(u)_(p-1))bold(v)_p$;
+$#hide[$bold(u)_p$]=bold(v)_p-(bold(v)_p dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1)bold(u)_1-dots.h.c-(bold(v)_p dot.c bold(u)_(p-1)) / (bold(u)_(p-1) dot.c bold(u)_(p-1))bold(u)_(p-1)$
 
 Then ${bold(u)_1,dots.h.c,bold(u)_p}$ would be an orthogonal basis. To get an orthonormal basis, just normalize these vectors.
 ]
@@ -5620,7 +5601,7 @@ Consider ${bold(v)_1=mat(
 - First we choose $bold(u)_1=bold(v)_1=mat(
 1;1;1
 )$
-- $bold(v)_2-\dfrac{bold(v)_2 dot.c bold(u)_1}{bold(u)_1 dot.c bold(u)_1}bold(u)_1=mat(
+- $bold(v)_2-(bold(v)_2 dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1)bold(u)_1=mat(
 1;2;2
 )- 5 / 3 mat(
 1;1;1
@@ -5629,7 +5610,7 @@ Consider ${bold(v)_1=mat(
 )$. Let's instead take a multiple of this to be our $bold(u)_2$, namely we set $bold(u)_2=mat(
 -2;1;1
 )$
-- $bold(u)_3=bold(v)_3-\dfrac{bold(v)_3 dot.c bold(u)_1}{bold(u)_1 dot.c bold(u)_1}bold(u)_1-\dfrac{bold(v)_3 dot.c bold(u)_2}{bold(u)_2 dot.c bold(u)_2}bold(u)_2=mat(
+- $bold(u)_3=bold(v)_3-(bold(v)_3 dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1)bold(u)_1-(bold(v)_3 dot.c bold(u)_2) / (bold(u)_2 dot.c bold(u)_2)bold(u)_2=mat(
 3;-1;1
 )-mat(
 1;1;1
@@ -5686,73 +5667,73 @@ The rows of $U$ also form an orthonormal basis.
 The name _orthogonal matrix_ is unfortunate since it is made out of orthonormal basis. It should really be called the orthonormal matrix. But since mathematicians has been using this for a long time. So we will stick to this usage.
 ]
 
-// The Gram-Schmidt process gives us the so-called $QR$-factorization. First we can rewrite the Gram-Schmidt process as
-// $
-// bold(v)_1,=bold(u)_1;
-// bold(v)_2,=\dfrac{bold(v)_2 dot.c bold(u)_1}{bold(u)_1 dot.c bold(u)_1}bold(u)_1+bold(u)_2;
-// bold(v)_3,=\dfrac{bold(v)_3 dot.c bold(u)_1}{bold(u)_1 dot.c bold(u)_1}bold(u)_1+\dfrac{bold(v)_3 dot.c bold(u)_2}{bold(u)_2 dot.c bold(u)_2}bold(u)_2+bold(u)_3;
-// ,dots.v;
-// bold(v)_n,=\dfrac{bold(v)_n dot.c bold(u)_1}{bold(u)_1 dot.c bold(u)_1}bold(u)_1+dots.h.c+\dfrac{bold(v)_n dot.c bold(u)_{n-1}}{bold(u)_{n-1} dot.c bold(u)_{n-1}}bold(u)_{n-1}+bold(u)_n
-// $
-// After normalization (let's set $bold(u)_i:= bold(u)_i / |bold(u)_i| $ to be unit vectors), we may write the above as the following set of equations with coefficients
-// $
-// bold(v)_1,=r_(11)bold(u)_1;
-// bold(v)_2,=r_(12)bold(u)_1+r_(22)bold(u)_2;
-// bold(v)_3,=r_(13)bold(u)_1+r_(23)bold(u)_2+r_(33)bold(u)_3;
-// ,dots.v;
-// bold(v)_n,=r_{1n}bold(u)_1+dots.h.c+r_{n-1,n}bold(u)_{n-1}+r_{nn}bold(u)_n
-// $
-// If we write $A=mat(
-// bold(v)_1,dots.h.c,bold(v)_n
-// )$, $Q=mat(
-// bold(u)_1,dots.h.c,bold(u)_n
-// )$ (this is an orthogonal matrix), then have
-//  $
-// A=mat(
-// bold(v)_1,dots.h.c,bold(v)_n
-// )=mat(
-// bold(u)_1,dots.h.c,bold(u)_n
-// )mat(
-// r_(11),r_(12),r_(13),dots.h.c, r_{1n};
-// 0,r_(22),r_(23),dots.h.c,r_{2n};
-// 0,0,r_(33),dots.h.c,r_{3n};
-// dots.v,dots.v,dots.v,dots.down,dots.v;
-// 0,0,0,dots.h.c,r_{nn}
-// )=QR
-//  $
-// It can be shown that $QR$-factorization always exists, even $A$ is not invertible (columns does not form a basis)
+The Gram-Schmidt process gives us the so-called $Q R$-factorization. First we can rewrite the Gram-Schmidt process as
+$
+bold(v)_1&=bold(u)_1 \
+bold(v)_2&=(bold(v)_2 dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1)bold(u)_1+bold(u)_2 \
+bold(v)_3&=(bold(v)_3 dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1)bold(u)_1+(bold(v)_3 dot.c bold(u)_2) / (bold(u)_2 dot.c bold(u)_2)bold(u)_2+bold(u)_3 \
+&dots.v \
+bold(v)_n&=(bold(v)_n dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1)bold(u)_1+dots.h.c+(bold(v)_n dot.c bold(u)_(n-1)) / (bold(u)_(n-1) dot.c bold(u)_(n-1))bold(u)_(n-1)+bold(u)_n
+$
+After normalization (let's set $bold(u)_i:= bold(u)_i / |bold(u)_i| $ to be unit vectors), we may write the above as the following set of equations with coefficients
+$
+bold(v)_1&=r_(11)bold(u)_1 \
+bold(v)_2&=r_(12)bold(u)_1+r_(22)bold(u)_2 \
+bold(v)_3&=r_(13)bold(u)_1+r_(23)bold(u)_2+r_(33)bold(u)_3 \
+&dots.v \
+bold(v)_n&=r_(1n)bold(u)_1+dots.h.c+r_(n-1,n)bold(u)_(n-1)+r_(n n)bold(u)_n
+$
+If we write $A=mat(
+bold(v)_1,dots.h.c,bold(v)_n
+)$, $Q=mat(
+bold(u)_1,dots.h.c,bold(u)_n
+)$ (this is an orthogonal matrix), then have
+$
+A=mat(
+bold(v)_1,dots.h.c,bold(v)_n
+)=mat(
+bold(u)_1,dots.h.c,bold(u)_n
+)mat(
+r_(11),r_(12),r_(13),dots.h.c, r_(1n);
+0,r_(22),r_(23),dots.h.c,r_(2n);
+0,0,r_(33),dots.h.c,r_(3n);
+dots.v,dots.v,dots.v,dots.down,dots.v;
+0,0,0,dots.h.c,r_(n n)
+)=Q R
+$
+It can be shown that $Q R$-factorization always exists, even $A$ is not invertible (columns does not form a basis)
 
-// #example[
-// Continuing Example @(ex:3by3-Gram), we consider the $QR$-factorization of $A=mat(
-// bold(v)_1,bold(v)_2,bold(v)_3
-// )=mat(
-// 1,1,3;
-// 1,2,-1;
-// 1,2,1
-// )$, we know that $Q=mat(
-// bold(w)_1,bold(w)_2,bold(w)_3
-// )=mat(
-//  1 / (sqrt(3)) ,- 1 / (sqrt(3)) ,0;
-//  1 / (sqrt(3)) , 1 / (sqrt(6)) ,- 1 / (sqrt(2)) ;
-//  1 / (sqrt(3)) , 1 / (sqrt(6)) , 1 / (sqrt(2))
-// )$, so we know that
-//  $
-// R=Q^(-1)A=Q^T A=mat(
-//  1 / (sqrt(3)) , 1 / (sqrt(3)) , 1 / (sqrt(3)) ;
-// - 1 / (sqrt(3)) , 1 / (sqrt(6)) , 1 / (sqrt(6)) ;
-// 0,- 1 / (sqrt(2)) , 1 / (sqrt(2))
-// )mat(
-// 1,1,3;
-// 1,2,-1;
-// 1,2,1
-// )=mat(
-// (sqrt(3)), 5 / (sqrt(3)) ,(sqrt(3));
-// 0, 2 / (sqrt(6)) ,-(sqrt(6));
-// 0,0,(sqrt(2))
-// )
-//  $
-// Note that here we didn't actually use Gram-Schmidt process to evaluate $R$, instead we only used the existence of $QR$-factorization.
-// )
+#example[
+Continuing @ex:3by3-Gram, we consider the $Q R$-factorization of $A=mat(
+bold(v)_1,bold(v)_2,bold(v)_3
+)=mat(
+1,1,3;
+1,2,-1;
+1,2,1
+)$, we know that $Q=mat(
+bold(w)_1,bold(w)_2,bold(w)_3
+)=mat(
+1 / (sqrt(3)) ,- 1 / (sqrt(3)) ,0;
+1 / (sqrt(3)) , 1 / (sqrt(6)) ,- 1 / (sqrt(2)) ;
+1 / (sqrt(3)) , 1 / (sqrt(6)) , 1 / (sqrt(2))
+)$, so we know that
+$
+R=Q^(-1)A=Q^T A=mat(
+1 / (sqrt(3)) , 1 / (sqrt(3)) , 1 / (sqrt(3)) ;
+- 1 / (sqrt(3)) , 1 / (sqrt(6)) , 1 / (sqrt(6)) ;
+0,- 1 / (sqrt(2)) , 1 / (sqrt(2))
+)mat(
+1,1,3;
+1,2,-1;
+1,2,1
+)=mat(
+(sqrt(3)), 5 / (sqrt(3)) ,(sqrt(3));
+0, 2 / (sqrt(6)) ,-(sqrt(6));
+0,0,(sqrt(2))
+)
+$
+Note that here we didn't actually use Gram-Schmidt process to evaluate $R$, instead we only used the existence of $Q R$-factorization.
+]
 
 #definition[
 Suppose $W$ is a subspace of $RR^n$, the #text(fill:blue)[orthogonal complement]#index[orthogonal complement] $W^perp=\{bold(v)|bold(v)perp W\}$ is the set of vectors that are orthogonal to $W$
@@ -5779,73 +5760,73 @@ Suppose $W="Span"{mat(
 == Least-square solutions
 
 #question[
-linear system $A bold(x)=bold(b)$ may not always be solvable, nonetheless, we still want to find the _best possible_ solution $\hat{bold(x)}$
+linear system $A bold(x)=bold(b)$ may not always be solvable, nonetheless, we still want to find the _best possible_ solution $hat(bold(x))$
 ]
 
 #answer[
-According to Gauss, by best possible we mean the #text(fill:blue)[least-square solutions]#index[least-square]. In concrete terms, such $\hat{bold(x)}$ stisfies that $|A\hat{bold(x)}-bold(b)|\leq|A bold(x)-bold(b)|$ for any other choice of $bold(x)$.
+According to Gauss, by best possible we mean the #text(fill:blue)[least-square solutions]#index[least-square]. In concrete terms, such $hat(bold(x))$ stisfies that $|A hat(bold(x))-bold(b)|<=|A bold(x)-bold(b)|$ for any other choice of $bold(x)$.
 ]
 
-By a simple argument we can show that $A\hat{bold(x)}$ must be the projection of $bold(b)$ onto $"Col"A$, so we know that
+By a simple argument we can show that $A hat(bold(x))$ must be the projection of $bold(b)$ onto $"Col"A$, so we know that
 $
-(A\hat{bold(x)}-bold(b))perp"Col"A<=>(A\hat{bold(x)}-bold(b)) in ("Col"A)^perp="Nul "(A^T)<=> A^T(A\hat{bold(x)}-bold(b))=bold(0)<=> A^T A\hat{bold(x)}=A^T bold(b)
+(A hat(bold(x))-bold(b))perp"Col"A<=>(A hat(bold(x))-bold(b)) in ("Col"A)^perp="Nul "(A^T)<=> A^T(A hat(bold(x))-bold(b))=bold(0)<=> A^T A hat(bold(x))=A^T bold(b)
 $
 
-// We call equation
-// $ \label{00:08-07/15/2022}
-// A^T A bold(x)=A^T bold(b)
-// $
-// the normal equation of $A bold(x)=bold(b)$. And we have shown that the least square solutions of the linear system $A bold(x)=bold(b)$ is the solution set to the normal equation~\eqref{00:08-07/15/2022}. The solution to the least square problem might not be unique.
+We call equation
+$
+A^T A bold(x)=A^T bold(b)
+$ <ref-00:08-07-15-2022>
+the normal equation of $A bold(x)=bold(b)$. And we have shown that the least square solutions of the linear system $A bold(x)=bold(b)$ is the solution set to the normal equation~@ref-00:08-07-15-2022. The solution to the least square problem might not be unique.
 
-// #theorem[
-// $A^T A bold(x)=A^T bold(b)$ has a unique solution $<=>$ the columns of $A$ is linearly independent $<=> A^T A$ is invertible. And the unique solution would of course be $(A^T A)^(-1)A^T bold(b)$
-// ]
+#theorem[
+$A^T A bold(x)=A^T bold(b)$ has a unique solution $<=>$ the columns of $A$ is linearly independent $<=> A^T A$ is invertible. And the unique solution would of course be $(A^T A)^(-1)A^T bold(b)$
+]
 
-// #example[
-// Suppoes $A=mat(
-// 4,0;
-// 0,2;
-// 1,1
-// )$, $bold(b)=mat(
-// 2;0;11
-// )$. It is easy to verify that the linear system $A bold(x)=bold(b)$ is not linearly consistent. To solve for the least-square solution, we look at its normal equation
-//  $
-// mat(
-// 17,1;1,5
-// )mat(
-// x_1;x_2
-// )=mat(
-// 4,0,1;
-// 0,2,1
-// )mat(
-// 4,0;
-// 0,2;
-// 1,1
-// )mat(
-// x_1;x_2
-// )=A^T A bold(x)=A^T bold(b)=mat(
-// 4,0,1;
-// 0,2,1
-// )mat(
-// 2;0;11
-// )=mat(
-// 19;11
-// )
-//  $
-// And solve for $bold(x)(A^T A)^(-1)A^T bold(b)=(A^T A)^(-1)A^T bold(b)=mat(
-// 1;2
-// )$
-// )
+#example[
+Suppoes $A=mat(
+4,0;
+0,2;
+1,1
+)$, $bold(b)=mat(
+2;0;11
+)$. It is easy to verify that the linear system $A bold(x)=bold(b)$ is not linearly consistent. To solve for the least-square solution, we look at its normal equation
+$
+mat(
+17,1;1,5
+)mat(
+x_1;x_2
+)=mat(
+4,0,1;
+0,2,1
+)mat(
+4,0;
+0,2;
+1,1
+)mat(
+x_1;x_2
+)=A^T A bold(x)=A^T bold(b)=mat(
+4,0,1;
+0,2,1
+)mat(
+2;0;11
+)=mat(
+19;11
+)
+$
+And solve for $bold(x)(A^T A)^(-1)A^T bold(b)=(A^T A)^(-1)A^T bold(b)=mat(
+1;2
+)$
+]
 
-// #exercise[
-// Suppose $A=mat(
-// 1,2;
-// -1,4;
-// 1,2
-// )$, $bold(b)=mat(
-// 3;-1;5
-// )$, solve for the least square solution of $A bold(x)=bold(b)$.
-// ]
+#exercise[
+Suppose $A=mat(
+1,2;
+-1,4;
+1,2
+)$, $bold(b)=mat(
+3;-1;5
+)$, solve for the least square solution of $A bold(x)=bold(b)$.
+]
 
 == Machine Learning and approxi mation
 
@@ -5858,7 +5839,7 @@ And you know what functions $f_1,f_2,dots.h.c,f_n$ should be (they could be line
  $
 epsilon^((i))=y^((i))-beta_1f_1(x_1^((i)),dots.h.c,x_k^((i)))-beta_2f_2(x_1^((i)),dots.h.c,x_k^((i)))-dots.h.c-beta_n f_n(x_1^((i)),dots.h.c,x_k^((i)))
  $
-Our goal to minimize the residual. One might want to minimize the quantity $sum_(i=1)^m|epsilon^((i))|$, however, this is cumbersome, difficult to work with, and mathematically unsatisfactory. So Gauss instead considered the square sum $sum_{i=1}^m|epsilon^((i))|^2$, posed and solved the least square problem!!!
+Our goal to minimize the residual. One might want to minimize the quantity $sum_(i=1)^m|epsilon^((i))|$, however, this is cumbersome, difficult to work with, and mathematically unsatisfactory. So Gauss instead considered the square sum $sum_(i=1)^m|epsilon^((i))|^2$, posed and solved the least square problem!!!
 ]
 
 #answer[
@@ -5876,6 +5857,8 @@ epsilon^((1));dots.v;epsilon^((m))
 ),
 X=mat(
 f_1(x_1^((1)),dots.h.c,x_k^((1))),dots.h.c,f_n(x_1^((1)),dots.h.c,x_k^((1)));
+]
+]
 dots.v,dots.down,dots.v;
 f_1(x_1^((m)),dots.h.c,x_k^((m))),dots.h.c,f_n(x_1^((m)),dots.h.c,x_k^((m)));
 )
@@ -5885,7 +5868,6 @@ Then have $bold(y)=X bold(beta)=bold(epsilon)$. To minimize $| bold(epsilon)|^2$
 #example[
 Find the equation $y=beta_0+beta_1x$ of the least-squares line that best fits the data points $(2,1),(5,2),(7,3)$ and $(8,3)$.
 ]
-
 
 = Lecture 15 - Complex eigenvalues
 
@@ -5906,16 +5888,16 @@ There is a natural identification between the complex numbers and the plane $RR^
 
 - Addition via $(a+b i)+(c+d i)=(a+c)+(b+d)i$
 - Multiplication via $(a+b i)(c+d i)=a c+a d i+b c i+b d i^2=(a c-b d)+(a d+b c)i$.
-- #text(fill:blue)[Conjugate]#index[conjugate] as $#overline[z]=a-b i$.
+- #text(fill:blue)[Conjugate]#index[conjugate] as $overline(z)=a-b i$.
 
 ]
 
 #remark[
-Through this identification it is easy to see that $a=r cos  phi $, $b=r sin  phi $, and we have #text(fill:blue)[Euler's formula]#index[Euler's formula] $z=r e^{i phi }=r cos  phi =i sin  phi $.
+Through this identification it is easy to see that $a=r cos  phi $, $b=r sin  phi $, and we have #text(fill:blue)[Euler's formula]#index[Euler's formula] $z=r e^(i phi )=r cos  phi =i sin  phi $.
 ]
 
 #remark[
-If we have a complex-valued matrix $A$, then the conjugation is defined entrywise (Note that column vectors are matrices). If we write a complex valued matrix $A="Re"A+i"Im"A$, then the conjugation would be $#overline[A]="Re"A-i"Im"A$. For example, if $A=mat(
+If we have a complex-valued matrix $A$, then the conjugation is defined entrywise (Note that column vectors are matrices). If we write a complex valued matrix $A="Re"A+i"Im"A$, then the conjugation would be $overline(A)="Re"A-i"Im"A$. For example, if $A=mat(
 1+2i,3;
 -1-i,i
 )=mat(
@@ -5924,7 +5906,7 @@ If we have a complex-valued matrix $A$, then the conjugation is defined entrywis
 )+i mat(
 2,0;
 -1,1
-)$, then $#overline[A]=mat(
+)$, then $overline(A)=mat(
 1-2i,3;
 -1+i,-i
 )=mat(
@@ -5933,7 +5915,7 @@ If we have a complex-valued matrix $A$, then the conjugation is defined entrywis
 )-i mat(
 2,0;
 -1,1
-)$. It is easy to check that $#overline[A+B]=#overline[A]+#overline[B]$, $#overline[c A]=#overline[c #overline[A]]$, $#overline[A B]=#overline[A]#overline[B]$.
+)$. It is easy to check that $overline(A+B)=overline(A)+overline(B)$, $overline(c A)= overline(c overline(A)) $, $overline(A B)=overline(A)overline(B)$.
 ]
 
 == Eigen-decomposition over the complex numbers
@@ -5950,14 +5932,14 @@ First we compute its characteristic polynomial $t^2-4t+5$, an then we can solve 
  Delta=(-4)^2-4 dot.c 1 dot.c 5=-4,t=(-(-4)  plus.minus sqrt(-4)) / 2= -(-4)  plus.minus (2i) / 2 =2  plus.minus  i
  $
 Hence the eigenvalues are $ lambda _1=2+i, lambda _2=2-i$. The eigenvector for $ lambda _1$ can be computed via
-//  $
-// mat(
-//  lambda _1I-A,bold(0)
-// ; augment:#(-1))tilde mat(
-// 1,1-i,0;
-// 0,0,0
-// ; augment:#(-1))
-//  $
+$
+mat(
+lambda _1I-A,bold(0)
+; augment:#(-1))tilde mat(
+1,1-i,0;
+0,0,0
+; augment:#(-1))
+$
 So we get $bold(v)_1=mat(
 -1+i;1
 )=mat(
@@ -5969,14 +5951,14 @@ i;0
 )+mat(
 1;0
 )i="Re"bold(v)_1+i"Im"bold(v)_1$. The eigenvector for $ lambda _2$ can be computed via
-//  $
-// mat(
-//  lambda _2I-A,bold(0)
-// ; augment:#(-1))tilde mat(
-// 1,1+i,0;
-// 0,0,0
-// ; augment:#(-1))
-//  $
+$
+mat(
+lambda _2I-A,bold(0)
+; augment:#(-1))tilde mat(
+1,1+i,0;
+0,0,0
+; augment:#(-1))
+$
 So we get $bold(v)_2=mat(
 -1-i;1
 )=mat(
@@ -5991,16 +5973,16 @@ So we get $bold(v)_2=mat(
 ]
 
 #theorem[
-In general, if $A$ is a 2 by 2 real-valued matrix with complex eigenvalues (characteristic polynomial have complex roots, no real roots), then they are conjugate of each other, we can write them as $ lambda =a-b i$ and $#overline[lambda] =a+b i$, suppose the eigenvector for $ lambda $ is $bold(v)="Re"bold(v)+i"Im"bold(v)$, then the eigenvector for $#overline[lambda] $ will be $#overline[bold(v)]="Re"bold(v)-i"Im"bold(v)$. If we write $P=mat(
+In general, if $A$ is a 2 by 2 real-valued matrix with complex eigenvalues (characteristic polynomial have complex roots, no real roots), then they are conjugate of each other, we can write them as $ lambda =a-b i$ and $overline(lambda) =a+b i$, suppose the eigenvector for $lambda$ is $bold(v)="Re"bold(v)+i"Im"bold(v)$, then the eigenvector for $overline(lambda) $ will be $overline(bold(v))="Re"bold(v)-i"Im"bold(v)$. If we write $P=mat(
 "Re"bold(v),"Im"bold(v)
 )$, and $C=mat(
 a,-b;
 b,a
-)$, then $A P=P C$, therefore we get decomposition $A=P C P^(-1)$.
+)$, then $ A P=P C $, therefore we get decomposition $A=P C P^(-1)$.
 ]
 
 #proof[
-We have $A bold(v)= lambda bold(v)$ (and hence by conjugation we have $A#overline[bold(v)]=A#overline[bold(v)]=#overline[A]#overline[bold(v)]=#overline[A bold(v)]=#overline[lambda]#overline[bold(v)]$, note that here $A$ is real-valued, so $#overline[A]=A$), we can rewrite this as
+We have $A bold(v)= lambda bold(v)$ (and hence by conjugation we have $A overline(bold(v))=A overline(bold(v))=overline(A)overline(bold(v))=overline(A bold(v))=overline(lambda)overline(bold(v))$, note that here $A$ is real-valued, so $overline(A)=A$), we can rewrite this as
  $
 (A"Re"bold(v))+i(A"Im"bold(v))=A("Re"bold(v)+i"Im"bold(v))=A bold(v)= lambda bold(v)=(a-b i)("Re"bold(v)+i"Im"bold(v))=(a"Re"bold(v)+b"Im"bold(v))+i(a"Im"bold(v)-b"Re"bold(v))
  $
@@ -6025,7 +6007,7 @@ r sin  phi ,r cos  phi
  sin  phi , cos  phi
 )
  $
-Here we suppose $#overline[lambda] =a+b i=r e^{i phi }=r cos  phi +i r sin  phi $ so that $a=r cos  phi $, $b=r sin  phi $.
+Here we suppose $overline(lambda) =a+b i=r e^(i phi )=r cos  phi +i r sin  phi $ so that $a=r cos  phi $, $b=r sin  phi $.
 ]
 
 #example[
@@ -6085,11 +6067,11 @@ Suppose $A$ is a symmetric real-valued matrix, then the eigenvalues are also rea
 ]
 
 #proof[
-Suppose $ lambda $ is an eigenvalue of $A$, then there exists some $ lambda $-eigenvector such that $A bold(v)= lambda bold(v)$, and that the length of the complex vector $bold(v)$ is $|bold(v)|^2=#overline[bold(v)] dot.c bold(v)$ is a positive real number (Note that for a complex number $z=a+b i$, $|z|^2=a^2+b^2=(a+b i)(a-b i)=z#overline[z]$). Since $A$ is symmetric and real-valued, $#overline[A]^T=A$. We have
+Suppose $lambda$ is an eigenvalue of $A$, then there exists some $lambda$-eigenvector such that $A bold(v)= lambda bold(v)$, and that the length of the complex vector $bold(v)$ is $|bold(v)|^2=overline(bold(v)) dot.c bold(v)$ is a positive real number (Note that for a complex number $z=a+b i$, $|z|^2=a^2+b^2=(a+b i)(a-b i)=z overline(z)$). Since $A$ is symmetric and real-valued, $overline(A)^T=A$. We have
  $
-#overline[lambda] |bold(v)|^2=#overline[A bold(v)]^T bold(v)=#overline[bold(v)]^T#overline[A]^T bold(v)=#overline[bold(v)]^T A bold(v)= lambda |bold(v)|^2
+overline(lambda) |bold(v)|^2=overline(A bold(v))^T bold(v)=overline(bold(v))^T overline(A)^T bold(v)=overline(bold(v))^T A bold(v)= lambda |bold(v)|^2
  $
-Which implies that $( lambda -#overline[lambda] )|bold(v)|^2=0$, so $ lambda =#overline[lambda] $, i.e. $ lambda $ is real-valued.
+Which implies that $( lambda -overline(lambda) )|bold(v)|^2=0$, so $ lambda =overline(lambda) $, i.e. $lambda$ is real-valued.
 ]
 
 #fact[
@@ -6105,7 +6087,7 @@ Suppose $A$ is a symmetric real-valued matrix with eigenvalues $ lambda _1,dots.
 ]
 
 #proof[
-To get an orthonormal basis for each eigenspace $"Nul "( lambda  I-A)$, you just need to find an arbitrary basis, and then apply Gram-Schmidt process to get an orthonormal basis, then by Theorem @thm:symmat-eigenvec-ortho, the set of eigenvectors form an orthonormal basis for $RR^n$, assume they are $bold(u)_1,dots.h.c,bold(u)_n$, in corresponds to eigenvalues $ lambda _1,dots.h.c, lambda_n$, then we get orthogonal diagonalization
+To get an orthonormal basis for each eigenspace $"Nul "( lambda  I-A)$, you just need to find an arbitrary basis, and then apply Gram-Schmidt process to get an orthonormal basis, then by @thm:symmat-eigenvec-ortho, the set of eigenvectors form an orthonormal basis for $RR^n$, assume they are $bold(u)_1,dots.h.c,bold(u)_n$, in corresponds to eigenvalues $ lambda _1,dots.h.c, lambda_n$, then we get orthogonal diagonalization
  $
 A=P D P^(-1)=P D P^T
  $
@@ -6144,115 +6126,115 @@ A=mat(
  $
 ]<ex:2by2-charpoly>
 
-// #example[
-// Suppose $A=mat(
-// 3,-2,4;
-// -2,6,2;
-// 4,2,3;
-// )$, then characteristic polynomial is
-// $
-// "det"(tI-A),=| mat(
-// t-3,2,-4;
-// 2,t-6,-2;
-// -4,-2,t-3
-//  ) |xequal(#`R3`-> #`R3`+2#`R2`)| mat(
-// t-3,2,-4;
-// 2,t-6,-2;
-// 0,2t-14,t-7
-//  ) |;
-// ,xequal("factor $(t-7)$ from 3rd row")(t-7)| mat(
-// t-3,2,-4;
-// 2,t-6,-2;
-// 0,2,1
-//  ) |xequal(C2-> C2-C3)(t-7)| mat(
-// t-3,10,-4;
-// 2,t-2,-2;
-// 0,0,1
-//  ) |;
-// ,xequal("cofactor expansion on the 3rd row")(t-7) dot.c 1 dot.c (-1)^{3+3}| mat(
-// t-3,10;
-// 2,t-2
-//  ) |;
-// ,=(t-7)(t^2-5t-14)=(t-7)^2(t+2)
-// $
-// Hence the eigenvalues are $ lambda _1= lambda _2=7$, $ lambda _3=-2$
-//  $
-// mat(
-// 7I-A,bold(0)
-// ; augment:#(-1))tilde mat(
-// 1, 1 / 2 ,-1,0;
-// 0,0,0,0;
-// 0,0,0,0
-// ; augment:#(-1))
-//  $
-// so we may choose
-//  $
-// bold(v)_1=2mat(
-// - 1 / 2 ;1;0
-// )=mat(
-// -1;2;0
-// ),\quadbold(v)_2=mat(
-// 1;0;1
-// )
-//  $
-// as eigenvectors for $ lambda _1= lambda _2=7$. We can use Gram-Schmidt process to get an orthogonal set: $bold(w)_1=bold(v)_1=mat(
-// -1;2;0
-// )$, $bold(v)_2-\dfrac{bold(v)_2 dot.c bold(w)_1}{bold(w)_1 dot.c bold(w)_1}bold(w)_1=mat(
-//  4 / 5 ; 2 / 5 ;1
-// )$, we can choose $bold(w)_2=mat(
-// 4;2;5
-// )$. We can normalize them into
-//  $
-// bold(u)_1= 1 / sqrt(5) mat(
-// -1;2;0
-// ),\quadbold(u)_2= 1 / 3sqrt(5) mat(
-// 4;2;5
-// )
-//  $
-//  $
-// mat(
-// -2I-A,bold(0)
-// ; augment:#(-1))tilde mat(
-// 1,0,1,0;
-// 0,1, 1 / 2 ,0;
-// 0,0,0,0
-// ; augment:#(-1))
-//  $
-// so we may choose
-//  $
-// bold(v)_3=2mat(
-// -1;- 1 / 2 ;1
-// )=mat(
-// -2;-1;2
-// )
-//  $
-// as the eigenvector for $ lambda _3=-2$. We can normalize it into
-//  $
-// bold(u)_3= bold(v)_3 / |bold(v)_3| = 1 / 3 mat(
-// -2;-1;2
-// )
-//  $
-// Now we get the orthogonal decomposition
-//  $
-// A=mat(
-// 3,-2,4;
-// -2,6,2;
-// 4,2,3;
-// )=mat(
-// - 1 / sqrt(5) , 4 / 3sqrt(5) ,- 2 / 3 ;
-//  2 / sqrt(5) , 2 / 3sqrt(5) ,- 1 / 3 ;
-// 0, 5 / 3sqrt(5) , 2 / 3
-// )mat(
-// 7,0,0;
-// 0,7,0;
-// 0,0,-2
-// )mat(
-// - 1 / sqrt(5) , 2 / sqrt(5) ,0;
-//  4 / 3sqrt(5) , 2 / 3sqrt(5) , 5 / 3sqrt(5) ;
-// - 2 / 3 ,- 1 / 3 , 2 / 3
-// )=P D P^T
-//  $
-// )
+#example[
+Suppose $A=mat(
+3,-2,4;
+-2,6,2;
+4,2,3;
+)$, then characteristic polynomial is
+$
+"det"(t I-A)&= mat(delim: "|", 
+t-3,2,-4;
+2,t-6,-2;
+-4,-2,t-3
+)xequal(#`R3`-> #`R3`+2#`R2`) mat(delim: "|", 
+t-3,2,-4;
+2,t-6,-2;
+0,2t-14,t-7
+) \
+&xequal("factor $(t-7)$ from 3rd row")(t-7) mat(delim: "|", 
+t-3,2,-4;
+2,t-6,-2;
+0,2,1
+)xequal("C2 -> C2-C3")(t-7) mat(delim: "|", 
+t-3,10,-4;
+2,t-2,-2;
+0,0,1
+) \
+&xequal("cofactor expansion on the 3rd row")(t-7) dot.c 1 dot.c (-1)^(3+3) mat(delim: "|", 
+t-3,10;
+2,t-2
+) \
+&=(t-7)(t^2-5t-14)=(t-7)^2(t+2)
+$
+Hence the eigenvalues are $ lambda _1= lambda _2=7$, $ lambda _3=-2$
+$
+mat(
+7I-A,bold(0)
+; augment:#(-1))tilde mat(
+1, 1 / 2 ,-1,0;
+0,0,0,0;
+0,0,0,0
+; augment:#(-1))
+$
+so we may choose
+$
+bold(v)_1=2mat(
+- 1 / 2 ;1;0
+)=mat(
+-1;2;0
+), quad(v)_2=mat(
+1;0;1
+)
+$
+as eigenvectors for $ lambda _1= lambda _2=7$. We can use Gram-Schmidt process to get an orthogonal set: $bold(w)_1=bold(v)_1=mat(
+-1;2;0
+)$, $bold(v)_2-(bold(v)_2 dot.c bold(w)_1) / (bold(w)_1 dot.c bold(w)_1)bold(w)_1=mat(
+4 / 5 ; 2 / 5 ;1
+)$, we can choose $bold(w)_2=mat(
+4;2;5
+)$. We can normalize them into
+$
+bold(u)_1= 1 / sqrt(5) mat(
+-1;2;0
+), quad(u)_2= 1 / 3sqrt(5) mat(
+4;2;5
+)
+$
+$
+mat(
+-2I-A,bold(0)
+; augment:#(-1))tilde mat(
+1,0,1,0;
+0,1, 1 / 2 ,0;
+0,0,0,0
+; augment:#(-1))
+$
+so we may choose
+$
+bold(v)_3=2mat(
+-1;- 1 / 2 ;1
+)=mat(
+-2;-1;2
+)
+$
+as the eigenvector for $ lambda _3=-2$. We can normalize it into
+$
+bold(u)_3= bold(v)_3 / |bold(v)_3| = 1 / 3 mat(
+-2;-1;2
+)
+$
+Now we get the orthogonal decomposition
+$
+A=mat(
+3,-2,4;
+-2,6,2;
+4,2,3;
+)=mat(
+- 1 / sqrt(5) , 4 / 3sqrt(5) ,- 2 / 3 ;
+2 / sqrt(5) , 2 / 3sqrt(5) ,- 1 / 3 ;
+0, 5 / 3sqrt(5) , 2 / 3
+)mat(
+7,0,0;
+0,7,0;
+0,0,-2
+)mat(
+- 1 / sqrt(5) , 2 / sqrt(5) ,0;
+4 / 3sqrt(5) , 2 / 3sqrt(5) , 5 / 3sqrt(5) ;
+- 2 / 3 ,- 1 / 3 , 2 / 3
+)=P D P^T
+$
+]
 
 == Spectral decomposition
 
@@ -6299,7 +6281,7 @@ x_1,x_2
 a,b;b,c
 )mat(
 x_1;x_2
-)=bold(x)^T A bold(x)$. In Example @ex:2by2-charpoly, $bold(x)^T A bold(x)$ is the quadratic form $7x_1^2+4x_1x_2+4x_2^2$, note that $bold(y)=P^T bold(x)$ gives change of (orthonormal) coordinates (actually differ by a rotation) $ cases(
+)=bold(x)^T A bold(x)$. In @ex:2by2-charpoly, $bold(x)^T A bold(x)$ is the quadratic form $7x_1^2+4x_1x_2+4x_2^2$, note that $bold(y)=P^T bold(x)$ gives change of (orthonormal) coordinates (actually differ by a rotation) $ cases(
 y_1&=- 1 / sqrt(5) x_1+ 1 / sqrt(5) x_2,
 y_2&= 2 / sqrt(5) x_1+ 1 / sqrt(5) x_2
 )$, then the quadratic form becomes $bold(x)^T A bold(x)=bold(x)^T P D P^T bold(x)=(P^T bold(x))^T D(P^T bold(x))=bold(y)^T D bold(y)=3y_1^2+8y_2^2$, note this is without cross term $y_1y_2$.
@@ -6316,14 +6298,14 @@ The RREF of a matrix $A$ is unique.
 The linear dependences of columns of $A$ is presevered under row elementary operations, thus the pivot columns are unique. And for the same reason, we know how all other entries look like.
 ]
 
-// % \begin{lemma}\label{lem: det A lemma}
-// % Suppose $A=mat(
-// % B_1,*,B_2;
-// % 0,h,0;
-// % B_3,*,B_4
-// % )$, where $h$ is the $(i,j)$-th entry. If we write $B=mat(
-// % B_1,B_2;B_3,B_4
-// % )$ then $"det "A=(-1)^{i+j}h dot.c "det "B$
+\begin{lemma}\label{lem: det A lemma}
+Suppose $A=mat(
+B_1,*,B_2;
+0,h,0;
+B_3,*,B_4
+)$, where $h$ is the $(i,j)$-th entry. If we write $B=mat(
+B_1,B_2;B_3,B_4
+)$ then $"det "A=(-1)^(i+j)h dot.c "det "B$
 // % \begin{center}
 // % \begin{tikzpicture}
 // % \def\XMAX{2.5};\def\YMAX{4.5};\def\ZMAX{3};
@@ -6345,7 +6327,7 @@ The linear dependences of columns of $A$ is presevered under row elementary oper
 // % \end{scope}
 // % \end{tikzpicture}
 // % \end{center}
-// % \end{lemma}
+\end{lemma}
 
 = Online Assignments
 
@@ -6364,62 +6346,62 @@ x_1-x_2+x_3=2,
 ) $
 ]
 
-// #solution[
-// // - The augmented matrix is
-// $
-// ,mat(
-// 5,1,2;
-// 3,-1,6
-// )xarrow(5#`R2`)mat(
-// 5,1,2;
-// 15,-5,30
-// )xarrow(#`R2`-> #`R2`-3#`R1`)mat(
-// 5,1,2;
-// 0,-8,24
-// )xarrow(#`R2`/(-8))mat(
-// 5,1,2;
-// 0,1,-3
-// );
-// ,xarrow(#`R1`-> #`R1`-#`R2`)mat(
-// 5,0,5;
-// 0,1,-3
-// )xarrow(#`R1`/5)mat(
-// 1,0,1;
-// 0,1,-3
-// )
-// $
-// Thus the solution to this linear system is $#cases(
-// x_1=1;x_2=-3
-// )$
-// - The augmented matrix is
-// $
-// ,mat(
-// 1,1,1,6;
-// 1,-1,1,2;
-// -1,1,1,4
-// )xarrow( #`R2`-> #`R2`-#`R1` \ #`R3`-> #`R3`+#`R1` )mat(
-// 1,1,1,6;
-// 0,-2,0,-4;
-// 0,2,2,10
-// )xarrow(#`R3`-> #`R3`+#`R2`)mat(
-// 1,1,1,6;
-// 0,-2,0,-4;
-// 0,0,2,6
-// );
-// ,xarrow( #`R2`/(-2) \ #`R3`/3 )mat(
-// 1,1,1,6;
-// 0,1,0,2;
-// 0,0,1,3
-// )xarrow{\substack{#`R1`-> #`R1`-#`R2`-#`R3`}}mat(
-// 1,0,0,1;
-// 0,1,0,2;
-// 0,0,1,3
-// )
-// $
-// Thus the solution to this linear system is $#cases(
-// x_1=1;x_2=2;x_3=3
-// )$
-// // ]
+#solution[
+- The augmented matrix is
+$
+&mat(
+5,1,2;
+3,-1,6
+)xarrow(5#`R2`)mat(
+5,1,2;
+15,-5,30
+)xarrow(#`R2`-> #`R2`-3#`R1`)mat(
+5,1,2;
+0,-8,24
+)xarrow(#`R2`/(-8))mat(
+5,1,2;
+0,1,-3
+) \
+&xarrow(#`R1`-> #`R1`-#`R2`)mat(
+5,0,5;
+0,1,-3
+)xarrow(#`R1`/5)mat(
+1,0,1;
+0,1,-3
+)
+$
+Thus the solution to this linear system is $cases(
+x_1=1,x_2=-3
+)$
+- The augmented matrix is
+$
+&mat(
+1,1,1,6;
+1,-1,1,2;
+-1,1,1,4
+)xarrow( #`R2`-> #`R2`-#`R1` \ #`R3`-> #`R3`+#`R1` )mat(
+1,1,1,6;
+0,-2,0,-4;
+0,2,2,10
+)xarrow(#`R3`-> #`R3`+#`R2`)mat(
+1,1,1,6;
+0,-2,0,-4;
+0,0,2,6
+) \
+&xarrow( #`R2`/(-2) \ #`R3`/3 )mat(
+1,1,1,6;
+0,1,0,2;
+0,0,1,3
+)xarrow(#`R1`-> #`R1`-#`R2`-#`R3`)mat(
+1,0,0,1;
+0,1,0,2;
+0,0,1,3
+)
+$
+Thus the solution to this linear system is $cases(
+x_1=1,x_2=2,x_3=3
+)$
+]
 
 #problem[
 How many solutions does the following linear systems of equations have
@@ -6433,29 +6415,29 @@ x_1- 1 / 2 x_2=2
 ) $
 ]
 
-// #solution[
-// // - The augmented matrix is
-// $
-// ,mat(
-// 5,7,3;
-// -10,-14,-3
-// )xarrow(#`R2`-> #`R2`+2#`R1`)mat(
-// 5,7,3;
-// 0,0,3
-// )
-// $
-// Since the last column has pivot, by Theorem @thm:sol-pivot, this linear system has no solutions
-// - $
-// ,mat(
-// 2,-1,4;
-// 1,- 1 / 2 ,2
-// )xarrow(#`R2`-> #`R2`- 1 / 2 #`R1`)mat(
-// 2,-1,4;
-// 0,0,0
-// )
-// $
-// Since the last column has no pivot and there is a free variable $x_2$, by Theorem @thm:sol-pivot, this linear system has infinitely solutions
-// // ]
+#solution[
+- The augmented matrix is
+$
+&mat(
+5,7,3;
+-10,-14,-3
+)xarrow(#`R2`-> #`R2`+2#`R1`)mat(
+5,7,3;
+0,0,3
+)
+$
+Since the last column has pivot, by @thm:sol-pivot, this linear system has no solutions
+- $
+&mat(
+2,-1,4;
+1,- 1 / 2 ,2
+)xarrow(#`R2`-> #`R2`- 1 / 2 #`R1`)mat(
+2,-1,4;
+0,0,0
+)
+$
+Since the last column has no pivot and there is a free variable $x_2$, by @thm:sol-pivot, this linear system has infinitely solutions
+]
 
 #problem[
 Consider the following matrix
@@ -6470,25 +6452,25 @@ $
 - Write down the RREF of the this matrix
 ]
 
-// #solution[
-// // - The pivot columns of $A$ are columns 1,3,4.
-// \item
-// $
-// ,Axarrow( #`R2`/(-1) \ #`R3`/2 )mat(
-// 1,2,2,3,1;
-// 0,0,1,-2,-1;
-// 0,0,0,1,2;
-// )xarrow( #`R1`-> #`R1`-3#`R3` \ #`R2`-> #`R2`+2#`R3` )mat(
-// 1,2,2,0,-5;
-// 0,0,1,0,3;
-// 0,0,0,1,2;
-// )xarrow(#`R1`-> #`R1`-2#`R2`)mat(
-// 1,2,0,0,-11;
-// 0,0,1,0,3;
-// 0,0,0,1,2;
-// )
-// $
-// // ]
+#solution[
+- The pivot columns of $A$ are columns 1,3,4.
+-
+$
+&A xarrow( #`R2`/(-1) \ #`R3`/2 )mat(
+1,2,2,3,1;
+0,0,1,-2,-1;
+0,0,0,1,2;
+)xarrow( #`R1`-> #`R1`-3#`R3` \ #`R2`-> #`R2`+2#`R3` )mat(
+1,2,2,0,-5;
+0,0,1,0,3;
+0,0,0,1,2;
+)xarrow(#`R1`-> #`R1`-2#`R2`)mat(
+1,2,0,0,-11;
+0,0,1,0,3;
+0,0,0,1,2;
+)
+$
+]
 
 #problem[
 Determine which of the following statements are true
@@ -6515,8 +6497,8 @@ mat(
 $
 ]
 
-// #solution[
-// // - False. $(3,3)$, $(2,4)$-th entries are pivots which breaks the ``staircase shape"
+#solution[
+- False. $(3,3)$, $(2,4)$-th entries are pivots which breaks the ``staircase shape"
 // \begin{tikzpicture}
 // \node at (0,0) {$mat(
 // #text(fill:red){1},2,2,3,1;
@@ -6647,38 +6629,39 @@ has two pivot columns, then how many solutions could the linear system have?
 //  $
 // has pivot in the last row, and apply Theorem @thm:sol-pivot
 // - The number of solutions could be none or infinitely many. There are in total 6 possible cases (apply Theorem @thm:sol-pivot)
-// \begin{enumerate}[label=Case \roman*:]
-// - The pivot columns are 1,2, then augmented matrix is equivalent to the RREF matrix $mat(
+// #enum(numbering: "Case i:",
+// [The pivot columns are 1,2, then augmented matrix is equivalent to the RREF matrix $mat(
 // 1,0,*,*;
 // 0,1,*,*;
 // 0,0,0,0;
-// )$, so the linear system have infinitely many solutions and $x_3$ is a free variable.
-// - The pivot columns are 1,3, then augmented matrix is equivalent to the RREF matrix $mat(
+// )$, so the linear system have infinitely many solutions and $x_3$ is a free variable.],
+// [The pivot columns are 1,3, then augmented matrix is equivalent to the RREF matrix $mat(
 // 1,*,0,*;
 // 0,0,1,*;
 // 0,0,0,0;
-// )$, so the linear system have infinitely many solutions. and $x_2$ is a free variable.
-// - The pivot columns are 1,4, then augmented matrix is equivalent to the RREF matrix $mat(
+// )$, so the linear system have infinitely many solutions. and $x_2$ is a free variable.],
+// [The pivot columns are 1,4, then augmented matrix is equivalent to the RREF matrix $mat(
 // 1,*,*,0;
 // 0,0,0,1;
 // 0,0,0,0;
-// )$, so the linear system have no solutions.
-// - The pivot columns are 2,3, then augmented matrix is equivalent to the RREF matrix $mat(
+// )$, so the linear system have no solutions.],
+// [The pivot columns are 2,3, then augmented matrix is equivalent to the RREF matrix $mat(
 // 0,1,0,*;
 // 0,0,1,*;
 // 0,0,0,0;
-// )$, so the linear system have infinitely many solutions. and $x_1$ is a free variable.
-// - The pivot columns are 2,4, then augmented matrix is equivalent to the RREF matrix $mat(
+// )$, so the linear system have infinitely many solutions. and $x_1$ is a free variable.],
+// [The pivot columns are 2,4, then augmented matrix is equivalent to the RREF matrix $mat(
 // 0,1,*,0;
 // 0,0,0,1;
 // 0,0,0,0;
-// )$, so the linear system have no solutions.
-// - The pivot columns are 3,4, then augmented matrix is equivalent to the RREF matrix $mat(
+// )$, so the linear system have no solutions.],
+// [The pivot columns are 3,4, then augmented matrix is equivalent to the RREF matrix $mat(
 // 0,0,1,0;
 // 0,0,0,1;
 // 0,0,0,0;
-// )$, so the linear system have no solutions.
-// // \item
+// )$, so the linear system have no solutions.],
+// )
+// // -
 // $
 // ,mat(
 // *,*,*,*,0;
@@ -6755,9 +6738,9 @@ Is it true that for any vector $bold(b)$ in $RR^4$, matrix equation $A bold(x)=b
 // )
 // $
 // Hence $c_1=2$, $c_2=-1$.
-// \item
+// -
 // $
-// ,Axarrow( #`R2`-> #`R2`+#`R1` \ #`R4`-> #`R4`-2#`R1` )mat(
+// ,A xarrow( #`R2`-> #`R2`+#`R1` \ #`R4`-> #`R4`-2#`R1` )mat(
 // 1   ,  3    , 0,     3;
 // 0   , 2  ,  -1 ,    4;
 // 0    ,-4  ,   2   , -8;
@@ -6856,7 +6839,7 @@ x_1+x_2+x_3+x_4=1,
 // $
 // So the solution set is
 //  $
-// \systeme*{x_1+ 2 / 3 x_3=0, x_2+ 1 / 3 x_3+x_4=1} => #cases(
+// \systeme*{x_1+ 2 / 3 x_3=0, x_2+ 1 / 3 x_3+x_4=1} => cases(
 // x_1=- 2 / 3 x_3;
 // x_2=1- 1 / 3 x_3-x_4;
 // x_3" is free";
@@ -6927,7 +6910,7 @@ Suppose $bold(v)_1=mat(
 // $
 // So the solution set is
 //  $
-// #cases(
+// cases(
 // x_1=-x_4;x_2=- 3 / 2 x_4;x_3=- 1 / 2 x_4;x_4" is free"
 // )
 //  $
@@ -6965,7 +6948,7 @@ Suppose linear transformation $T:RR^2->RR^2$ rotates the plane $RR^2$ counter-cl
 // \draw[opacity=0.6, blue, dashed] (d)--($sin(210)*(0,1)$);
 // \end{tikzpicture}
 // \end{center}
-// ]
+]
 
 #problem[
 Suppose $T:RR^n->RR^m$ is a linear transformation and $T(bold(x))=A bold(x)$, where $ A=mat(
@@ -6977,31 +6960,31 @@ What is $n$ and $m$? Find the preimage of $mat(
 )$ under $T$. Is $T$ one-to-one? Is $T$ onto?
 ]
 
-// #solution[
-// $m=2$, $n=3$, the preimage of $bold(b)=mat(
-// 1;2
-// )$ under $T$ will be the solution to $A bold(x)=bold(b)$, so we have
-// $
-// ,mat(
-// A,bold(b)
-// )=mat(
-// 1,2,3,1;
-// 0,2,1,2
-// )tilde mat(
-// 1,0,2,-1;
-// 0,1, 1 / 2 ,1
-// )
-// $
-// The solution set is given in parametric vector form
-//  $
-// mat(
-// -1;1;0
-// )+x_3mat(
-// -2;- 1 / 2 ;1
-// )
-//  $
-// Therefore $T$ is not one-to-one but onto.
-// ]
+#solution[
+$m=2$, $n=3$, the preimage of $bold(b)=mat(
+1;2
+)$ under $T$ will be the solution to $A bold(x)=bold(b)$, so we have
+$
+&mat(
+A,bold(b)
+)=mat(
+1,2,3,1;
+0,2,1,2
+)tilde mat(
+1,0,2,-1;
+0,1, 1 / 2 ,1
+)
+$
+The solution set is given in parametric vector form
+$
+mat(
+-1;1;0
+)+x_3mat(
+-2;- 1 / 2 ;1
+)
+$
+Therefore $T$ is not one-to-one but onto.
+]
 
 == Online Assignment 4
 
@@ -7019,60 +7002,60 @@ Suppose $A=mat(
 Please show all your work.
 ]
 
-// #solution[
-//
-// - $A$ is invertible
-// $
-// ,mat(
-// 1,2,1,1,0,0;
-// 2,1,2,0,1,0;
-// 0,2,1,0,0,1
-// ; augment:#(-1))xarrow(#`R2`-> #`R2`-2#`R1`)mat(
-// 1,2,1,1,0,0;
-// 0,-3,0,-2,1,0;
-// 0,2,1,0,0,1
-// ; augment:#(-1));
-// ,xarrow(#`R2`/(-3))mat(
-// 1,2,1,1,0,0;
-// 0,1,0, 2 / 3 ,- 1 / 3 ,0;
-// 0,2,1,0,0,1
-// ; augment:#(-1))xarrow(#`R3`-> #`R3`-2#`R2`)mat(
-// 1,2,1,1,0,0;
-// 0,1,0, 2 / 3 ,- 1 / 3 ,0;
-// 0,0,1,- 4 / 3 , 2 / 3 ,1
-// ; augment:#(-1));
-// ,xarrow(#`R3`-> #`R3`-2#`R2`-#`R3`)mat(
-// 1,0,0,1,0,-1;
-// 0,1,0, 2 / 3 ,- 1 / 3 ,0;
-// 0,0,1,- 4 / 3 , 2 / 3 ,1
-// ; augment:#(-1))
-// $
-// Hence $A^(-1)=mat(
-// 1,0,-1;
-//  2 / 3 ,- 1 / 3 ,0;
-// - 4 / 3 , 2 / 3 ,1;
-// )$
-// - $A^T=mat(
-// 1,2,0;
-// 2,1,2;
-// 1,2,1;
-// )$, and $(A^T)^(-1)=(A^(-1))^T=mat(
-// 1, 2 / 3 ,- 4 / 3 ;
-// 0,- 1 / 3 , 2 / 3 ;
-// -1,0,1;
-// )$
-//
-// ]
+#solution[
+
+- $A$ is invertible
+$
+&mat(
+1,2,1,1,0,0;
+2,1,2,0,1,0;
+0,2,1,0,0,1
+; augment:#(-1))xarrow(#`R2`-> #`R2`-2#`R1`)mat(
+1,2,1,1,0,0;
+0,-3,0,-2,1,0;
+0,2,1,0,0,1
+; augment:#(-1)) \
+&xarrow(#`R2`/(-3))mat(
+1,2,1,1,0,0;
+0,1,0, 2 / 3 ,- 1 / 3 ,0;
+0,2,1,0,0,1
+; augment:#(-1))xarrow(#`R3`-> #`R3`-2#`R2`)mat(
+1,2,1,1,0,0;
+0,1,0, 2 / 3 ,- 1 / 3 ,0;
+0,0,1,- 4 / 3 , 2 / 3 ,1
+; augment:#(-1)) \
+&xarrow(#`R3`-> #`R3`-2#`R2`-#`R3`)mat(
+1,0,0,1,0,-1;
+0,1,0, 2 / 3 ,- 1 / 3 ,0;
+0,0,1,- 4 / 3 , 2 / 3 ,1
+; augment:#(-1))
+$
+Hence $A^(-1)=mat(
+1,0,-1;
+2 / 3 ,- 1 / 3 ,0;
+- 4 / 3 , 2 / 3 ,1;
+)$
+- $A^T=mat(
+1,2,0;
+2,1,2;
+1,2,1;
+)$, and $(A^T)^(-1)=(A^(-1))^T=mat(
+1, 2 / 3 ,- 4 / 3 ;
+0,- 1 / 3 , 2 / 3 ;
+-1,0,1;
+)$
+
+]
 
 #problem[
 Suppose $A=mat(
 - 1 / 2 ,-sqrt(3)/2;sqrt(3)/2,- 1 / 2
-)$ is the standard matrix for the linear transformation of rotating $120^circle.small$ counter-clockwise. Evaluate $A^{24}$ and explain why.
+)$ is the standard matrix for the linear transformation of rotating $120^circle.small$ counter-clockwise. Evaluate $A^(24)$ and explain why.
 ]
 
-// #solution[
-// Note that $A^{24}$ is the standard matrix for the composition of linear transformations $\overbrace{T circle.small T circle.smalldots.h.ccircle.small T}^{24}$ which is rotate $24 times 120^circle.small=8 times  360^circle.small$, which is the same as rotate $0^circle.small$, so we should have $A^{24}=I$, the identity matrix.
-// ]
+#solution[
+Note that $A^(24)$ is the standard matrix for the composition of linear transformations $overbrace(T circle.small T circle.small dots.h.c circle.small T)^(24)$ which is rotate $24 times 120^circle.small=8 times  360^circle.small$, which is the same as rotate $0^circle.small$, so we should have $A^(24)=I$, the identity matrix.
+]
 
 #problem[
 We say $n$ is the #text(fill:blue)[order]#index[order] of a square matrix $A$ if $n$ is the smallest positive integer such that $A^n=I$, where $I$ is the identity matrix. Suppose $T:RR^2->RR^2$ is the linear transformation of reflecting over $x_1$-axis, and $A$ is the standard matrix of $T$, the order of $A$ is
@@ -7117,57 +7100,56 @@ x_1;x_2
 Suppose $T:RR^3->RR^3$ is a linear transformation defined by $T(mat(x_1;x_2;x_3))=mat(x_1-2x_2+x_3;2x_2+3x_3;x_1-x_3)$. Please find $T^(-1)$, then standard matrix for $T^(-1)$. Is $T^(-1)$ onto? Is $T^(-1)$ is one-to-one? Show all your work.
 ]
 
-// #solution[
-// Note that $T(bold(x))=A bold(x)$, where $A=mat(
-// 1,-2,1;
-// 0,2,3;
-// 1,0,-1
-// )$, use the algorithm to find $A^(-1)$
-// $
-// ,mat(
-// 1,-2,1,1,0,0;
-// 0,2,3,0,1,0;
-// 1,0,-1,0,0,1
-// ; augment:#(-1))xarrow(#`R3`-> #`R3`-#`R1`)mat(
-// 1,-2,1,1,0,0;
-// 0,2,3,0,1,0;
-// 0,2,-2,-1,0,1
-// ; augment:#(-1));
-// ,xarrow(#`R3`-> #`R3`-#`R2`)mat(
-// 1,-2,1,1,0,0;
-// 0,2,3,0,1,0;
-// 0,0,-5,-1,-1,1
-// ; augment:#(-1))xarrow( #`R2`/2 \ #`R3`/(-5) )mat(
-// 1,-2,1,1,0,0;
-// 0,1, 3 / 2 ,0, 1 / 2 ,0;
-// 0,0,1, 1 / 5 , 1 / 5 ,- 1 / 5
-// ; augment:#(-1));
-// ,xarrow(#`R2`-> #`R2`- 3 / 2 #`R3`)mat(
-// 1,-2,1,1,0,0;
-// 0,1,0,- 3 / 10 , 1 / 5 , 3 / 10 ;
-// 0,0,1, 1 / 5 , 1 / 5 ,- 1 / 5
-// ; augment:#(-1))xarrow(#`R1`-> #`R1`+2#`R2`-#`R3`)mat(
-// 1,-2,1, 1 / 5 , 1 / 5 , 4 / 5 ;
-// 0,1,0,- 3 / 10 , 1 / 5 , 3 / 10 ;
-// 0,0,1, 1 / 5 , 1 / 5 ,- 1 / 5
-// ; augment:#(-1))
-// $
-// Hence $A^(-1)=mat(
-//  1 / 5 , 1 / 5 , 4 / 5 ;
-// - 3 / 10 , 1 / 5 , 3 / 10 ;
-//  1 / 5 , 1 / 5 ,- 1 / 5
-// )$, so we have $T^(-1)(mat(y_1;y_2;y_3))=mat(
-//  1 / 5 y_1+ 1 / 5 y_2+ 4 / 5 y_3;
-// - 3 / 10 y_1+ 1 / 5 y_2+ 3 / 10 y_3;
-//  1 / 5 y_1+ 1 / 5 y_2- 1 / 5 y_3
-// )$. $T^(-1)$ is both onto and one-to-one.
-// ]
+#solution[
+Note that $T(bold(x))=A bold(x)$, where $A=mat(
+1,-2,1;
+0,2,3;
+1,0,-1
+)$, use the algorithm to find $A^(-1)$
+$
+&mat(
+1,-2,1,1,0,0;
+0,2,3,0,1,0;
+1,0,-1,0,0,1
+; augment:#(-1))xarrow(#`R3`-> #`R3`-#`R1`)mat(
+1,-2,1,1,0,0;
+0,2,3,0,1,0;
+0,2,-2,-1,0,1
+; augment:#(-1)) \
+&xarrow(#`R3`-> #`R3`-#`R2`)mat(
+1,-2,1,1,0,0;
+0,2,3,0,1,0;
+0,0,-5,-1,-1,1
+; augment:#(-1))xarrow( #`R2`/2 \ #`R3`/(-5) )mat(
+1,-2,1,1,0,0;
+0,1, 3 / 2 ,0, 1 / 2 ,0;
+0,0,1, 1 / 5 , 1 / 5 ,- 1 / 5
+; augment:#(-1)) \
+&xarrow(#`R2`-> #`R2`- 3 / 2 #`R3`)mat(
+1,-2,1,1,0,0;
+0,1,0,- 3 / 10 , 1 / 5 , 3 / 10 ;
+0,0,1, 1 / 5 , 1 / 5 ,- 1 / 5
+; augment:#(-1))xarrow(#`R1`-> #`R1`+2#`R2`-#`R3`)mat(
+1,-2,1, 1 / 5 , 1 / 5 , 4 / 5 ;
+0,1,0,- 3 / 10 , 1 / 5 , 3 / 10 ;
+0,0,1, 1 / 5 , 1 / 5 ,- 1 / 5
+; augment:#(-1))
+$
+Hence $A^(-1)=mat(
+1 / 5 , 1 / 5 , 4 / 5 ;
+- 3 / 10 , 1 / 5 , 3 / 10 ;
+1 / 5 , 1 / 5 ,- 1 / 5
+)$, so we have $T^(-1)(mat(y_1;y_2;y_3))=mat(
+1 / 5 y_1+ 1 / 5 y_2+ 4 / 5 y_3;
+- 3 / 10 y_1+ 1 / 5 y_2+ 3 / 10 y_3;
+1 / 5 y_1+ 1 / 5 y_2- 1 / 5 y_3
+)$. $T^(-1)$ is both onto and one-to-one.
+]
 
 #problem[
 An #text(fill:blue)[affine transformation]#index[affine transformation] is a mapping $T:RR^2->RR^2$ defined by $T(bold(x))=A bold(x)+bold(b)$, Note that $A bold(x)+bold(b)=mat(A,bold(b))mat(bold(x);1)$. If we use partitioned matrix and deploying the trick of ``adding" 1 at the end of the coordinates, then $T$ may be interpreted as a matrix transformation $mat(T(bold(x));1)=mat(A bold(x)+bold(b);1)=mat(A,bold(b);0,1)mat(bold(x);1)$
 
-\item
-Suppose $T_1(bold(x))=A_1bold(x)+bold(b)_1$ and $T_2(bold(x))=A_2bold(x)+bold(b)_2$ are both affine transformations. What is the composition $T_2circle.small T_1$? How should you deploy the trick?
+- Suppose $T_1(bold(x))=A_1bold(x)+bold(b)_1$ and $T_2(bold(x))=A_2bold(x)+bold(b)_2$ are both affine transformations. What is the composition $T_2circle.small T_1$? How should you deploy the trick?
 - Suppose $T(bold(x))=A bold(x)+bold(b)$ is an affine transformation and $A$ is invertible. What is $T^(-1)$? How should you deploy the trick?
 
 ]
@@ -7201,18 +7183,18 @@ Suppose $A=mat(
 
 #solution[
 $
-,| mat(
+& mat(delim: "|", 
 1,2,2;
 2,1,3;
 -1,2,0
- ) |=(-1) dot.c (-1)^{3+1}| mat(
+ )=(-1) dot.c (-1)^(3+1) mat(delim: "|", 
 2,2;
 1,3
- ) |+2 dot.c (-1)^{3+2}| mat(
+ )+2 dot.c (-1)^(3+2) mat(delim: "|", 
 1,2;
 2,3;
- ) |+0;
-,=(-1)(2 dot.c 3-2 dot.c 1)+(-2)(1 dot.c 3-2 dot.c 2)=-2
+ )+0 \
+&=(-1)(2 dot.c 3-2 dot.c 1)+(-2)(1 dot.c 3-2 dot.c 2)=-2
 $
 ]
 
@@ -7225,30 +7207,30 @@ Compute the determinant of $A=mat(
 )$. Is $A$ invertible?
 ]
 
-// #solution[
-// $
-// ,| mat(
-// 1,2,2,-1;
-// 0,2,0,0;
-// 3,5,2,3;
-// 2,1,0,-1
-//  ) |xequal("cofactor expansion second row")2(-1)^{2+2}| mat(
-// 1,2,-1;
-// 3,2,3;
-// 2,0,-1
-//  ) |xequal( #`R2`-> #`R3`-3#`R1` \ #`R3`-> #`R3`-2#`R1` )2| mat(
-// 1,2,-1;
-// 0,-4,6;
-// 0,-4,1
-//  ) |;
-// ,xequal(#`R3`-> #`R3`-#`R2`)2| mat(
-// 1,2,-1;
-// 0,-4,6;
-// 0,0,-5
-//  ) |=2 dot.c 1 dot.c (-4) dot.c (-5)=40
-// $
-// $A$ is invertible since $"det "A!=0$
-// ]
+#solution[
+$
+& mat(delim: "|", 
+1,2,2,-1;
+0,2,0,0;
+3,5,2,3;
+2,1,0,-1
+)xequal("cofactor expansion second row")2(-1)^(2+2) mat(delim: "|", 
+1,2,-1;
+3,2,3;
+2,0,-1
+)xequal( #`R2`-> #`R3`-3#`R1` \ #`R3`-> #`R3`-2#`R1` )2 mat(delim: "|", 
+1,2,-1;
+0,-4,6;
+0,-4,1
+) \
+&xequal(#`R3`-> #`R3`-#`R2`)2 mat(delim: "|", 
+1,2,-1;
+0,-4,6;
+0,0,-5
+)=2 dot.c 1 dot.c (-4) dot.c (-5)=40
+$
+$A$ is invertible since $"det "A!=0$
+]
 
 #problem[
 Consider the parallelgram $P$ with vertices $(-2,-3),(-1,1),(2,4),(3,8)$, use determinants to evaluate the area of $P$
@@ -7292,7 +7274,7 @@ $"det"(A-B)="det "A-"det "B$
 #solution[
 This is false, for example, we could just take $A=I=mat(
 1,0;0,1
-)$, $B=-I$, then $4="det"(2I)="det"(A-B)!= "det "A-"det "B=1-1=0$
+)$, $ B=-I $, then $4="det"(2I)="det"(A-B)!= "det "A-"det "B=1-1=0$
 ]
 
 #problem[
@@ -7397,43 +7379,43 @@ Suppose $A=mat(
 - $bold(b) in "Col"A$ since linear system $A bold(x)=bold(b)$ is consistent
 ]
 
-// #problem[
-// Recall $PP_2=\{a_0+a_1t+a_2t^2|a_0,a_1,a_2 in RR\}$ is the set of polynomials of degree less or equal to 2. Let $V$ be the subset of $PP_2$ consists of polynomials that evalute to 0 at $t=1$ (i.e. polynomial $p(t)$ is in $V$ if $p(1)=0$ and of degree less or equal to 2). With the usual addition and scalar multiplication for polynomials
-// \begin{enumerate}[label=\alph*)]
-// - Show that $V$ is a subspace.
-// - Find a basis of $V$.
-// - Cosider $T:V->RR^2$ that maps polynomial $p(t)$ to $mat(
-// p(-1);p(2)
-// )$, show $T$ is a linear transformation
-// // ]
+#problem[
+Recall $PP_2=\{a_0+a_1t+a_2t^2|a_0,a_1,a_2 in RR\}$ is the set of polynomials of degree less or equal to 2. Let $V$ be the subset of $PP_2$ consists of polynomials that evalute to 0 at $t=1$ (i.e. polynomial $p(t)$ is in $V$ if $p(1)=0$ and of degree less or equal to 2). With the usual addition and scalar multiplication for polynomials
+#set enum(numbering: "a)")
++ Show that $V$ is a subspace.
++ Find a basis of $V$.
++ Cosider $T:V->RR^2$ that maps polynomial $p(t)$ to $mat(
+p(-1);p(2)
+)$, show $T$ is a linear transformation
+]
 
-// #solution[
-// \begin{enumerate}[label=\alph*)]
-// - Realize that $V="ker" S$ for the linear transformation $S:PP_2->RR$, $S(a_0+a_1t+a_2t^2)=a_0+a_1+a_2$, thus $V$ is a subspace of $PP_2$
-// - This is precisely Example @(10:24-07/01/2022)
-// - For any $p(t),q(t) in  V$ and $c in RR$, we have
-//  $
-// T(p+q)=mat(
-// (p+q)(-1);(p+q)(2)
-// )=mat(
-// p(-1)+q(-1);p(2)+q(2)
-// )=mat(
-// p(-1);p(2)
-// )+mat(
-// q(-1);q(2)
-// )=T(p)+T(q)
-//  $
-//  $
-// T(c p)=mat(
-// (c p)(-1);(c p)(2)
-// )=mat(
-// c dot.c  p(-1);c dot.c  p(2)
-// )=cmat(
-// p(-1);p(2)
-// )=c T(p)
-//  $
-// Therefore $T:V->RR^2$ is a linear transformation
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ Realize that $V="ker" S$ for the linear transformation $S:PP_2->RR$, $S(a_0+a_1t+a_2t^2)=a_0+a_1+a_2$, thus $V$ is a subspace of $PP_2$
++ This is precisely @ref-10:24-07-01-2022
++ For any $p(t),q(t) in  V$ and $c in RR$, we have
+$
+T(p+q)=mat(
+(p+q)(-1);(p+q)(2)
+)=mat(
+p(-1)+q(-1);p(2)+q(2)
+)=mat(
+p(-1);p(2)
+)+mat(
+q(-1);q(2)
+)=T(p)+T(q)
+$
+$
+T(c p)=mat(
+(c p)(-1);(c p)(2)
+)=mat(
+c dot.c  p(-1);c dot.c  p(2)
+)=c mat(
+p(-1);p(2)
+)=c T(p)
+$
+Therefore $T:V->RR^2$ is a linear transformation
+]
 
 #problem[
 We say a square matrix $A$ is #text(fill:blue)[anti-symmetric]#index[anti-symmetric] if $A^T=-A$. Denote the set of $3 times 3$ anti-symmetric matrices $V$.
@@ -7459,87 +7441,87 @@ cal(B)={B_1=mat(
 form a basis for $V$.
 ]
 
-// #solution[
-// \begin{enumerate}[label=\alph*)]
-// - For any $A,B in  V$ and $c in RR$, by definition $A^T=-A, B^T=-B$, so
-//  $
-// (A+B)^T=A^T+B^T=-A-B=-(A+B)
-//  $
-//  $
-// (c a)^T=c a^T=c(-A)=-(c a)
-//  $
-// hence $A+B,c a in  V$, i.e. $V$ is a closed under addition and scalar multiplication. Therefore $V$ is a subspace of $M_{3 times 2}(RR)$, and consequently a vector space.
-// - It is not hard to realize
-//  $
-// V={mat(
-// 0,-a,-b;
-// a,0,-c;
-// b,c,0
-// ) in \ M_{3 times 3}(RR) mid(|)a,b,c in RR} 	tilde.equiv RR^3
-//  $
-// Thus $"dim" V=3$
-// - Note that
-// $ \label{14:56-06/24/2022}
-// \begin{aligned}
-// mat(
-// 0,-a,-b;
-// a,0,-c;
-// b,c,0
-// ),=mat(
-// 0,-a,0;
-// a,0,0;
-// 0,0,0
-// )+mat(
-// 0,0,-b;
-// 0,0,0;
-// b,0,0
-// )+mat(
-// 0,0,0;
-// 0,0,-c;
-// 0,c,0
-// );
-// ,=amat(
-// 0,-1,0;
-// 1,0,0;
-// 0,0,0
-// )+bmat(
-// 0,0,-1;
-// 0,0,0;
-// 1,0,0
-// )+cmat(
-// 0,0,0;
-// 0,0,-1;
-// 0,1,0
-// )
-// \end{aligned}
-// $
-// So we know that
-//  $
-// cal(E)=\{E_1,E_2,E_3\}=
-// {
-// mat(
-// 0,-1,0;
-// 1,0,0;
-// 0,0,0
-// ),mat(
-// 0,0,-1;
-// 0,0,0;
-// 1,0,0
-// ),mat(
-// 0,0,0;
-// 0,0,-1;
-// 0,1,0
-// )}
-//  $
-// is a basis for $V$, this is linearly independent since the linear combination \eqref{14:56-06/24/2022} is equal to zero $<=> a=b=c=0$
-// - Check that the coordinate vectors $\{[B_1]_{cal(E)},[B_2]_{cal(E)},[B_3]_{cal(E)}\}={mat(
-// 1;1;1
-// ),mat(
-// -2;0;1
-// ),mat(
-// 1;2;3
-// )}$ form a basis for $RR^3$, so $cal(B)$ form a basis for $V$.
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ For any $A,B in  V$ and $c in RR$, by definition $A^T=-A, B^T=-B$, so
+$
+(A+B)^T=A^T+B^T=-A-B=-(A+B)
+$
+$
+(c a)^T=c a^T=c(-A)=-(c a)
+$
+hence $A+B,c a in  V$, i.e. $V$ is a closed under addition and scalar multiplication. Therefore $V$ is a subspace of $M_(3 times 2)(RR)$, and consequently a vector space.
++ It is not hard to realize
+$
+V={mat(
+0,-a,-b;
+a,0,-c;
+b,c,0
+) in \ M_(3 times 3)(RR) mid(|)a,b,c in RR} 	tilde.equiv RR^3
+$
+Thus $"dim" V=3$
++ Note that
+$
+
+mat(
+0,-a,-b;
+a,0,-c;
+b,c,0
+)&=mat(
+0,-a,0;
+a,0,0;
+0,0,0
+)+mat(
+0,0,-b;
+0,0,0;
+b,0,0
+)+mat(
+0,0,0;
+0,0,-c;
+0,c,0
+) \
+&=a mat(
+0,-1,0;
+1,0,0;
+0,0,0
+)+b mat(
+0,0,-1;
+0,0,0;
+1,0,0
+)+c mat(
+0,0,0;
+0,0,-1;
+0,1,0
+)
+
+$ <ref-14:56-06-24-2022>
+So we know that
+$
+cal(E)=\{E_1,E_2,E_3\}=
+{
+mat(
+0,-1,0;
+1,0,0;
+0,0,0
+),mat(
+0,0,-1;
+0,0,0;
+1,0,0
+),mat(
+0,0,0;
+0,0,-1;
+0,1,0
+)}
+$
+is a basis for $V$, this is linearly independent since the linear combination @ref-14:56-06-24-2022 is equal to zero $<=> a=b=c=0$
++ Check that the coordinate vectors $\{[B_1]_(cal(E)),[B_2]_(cal(E)),[B_3]_(cal(E))\}={mat(
+1;1;1
+),mat(
+-2;0;1
+),mat(
+1;2;3
+)}$ form a basis for $RR^3$, so $cal(B)$ form a basis for $V$.
+]
 
 == Online Assignment 7
 
@@ -7560,47 +7542,47 @@ This is true. Note that $t=0$ is a root of the characteristic polynomial, so the
 ]
 
 #problem[
-// Suppose $cal(B)= 1+t,1+2t^2,1-t+t^2$ and $cal(C)= 1-t,t,t^2$ are two bases for $PP_2$, What is the change of basis matrix $\underset{cal(C)\leftarrowcal(B)}{P}$ from $cal(B)$ to $cal(C)$. Please show all your work.
+Suppose $cal(B)= 1+t,1+2t^2,1-t+t^2$ and $cal(C)= 1-t,t,t^2$ are two bases for $PP_2$, What is the change of basis matrix $P_(cal(C)arrow.l cal(B))$ from $cal(B)$ to $cal(C)$. Please show all your work.
 ]
 
-// #solution[
-// First let's find the change of basis matrices from $cal(B)$ and $cal(C)$ to the standard basis $cal(E)=\{1,t,t^2\}$. We have
-//  $
-// \underset{cal(E)\leftarrowcal(B)}{P}=mat(
-// [1+t)_{cal(E)},[1+2t^2]_{cal(E)},[1-t+t^2]_{cal(E)}
-// ]=mat(
-// 1,1,1;
-// 1,0,-1;
-// 0,2,1
-// )
-//  $
-// And
-//  $
-// \underset{cal(E)\leftarrowcal(C)}{P}=mat(
-// [1-t)_{cal(E)},[t]_{cal(E)},[t^2]_{cal(E)}
-// ]=mat(
-// 1,0,0;
-// -1,1,0;
-// 0,0,1
-// )
-//  $
-// Hence we have
-// $
-// \underset{cal(C)\leftarrowcal(B)}{P}=(\underset{cal(C)\leftarrowcal(E)}{P})(\underset{cal(E)\leftarrowcal(B)}{P})=(\underset{cal(E)\leftarrowcal(C)}{P})^(-1)(\underset{cal(E)\leftarrowcal(B)}{P})=mat(
-// 1,0,0;
-// -1,1,0;
-// 0,0,1
-// )^(-1)mat(
-// 1,1,1;
-// 1,0,-1;
-// 0,2,1
-// )=mat(
-// 1       ,       1  ,            1       ;
-// 2        ,      1 ,             0       ;
-// 0         ,     2,              1
-// )
-// $
-// ]
+#solution[
+First let's find the change of basis matrices from $cal(B)$ and $cal(C)$ to the standard basis $cal(E)=\{1,t,t^2\}$. We have
+$
+P_(cal(E)arrow.l cal(B))=mat(
+[1+t]_(cal(E)),[1+2t^2]_(cal(E)),[1-t+t^2]_(cal(E))
+)=mat(
+1,1,1;
+1,0,-1;
+0,2,1
+)
+$
+And
+$
+P_(cal(E)arrow.l cal(C))=mat(
+[1-t]_(cal(E)),[t]_(cal(E)),[t^2]_(cal(E))
+)=mat(
+1,0,0;
+-1,1,0;
+0,0,1
+)
+$
+Hence we have
+$
+P_(cal(C)arrow.l cal(B))=(P_(cal(C)arrow.l cal(E)))(P_(cal(E)arrow.l cal(B)))=(P_(cal(E)arrow.l cal(C)))^(-1)(P_(cal(E)arrow.l cal(B)))=mat(
+1,0,0;
+-1,1,0;
+0,0,1
+)^(-1)mat(
+1,1,1;
+1,0,-1;
+0,2,1
+)=mat(
+1       ,       1  ,            1       ;
+2        ,      1 ,             0       ;
+0         ,     2,              1
+)
+$
+]
 
 #problem[
 If $"Nul"A$ is 2-dimensional, then $0$ is an eigenvalue of $A$.
@@ -7623,17 +7605,17 @@ Find all eigenvalues of $A=mat(6,-2,0;-2,9,0;5,8,3)$. Please show all your work.
 ]
 
 #solution[
-// $
-// |t I-A|,=| mat(
-// t-6,2,0;
-// 2,t-9,0;
-// -5,-8,t-3
-//  ) |xequal("cofator expansion across 3rd column")(t-3)(-1)^{3+3}| mat(
-// t-6,2;
-// 2,t-9
-//  ) |;
-// ,=(t-3)((t-6)(t-9)-2 dot.c  2)=(t-3)(t^2-5t+50)=(t-3)(t-5)(t-10)
-// $
+$
+|t I-A|&= mat(delim: "|", 
+t-6,2,0;
+2,t-9,0;
+-5,-8,t-3
+)xequal("cofator expansion across 3rd column")(t-3)(-1)^(3+3) mat(delim: "|", 
+t-6,2;
+2,t-9
+) \
+&=(t-3)((t-6)(t-9)-2 dot.c  2)=(t-3)(t^2-5t+50)=(t-3)(t-5)(t-10)
+$
 Therefore eigenvalues for $A$ are 3,5,10.
 ]
 
@@ -7641,9 +7623,9 @@ Therefore eigenvalues for $A$ are 3,5,10.
 Assume that $A$ is similar to an upper triangular matrix $U$, then $"det "A$ is the product of all its eigenvalues (counting multiplicity). Please explain why.
 ]
 
-// #solution[
-// Suppose the diagonal elements of $A$ are $ lambda _1,dots.h.c, lambda_n$, then the charateristic polynomial of $A$ is the same the charateristic polynomial $U$ (Since they are similar) which would be $(t- lambda _1)dots.h.c(t- lambda_n)$, so $ lambda _1,dots.h.c, lambda_n$ are the eigenvalues for $A$. And the determinant of $A$ is the same as the determinant of $U$ (Since they are similar) which is $ lambda _1dots.h.c lambda_n$
-// ]
+#solution[
+Suppose the diagonal elements of $A$ are $ lambda _1,dots.h.c, lambda_n$, then the charateristic polynomial of $A$ is the same the charateristic polynomial $U$ (Since they are similar) which would be $(t- lambda _1)dots.h.c(t- lambda_n)$, so $ lambda _1,dots.h.c, lambda_n$ are the eigenvalues for $A$. And the determinant of $A$ is the same as the determinant of $U$ (Since they are similar) which is $ lambda _1dots.h.c lambda_n$
+]
 
 == Online Assignment 8
 
@@ -7655,141 +7637,141 @@ Suppose $A=mat(
 )$, determine whether $A$ is diagonalizable. If it is, please find a diagonalization. If not, please explain why.
 ]
 
-// #solution[
-// First we evaluate the characteristic polynomial of $A$
-// $
-// "det"(tI-A),=| mat(
-// t-2,-2,-1;
-// -1,t-3,-1;
-// -1,-2,t-2
-//  ) |xequal( #`R1`-> #`R1`+(t-2)#`R3` \ #`R2`-> #`R2`-#`R3` )| mat(
-// 0,-2(t-1),(t-1)(t-3);
-// 0,t-1,-(t-1);
-// -1,-2,t-2
-//  ) |;
-// ,xequal("factor out $(t-1)$ on row 1 and row 2")(t-1)^2| mat(
-// 0,-2,(t-3);
-// 0,1,-1;
-// -1,-2,t-2
-//  ) |=(t-1)^2(t-5)
-// $
-// So the eigenvalues are $ lambda _1= lambda _2=1$, $ lambda _3=5$. For the 1-eigenspace, we consider
-// $
-// mat(
-// I-A,bold(0)
-// ; augment:#(-1)),=
-// mat(
-// -1,-2,-1,0;
-// -1,-2,-1,0;
-// -1,-2,-1,0
-// ; augment:#(-1))tilde mat(
-// 1,2,1,0;
-// 0,0,0,0;
-// 0,0,0,0
-// ; augment:#(-1))
-// $
-// So we get two basis vectors ${bold(v)_1=mat(
-// -2;1;0
-// ),bold(v)_2=mat(
-// -1;0;1
-// )}$. For the 5-eigenspace, we consider
-// $
-// mat(
-// 5I-A,bold(0)
-// ; augment:#(-1)),=
-// mat(
-// 3,-2,-1,0;
-// -1,2,-1,0;
-// -1,-2,3,0
-// ; augment:#(-1))tilde mat(
-// 1,0,-1,0;
-// 0,1,-1,0;
-// 0,0,0,0
-// ; augment:#(-1))
-// $
-// So we get a basis vector ${bold(v)_3=mat(
-// 1;1;1
-// )}$
-// - From above, we get the diagonalization
-//  $
-// A=P D P^(-1)=mat(
-// -2,-1,1;
-// 1,0,1;
-// 0,1,1
-// )mat(
-// 1,0,0;
-// 0,1,0;
-// 0,0,5
-// )mat(
-// - 1 / 4 , 1 / 2 ,- 1 / 4 ;
-// - 1 / 4 ,- 1 / 2 , 3 / 4 ;
-//  1 / 4 , 1 / 2 , 1 / 4
-// )
-//  $
-// ]
+#solution[
+First we evaluate the characteristic polynomial of $A$
+$
+"det"(t I-A)&= mat(delim: "|", 
+t-2,-2,-1;
+-1,t-3,-1;
+-1,-2,t-2
+)xequal( #`R1`-> #`R1`+(t-2)#`R3` \ #`R2`-> #`R2`-#`R3` ) mat(delim: "|", 
+0,-2(t-1),(t-1)(t-3);
+0,t-1,-(t-1);
+-1,-2,t-2
+) \
+&xequal("factor out $(t-1)$ on row 1 and row 2")(t-1)^2 mat(delim: "|", 
+0,-2,(t-3);
+0,1,-1;
+-1,-2,t-2
+)=(t-1)^2(t-5)
+$
+So the eigenvalues are $ lambda _1= lambda _2=1$, $ lambda _3=5$. For the 1-eigenspace, we consider
+$
+mat(
+I-A,bold(0)
+; augment:#(-1))&=
+mat(
+-1,-2,-1,0;
+-1,-2,-1,0;
+-1,-2,-1,0
+; augment:#(-1))tilde mat(
+1,2,1,0;
+0,0,0,0;
+0,0,0,0
+; augment:#(-1))
+$
+So we get two basis vectors ${bold(v)_1=mat(
+-2;1;0
+),bold(v)_2=mat(
+-1;0;1
+)}$. For the 5-eigenspace, we consider
+$
+mat(
+5I-A,bold(0)
+; augment:#(-1))&=
+mat(
+3,-2,-1,0;
+-1,2,-1,0;
+-1,-2,3,0
+; augment:#(-1))tilde mat(
+1,0,-1,0;
+0,1,-1,0;
+0,0,0,0
+; augment:#(-1))
+$
+So we get a basis vector ${bold(v)_3=mat(
+1;1;1
+)}$
+- From above, we get the diagonalization
+$
+A=P D P^(-1)=mat(
+-2,-1,1;
+1,0,1;
+0,1,1
+)mat(
+1,0,0;
+0,1,0;
+0,0,5
+)mat(
+- 1 / 4 , 1 / 2 ,- 1 / 4 ;
+- 1 / 4 ,- 1 / 2 , 3 / 4 ;
+1 / 4 , 1 / 2 , 1 / 4
+)
+$
+]
 
 #problem[
 Suppose $A=mat(
 -6,8;
 -4,6
-)$, Please evaluate $A^{101}$, show all your work.
+)$, Please evaluate $A^(101)$, show all your work.
 ]
 
-// #solution[
-// First we can diagonalize $A$ as
-//  $
-// A=mat(
-// 1,2;
-// 1,1
-// )mat(
-// 2,0;
-// 0,-2
-// )mat(
-// -1,2;
-// 1,-1
-// )
-//  $
-//  $
-// A^{101}=PD^{101}P^(-1)=mat(
-// 1,2;
-// 1,1
-// )mat(
-// 2^{101},0;
-// 0,-2^{101}
-// )mat(
-// -1,2;
-// 1,-1
-// )
-//  $
-// ]
+#solution[
+First we can diagonalize $A$ as
+$
+A=mat(
+1,2;
+1,1
+)mat(
+2,0;
+0,-2
+)mat(
+-1,2;
+1,-1
+)
+$
+$
+A^(101)=P D^(101)P^(-1)=mat(
+1,2;
+1,1
+)mat(
+2^(101),0;
+0,-2^(101)
+)mat(
+-1,2;
+1,-1
+)
+$
+]
 
 #problem[
 Suppose $T:RR^3->RR^3$ is a linear transformation, $cal(B)=\{bold(b)_1,bold(b)_2,bold(b)_3\}$, $cal(C)=\{bold(c)_1,bold(c)_2,bold(c)_3\}$ are two different bases for $RR^3$. Determine whether the following is possible.
-- $[T]_{cal(B)}=mat(
+- $[T]_(cal(B))=mat(
 1 ,2,4;
 3 ,-1 ,-2;
 2 ,-1, 3
-)$ and $[T]_{cal(C)}=mat(
+)$ and $[T]_(cal(C))=mat(
 1, -3 ,1;
 2 ,1, 6;
 0 ,3 ,8
 )$
-- $[T]_{cal(B)}=mat(
+- $[T]_(cal(B))=mat(
 3,0,0;
 2,2,0;
 2,3,4
-)$ and $[T]_{cal(C)}=mat(
+)$ and $[T]_(cal(C))=mat(
 1,-1,0;
 2,4,0;
 3,-2,4
 )$
 ]
 
-// #solution[
-// \begin{enumerate}[label=\alph*)]
-// - This is not possible since these two matrices have different determinant.
-// - This is possible since these two matrix has the same the characteristic polynomial $(t-2)(t-3)(t-4)$, hence they are similar to same diagonal matrix, and thus similar.
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ This is not possible since these two matrices have different determinant.
++ This is possible since these two matrix has the same the characteristic polynomial $(t-2)(t-3)(t-4)$, hence they are similar to same diagonal matrix, and thus similar.
+]
 
 #problem[
 Suppose $A$ is similar to $B$.
@@ -7812,12 +7794,12 @@ Determine whether the following statements are true
 - If $W = "Span"{bold(x)_1, bold(x)_2 ,bold(x)_3}$ with $\{bold(x)_1, bold(x)_2 ,bold(x)_3\}$ linearly independent, and if $\{bold(v)_1, bold(v)_2 ,bold(v)_3\}$ is an orthogonal set in $W$, then $\{bold(v)_1, bold(v)_2 ,bold(v)_3\}$ is a basis for $W$.
 ]
 
-// #solution[
-// \begin{enumerate}[label=\alph*)]
-// - This is true. $|bold(u)+bold(v)|^2=(bold(u)+bold(v)) dot.c (bold(u)+bold(v))=bold(u) dot.c bold(u)+2bold(u) dot.c bold(v)+bold(v) dot.c bold(v)=|bold(u)|^2+|bold(v)|^2+2bold(u) dot.c bold(v)$. Thus the equality holds $<=>bold(u) dot.c bold(v)=0$, i.e. $bold(u),bold(v)$ are orthogonal.
-// - Consider $bold(v) dot.c bold(v)=|bold(v)|^2$, it should be 0 since $bold(v)$ is in both $W$ and $W^perp$, so $bold(v)=bold(0)$
-// - This is true by Theorem @(01:12-07/15/2022)
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ This is true. $|bold(u)+bold(v)|^2=(bold(u)+bold(v)) dot.c (bold(u)+bold(v))=bold(u) dot.c bold(u)+2bold(u) dot.c bold(v)+bold(v) dot.c bold(v)=|bold(u)|^2+|bold(v)|^2+2bold(u) dot.c bold(v)$. Thus the equality holds $<=>bold(u) dot.c bold(v)=0$, i.e. $bold(u),bold(v)$ are orthogonal.
++ Consider $bold(v) dot.c bold(v)=|bold(v)|^2$, it should be 0 since $bold(v)$ is in both $W$ and $W^perp$, so $bold(v)=bold(0)$
++ This is true by @ref-01:12-07-15-2022
+]
 
 #problem[
 Suppose $A=mat(
@@ -7828,56 +7810,56 @@ Suppose $A=mat(
 )$, please find a basis for $("Col"A)^perp$.
 ]
 
-// #solution[
-// Recall that $("Col"A)^perp="Nul "(A^T)$. And we can find a basis for $"Nul "(A^T)$ through
-//  $
-// mat(
-// A^T,bold(0)
-// ; augment:#(-1))=mat(
-// 1,2,0,3,0;
-// 2,1,2,5,0;
-// 3,-1,4,1,0
-// ; augment:#(-1))tilde mat(
-// 1,0,0,-13,0;
-// 0,1,0,8,0;
-// 0,0,1, 23 / 2 ,0
-// ; augment:#(-1))
-//  $
-// Thus
-//  $
-// ("Col"A)^perp="Span"{mat(
-// 13;-8;- 23 / 2 ;1
-// )}
-//  $
-// ]
+#solution[
+Recall that $("Col"A)^perp="Nul "(A^T)$. And we can find a basis for $"Nul "(A^T)$ through
+$
+mat(
+A^T,bold(0)
+; augment:#(-1))=mat(
+1,2,0,3,0;
+2,1,2,5,0;
+3,-1,4,1,0
+; augment:#(-1))tilde mat(
+1,0,0,-13,0;
+0,1,0,8,0;
+0,0,1, 23 / 2 ,0
+; augment:#(-1))
+$
+Thus
+$
+("Col"A)^perp="Span"{mat(
+13;-8;- 23 / 2 ;1
+)}
+$
+]
 
 #problem[
 Suppose we have $cal(B)= bold(u)_1=mat(1;1;0;-1),bold(u)_2=mat(1;0;1;1),bold(u)_3=mat(0;-1;1;-1)$, please justify that $cal(B)$ is an orthogonal set, suppose $bold(y)=mat(1;2;3;4)$, $L$ is the subspace spanned by $cal(B)$, compute the projection $"Proj"_L bold(y)$ of $bold(y)$ onto $L$.
 ]
 
-// #solution[
-// Let $A=mat(
-// bold(u)_1,bold(u)_2,bold(u)_3
-// )=mat(
-// 1,1,0;
-// 1,0,-1;
-// 0,1,1;
-// -1,1,-1
-// )$, we can check that $A^T A=I$ is the 3 by 3 identity matrix, so $cal(B)$ is an orthogonal set. And therefore
-// $
-// "Proj"_L bold(y),= bold(y) dot.c bold(u)_1 / bold(u)_1 dot.c bold(u)_1 bold(u)_1+ bold(y) dot.c bold(u)_2 / bold(u)_2 dot.c bold(u)_2 bold(u)_2+ bold(y) dot.c bold(u)_3 / bold(u)_3 dot.c bold(u)_3 bold(u)_3;
-// ,= -1 / 3 bold(u)_1+ 8 / 3 bold(u)_2+ -3 / 3 bold(u)_3;
-// ,=- 1 / 3 mat(
-// 1;1;0;-1
-// )+ 8 / 3 mat(
-// 1;0;1;1
-// )-mat(
-// 0;-1;1;-1
-// )=mat(
-//  7 / 3 ; 2 / 3 ; 5 / 3 ;4
-// )
-// $
-// ]
+#solution[
+Let $A=mat(
+bold(u)_1,bold(u)_2,bold(u)_3
+)=mat(
+1,1,0;
+1,0,-1;
+0,1,1;
+-1,1,-1
+)$, we can check that $ A^T A=I $ is the 3 by 3 identity matrix, so $cal(B)$ is an orthogonal set. And therefore
+$
+"Proj"_L bold(y)&= (bold(y) dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1) bold(u)_1+ (bold(y) dot.c bold(u)_2) / (bold(u)_2 dot.c bold(u)_2) bold(u)_2+ (bold(y) dot.c bold(u)_3) / (bold(u)_3 dot.c bold(u)_3) bold(u)_3 \
+&= -1 / 3 bold(u)_1+ 8 / 3 bold(u)_2+ -3 / 3 bold(u)_3 \
+&=- 1 / 3 mat(
+1;1;0;-1
+)+ 8 / 3 mat(
+1;0;1;1
+)-mat(
+0;-1;1;-1
+)=mat(
+7 / 3 ; 2 / 3 ; 5 / 3 ;4
+)
+$
+]
 
 #problem[
 Suppose $A=mat(
@@ -7888,40 +7870,40 @@ Suppose $A=mat(
 )$, please find an orthogonal basis for $"Col"A$.
 ]
 
-// #solution[
-// We apply the Gram-Schmidt process here
-//
-// - $bold(u)_1=bold(v)_1=mat(
-// -1;3;1;1
-// )$
-// - $bold(u)_2=bold(v)_2-\dfrac{bold(v)_2 dot.c bold(u)_1}{bold(u)_1 dot.c bold(u)_1}bold(u)_1=mat(
-// 6;-8;-2;-4
-// )- -36 / 12 mat(
-// -1;3;1;1
-// )=mat(
-// 3;1;1;-1
-// )$
-// - $bold(u)_3=bold(v)_3-\dfrac{bold(v)_3 dot.c bold(u)_1}{bold(u)_1 dot.c bold(u)_1}bold(u)_1-\dfrac{bold(v)_3 dot.c bold(u)_2}{bold(u)_2 dot.c bold(u)_2}bold(u)_2=mat(
-// 6;3;6;-3
-// )- 6 / 12 mat(
-// -1;3;1;1
-// )- 30 / 12 mat(
-// 3;1;1;-1
-// )=mat(
-// -1;-1;3;-1
-// )$
-//
-// So we have an orthogonal basis for $"Col"A$
-//  $
-// "Col"A="Span"{mat(
-// -1;3;1;1
-// ),mat(
-// 3;1;1;-1
-// ),mat(
-// -1;-1;3;-1
-// )}
-//  $
-// ]
+#solution[
+We apply the Gram-Schmidt process here
+
+- $bold(u)_1=bold(v)_1=mat(
+-1;3;1;1
+)$
+- $bold(u)_2=bold(v)_2-(bold(v)_2 dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1)bold(u)_1=mat(
+6;-8;-2;-4
+)- -36 / 12 mat(
+-1;3;1;1
+)=mat(
+3;1;1;-1
+)$
+- $bold(u)_3=bold(v)_3-(bold(v)_3 dot.c bold(u)_1) / (bold(u)_1 dot.c bold(u)_1)bold(u)_1-(bold(v)_3 dot.c bold(u)_2) / (bold(u)_2 dot.c bold(u)_2)bold(u)_2=mat(
+6;3;6;-3
+)- 6 / 12 mat(
+-1;3;1;1
+)- 30 / 12 mat(
+3;1;1;-1
+)=mat(
+-1;-1;3;-1
+)$
+
+So we have an orthogonal basis for $"Col"A$
+$
+"Col"A="Span"{mat(
+-1;3;1;1
+),mat(
+3;1;1;-1
+),mat(
+-1;-1;3;-1
+)}
+$
+]
 
 == Online Assignment 10
 
@@ -7932,7 +7914,7 @@ Determine whether the following statements are correct
 ]
 
 #solution[
-- The eigenvalues for eigenvectors $bold(u)$ and $bold(v)$ are 1 and 0, and $A$ is symmetric, by Theorem @thm:symmat-eigenvec-ortho, $bold(u) dot.c bold(v)=0$.
+- The eigenvalues for eigenvectors $bold(u)$ and $bold(v)$ are 1 and 0, and $A$ is symmetric, by @thm:symmat-eigenvec-ortho, $bold(u) dot.c bold(v)=0$.
 - If $bold(x) in "Nul"A$, then $A bold(x)=bold(0)$, so $A^T A bold(x)=bold(0)$. If $bold(x) in "Nul "(A^T A)$, then $A^T A bold(x)=bold(0)$, so $0=bold(x)^T A^T A bold(x)=|A bold(x)|^2$, so $A bold(x)=0$.
 ]
 
@@ -7960,7 +7942,7 @@ Let's denote $A=mat(
 0,42
 )$, and $A^T bold(b)=mat(
 4;6
-)$, then we get the least -square solution $\hat{bold(x)}=(A^T A)^(-1)A^T bold(b)=mat(
+)$, then we get the least -square solution $hat(bold(x))=(A^T A)^(-1)A^T bold(b)=mat(
  2 / 7 ; 1 / 7
 )$
 ]
@@ -7972,30 +7954,30 @@ Orthogonal diagonalize the matrix $mat(
 )$.
 ]
 
-// #solution[
-// First note that $A=mat(
-// 3,4;
-// 4,9
-// )$ is symmetric and real-valued, we can get its eigenvalues $ lambda _1=1$, $ lambda _2=11$, and normalized eigenvectors $bold(u)_1=mat(
-// - 2 / sqrt(5) ; 1 / sqrt(5)
-// )$, $bold(u)_2=mat(
-//  1 / sqrt(5) ; 2 / sqrt(5)
-// )$. Hence we have the orthogonal diganolization
-//  $
-// A=mat(
-// 3,4;
-// 4,9
-// )=mat(
-// - 2 / sqrt(5) , 1 / sqrt(5) ;
-//  1 / sqrt(5) , 2 / sqrt(5)
-// )mat(
-// 1,0;0,11
-// )mat(
-// - 2 / sqrt(5) , 1 / sqrt(5) ;
-//  1 / sqrt(5) , 2 / sqrt(5)
-// )=P D P^T
-//  $
-// ]
+#solution[
+First note that $A=mat(
+3,4;
+4,9
+)$ is symmetric and real-valued, we can get its eigenvalues $ lambda _1=1$, $ lambda _2=11$, and normalized eigenvectors $bold(u)_1=mat(
+- 2 / sqrt(5) ; 1 / sqrt(5)
+)$, $bold(u)_2=mat(
+1 / sqrt(5) ; 2 / sqrt(5)
+)$. Hence we have the orthogonal diganolization
+$
+A=mat(
+3,4;
+4,9
+)=mat(
+- 2 / sqrt(5) , 1 / sqrt(5) ;
+1 / sqrt(5) , 2 / sqrt(5)
+)mat(
+1,0;0,11
+)mat(
+- 2 / sqrt(5) , 1 / sqrt(5) ;
+1 / sqrt(5) , 2 / sqrt(5)
+)=P D P^T
+$
+]
 
 #problem[
 Suppose $A=mat(
@@ -8010,984 +7992,985 @@ b,c
 )$.
 ]
 
-// #solution[
-// \begin{enumerate}[label=\alph*)]
-// - The characteristic polynomial is $t^2-4t+13$, and so the eigenvalues are $ lambda =2-3i$, $#overline[lambda] =2+3i$, so we have $a=2$, $b=3$ and $C=mat(
-// 2,-3;3,2
-// )$
-// - The eigenvalues for $ lambda ,\overline{ lambda }$ are $bold(v)=mat(
-// 1+3i;2
-// )=mat(
-// 1;2
-// )+i mat(
-// 3;0
-// )$, $#overline[bold(v)]=mat(
-// 1-3i;2
-// )$. so $P=mat(
-// 1,3;
-// 2,0
-// )$
-// - From above computation we get decomposition
-//  $
-// A=mat(
-// 1,3;
-// 2,0
-// )mat(
-// 2,-3;3,2
-// )mat(
-// 0, 1 / 2 ;
-//  1 / 3 ,- 1 / 6
-// )=P C P^(-1)
-//  $
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ The characteristic polynomial is $t^2-4t+13$, and so the eigenvalues are $ lambda =2-3i$, $overline(lambda) =2+3i$, so we have $a=2$, $b=3$ and $C=mat(
+2,-3;3,2
+)$
++ The eigenvalues for $ lambda ,overline( lambda )$ are $bold(v)=mat(
+1+3i;2
+)=mat(
+1;2
+)+i mat(
+3;0
+)$, $overline(bold(v))=mat(
+1-3i;2
+)$. so $P=mat(
+1,3;
+2,0
+)$
++ From above computation we get decomposition
+$
+A=mat(
+1,3;
+2,0
+)mat(
+2,-3;3,2
+)mat(
+0, 1 / 2 ;
+1 / 3 ,- 1 / 6
+)=P C P^(-1)
+$
+]
 
 = Exams
 
 == Exam 1
 
 #problem[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(15 pt)} Write linear system
-//  $
-// cases(2x_1+4x_2+2x_3=2, x_1+3x_2-x_3+2x_4=1, -x_1+2x_2+3x_3+2x_4=-1)
-//  $
-// as a matrix equation, and then solve it, write your solution in parametric vector form.
-// \item\textbf{(5 pt)} Is ${bold(a)_1=mat(
-// 2;1;-1
-// ),bold(a)_2=mat(
-// 4;3;2
-// ),bold(a)_3=mat(
-// 2;-1;3
-// ),bold(a)_4=mat(
-// 0;2;2
-// )}$ linearly independent? Why or why not.
-// \item\textbf{(4 pt)} What is the span of $\{bold(a)_1,bold(a)_2,bold(a)_3,bold(a)_4\}$
+#set enum(numbering: "a)")
++ #strong[(15 pt)] Write linear system
+$
+cases(2x_1+4x_2+2x_3=2, x_1+3x_2-x_3+2x_4=1, -x_1+2x_2+3x_3+2x_4=-1)
+$
+as a matrix equation, and then solve it, write your solution in parametric vector form.
++ #strong[(5 pt)] Is ${bold(a)_1=mat(
+2;1;-1
+),bold(a)_2=mat(
+4;3;2
+),bold(a)_3=mat(
+2;-1;3
+),bold(a)_4=mat(
+0;2;2
+)}$ linearly independent? Why or why not.
++ #strong[(4 pt)] What is the span of $\{bold(a)_1,bold(a)_2,bold(a)_3,bold(a)_4\}$
 ]
 
-// #solution[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - We could rewrite the linear system as
-//  $
-// A bold(x)=mat(
-// 2,4,2,0;
-// 1,3,-1,2;
-// -1,2,3,2
-// )mat(
-// x_1;x_2;x_3;x_4
-// )=mat(
-// 2;1;-1
-// )=bold(b)
-//  $
-// $
-// ,mat(
-// A,bold(b)
-// )xarrow( #`R3`-> #`R3`+#`R2` \ #`R1`-> #`R1`-2#`R2` )mat(
-// 0,-2,4,-4,0;
-// 1,3,-1,2,1;
-// 0,5,2,4,0
-// )xarrow(#`R1` arrow.l.r  #`R2`)mat(
-// 1,3,-1,2,1;
-// 0,-2,4,-4,0;
-// 0,5,2,4,0
-// );
-// ,xarrow(#`R2`-> #`R2`/(-2))mat(
-// 1,3,-1,2,1;
-// 0,1,-2,2,0;
-// 0,5,2,4,0
-// )xarrow( #`R1`-> #`R1`-3#`R2` \ #`R3`-> #`R3`-5#`R2` )mat(
-// 1,0,5,-4,1;
-// 0,1,-2,2,0;
-// 0,0,12,-6,0
-// );
-// ,xarrow(#`R3`-> #`R3`/12)mat(
-// 1,0,5,-4,1;
-// 0,1,-2,2,0;
-// 0,0,1,- 1 / 2 ,0
-// )xarrow( #`R1`-> #`R1`-5#`R3` \ #`R2`-> #`R2`+2#`R3` )mat(
-// 1,0,0,- 3 / 2 ,1;
-// 0,1,0,1,0;
-// 0,0,1,- 1 / 2 ,0
-// )
-// $
-// So the solution is
-//  $
-// #cases(
-// x_1=1+ 3 / 2 x_4;
-// x_2=-x_4;
-// x_3= 1 / 2 x_4;
-// x_4" is free"
-// ) => \,
-// mat(
-// x_1;x_2;x_3;x_4
-// )=mat(
-// 1;0;0;0
-// )+x_4mat(
-//  3 / 2 ;-1; 1 / 2 ;1
-// )
-//  $
-// - Note $A=mat(
-// bold(a)_1,bold(a)_2,bold(a)_3,bold(a)_4
-// )$ has RREF $mat(
-// 1,0,0,- 3 / 2 ;
-// 0,1,0,1;
-// 0,0,1,- 1 / 2
-// )$. Since the fourth each column is not a pivot column, $\{bold(a)_1,bold(a)_2,bold(a)_3,bold(a)_4\}$ is linearly dependent.
-// - Since the RREF $A$ has a pivot in each row, the columns of $A$ (i.e. $\{bold(a)_1,bold(a)_2,bold(a)_3,bold(a)_4\}$) span $RR^3$
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ We could rewrite the linear system as
+$
+A bold(x)=mat(
+2,4,2,0;
+1,3,-1,2;
+-1,2,3,2
+)mat(
+x_1;x_2;x_3;x_4
+)=mat(
+2;1;-1
+)=bold(b)
+$
+$
+&mat(
+A,bold(b)
+)xarrow( #`R3`-> #`R3`+#`R2` \ #`R1`-> #`R1`-2#`R2` )mat(
+0,-2,4,-4,0;
+1,3,-1,2,1;
+0,5,2,4,0
+)xarrow(#`R1` arrow.l.r  #`R2`)mat(
+1,3,-1,2,1;
+0,-2,4,-4,0;
+0,5,2,4,0
+) \
+&xarrow(#`R2`-> #`R2`/(-2))mat(
+1,3,-1,2,1;
+0,1,-2,2,0;
+0,5,2,4,0
+)xarrow( #`R1`-> #`R1`-3#`R2` \ #`R3`-> #`R3`-5#`R2` )mat(
+1,0,5,-4,1;
+0,1,-2,2,0;
+0,0,12,-6,0
+) \
+&xarrow(#`R3`-> #`R3`/12)mat(
+1,0,5,-4,1;
+0,1,-2,2,0;
+0,0,1,- 1 / 2 ,0
+)xarrow( #`R1`-> #`R1`-5#`R3` \ #`R2`-> #`R2`+2#`R3` )mat(
+1,0,0,- 3 / 2 ,1;
+0,1,0,1,0;
+0,0,1,- 1 / 2 ,0
+)
+$
+So the solution is
+$
+cases(
+x_1=1+ 3 / 2 x_4,
+x_2=-x_4,
+x_3= 1 / 2 x_4,
+x_4" is free"
+) =>  thin 
+mat(
+x_1;x_2;x_3;x_4
+)=mat(
+1;0;0;0
+)+x_4mat(
+3 / 2 ;-1; 1 / 2 ;1
+)
+$
++ Note $A=mat(
+bold(a)_1,bold(a)_2,bold(a)_3,bold(a)_4
+)$ has RREF $mat(
+1,0,0,- 3 / 2 ;
+0,1,0,1;
+0,0,1,- 1 / 2
+)$. Since the fourth each column is not a pivot column, $\{bold(a)_1,bold(a)_2,bold(a)_3,bold(a)_4\}$ is linearly dependent.
++ Since the RREF $A$ has a pivot in each row, the columns of $A$ (i.e. $\{bold(a)_1,bold(a)_2,bold(a)_3,bold(a)_4\}$) span $RR^3$
+]
 
-// #problem[
-// Suppose $T:RR^3->RR^3$ is a linear transformation defined by $T(mat(
-// x_1;x_2;x_3
-// ))=mat(
-// x_1+2x_2+3x_3;2x_1+5x_3;2x_1+3x_2+6x_3
-// )$. Denote the standard matrix for $T$ as $A$.
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(3 pt)} Evaluate $A$.
-// \item\textbf{(4 pt)} Is $T$ is onto? Is $T$ one-to-one?
-// \item\textbf{(17 pt)} Is $T$ is invertible? If so, what is the standard matrix for $T^(-1)$?
-// \item\textbf{(15 pt)} Find $A^T$ ,$(A^T)^(-1)$.
-// // ]
+#problem[
+Suppose $T:RR^3->RR^3$ is a linear transformation defined by $T(mat(
+x_1;x_2;x_3
+))=mat(
+x_1+2x_2+3x_3;2x_1+5x_3;2x_1+3x_2+6x_3
+)$. Denote the standard matrix for $T$ as $A$.
+#set enum(numbering: "a)")
++ #strong[(3 pt)] Evaluate $A$.
++ #strong[(4 pt)] Is $T$ is onto? Is $T$ one-to-one?
++ #strong[(17 pt)] Is $T$ is invertible? If so, what is the standard matrix for $T^(-1)$?
++ #strong[(15 pt)] Find $A^T$ , $(A^T)^(-1)$.
+]
 
-// #solution[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - The standard matrix for $T$ is $A=mat(
-// 1,2,3;
-// 2,0,5;
-// 2,3,6
-// )$
-// - $T$ is onto and one-to-to.
-// - $T$ is invertible. And the standard matrix of $T^(-1)$ is $A^(-1)$
-// $
-// ,mat(
-// A,I
-// ; augment:#(-1))=mat(
-// 1,2,3,1,0,0;
-// 2,0,5,0,1,0;
-// 2,3,6,0,0,1
-// ; augment:#(-1))xarrow( #`R2`-> #`R2`-2#`R1` \ #`R3`-> #`R3`-2#`R1` )mat(
-// 1,2,3,1,0,0;
-// 0,-4,-1,-2,1,0;
-// 0,-1,0,-2,0,1
-// ; augment:#(-1));
-// ,xarrow( #`R2`-> #`R2`-4#`R3` \ #`R1`-> #`R1`+2#`R3` )mat(
-// 1,0,3,-3,0,2;
-// 0,0,-1,6,1,-4;
-// 0,-1,0,-2,0,1
-// ; augment:#(-1))xarrow( #`R2`->(-1)#`R2` \ #`R3`->(-1)#`R3` )mat(
-// 1,0,3,-3,0,2;
-// 0,0,1,-6,-1,4;
-// 0,1,0,2,0,-1
-// ; augment:#(-1));
-// ,xarrow(#`R2` arrow.l.r  #`R3`)mat(
-// 1,0,3,-3,0,2;
-// 0,1,0,2,0,-1;
-// 0,0,1,-6,-1,4
-// ; augment:#(-1))xarrow(#`R1`-> #`R1`-2#`R3`)mat(
-// 1,0,0,15,3,-10;
-// 0,1,0,2,0,-1;
-// 0,0,1,-6,-1,4
-// ; augment:#(-1));
-// ,=mat(
-// I,A^(-1)
-// ; augment:#(-1))
-// $
-// Hence $A^(-1)=mat(
-// 15,3,-10;
-// 2,0,-1;
-// -6,-1,4
-// )$
-// - $A^T=mat(
-// 1,2,2;
-// 2,0,3;
-// 3,5,6
-// )$, $(A^T)^(-1)=(A^(-1))^T=mat(
-// 15,2,-6;
-// 3,0,-1;
-// -10,-1,4
-// )$
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ The standard matrix for $T$ is $A=mat(
+1,2,3;
+2,0,5;
+2,3,6
+)$
++ $T$ is onto and one-to-to.
++ $T$ is invertible. And the standard matrix of $T^(-1)$ is $A^(-1)$
+$
+&mat(
+A,I
+; augment:#(-1))=mat(
+1,2,3,1,0,0;
+2,0,5,0,1,0;
+2,3,6,0,0,1
+; augment:#(-1))xarrow( #`R2`-> #`R2`-2#`R1` \ #`R3`-> #`R3`-2#`R1` )mat(
+1,2,3,1,0,0;
+0,-4,-1,-2,1,0;
+0,-1,0,-2,0,1
+; augment:#(-1)) \
+&xarrow( #`R2`-> #`R2`-4#`R3` \ #`R1`-> #`R1`+2#`R3` )mat(
+1,0,3,-3,0,2;
+0,0,-1,6,1,-4;
+0,-1,0,-2,0,1
+; augment:#(-1))xarrow( #`R2`->(-1)#`R2` \ #`R3`->(-1)#`R3` )mat(
+1,0,3,-3,0,2;
+0,0,1,-6,-1,4;
+0,1,0,2,0,-1
+; augment:#(-1)) \
+&xarrow(#`R2` arrow.l.r  #`R3`)mat(
+1,0,3,-3,0,2;
+0,1,0,2,0,-1;
+0,0,1,-6,-1,4
+; augment:#(-1))xarrow(#`R1`-> #`R1`-2#`R3`)mat(
+1,0,0,15,3,-10;
+0,1,0,2,0,-1;
+0,0,1,-6,-1,4
+; augment:#(-1)) \
+&=mat(
+I,A^(-1)
+; augment:#(-1))
+$
+Hence $A^(-1)=mat(
+15,3,-10;
+2,0,-1;
+-6,-1,4
+)$
++ $A^T=mat(
+1,2,2;
+2,0,3;
+3,5,6
+)$, $(A^T)^(-1)=(A^(-1))^T=mat(
+15,2,-6;
+3,0,-1;
+-10,-1,4
+)$
+]
 
-// #problem[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(5 pt)} Suppose $A=mat(
-// 1,0,0,0,0,8;
-// 0,0,h,0,k,-4;
-// 0,0,0,0,1,0
-// )$ is of reduced row echelon form (RREF), could we know what $h,k$ are? If not, please explain why, if so, please give their values.
-// \item\textbf{(3 pt)} \texttt{TRUE} or \texttt{FALSE}. If $T:RR^3->RR^3$ is a one-to-one linear transformation, then it is also onto.
-// \item\textbf{(3 pt)} \texttt{TRUE} or \texttt{FALSE}. If $A$ is a 3 by 3 matrix and $A^5$ is invertible, then so is $A$.
-// \item\textbf{(3 pt)} \texttt{TRUE} or \texttt{FALSE}. If $A$ is a 5 by 3 matrix, then $A bold(x)=bold(b)$ cannot have non-trivial solution(s)
-// // ]
+#problem[
+#set enum(numbering: "a)")
++ #strong[(5 pt)] Suppose $A=mat(
+1,0,0,0,0,8;
+0,0,h,0,k,-4;
+0,0,0,0,1,0
+)$ is of reduced row echelon form (RREF), could we know what $h,k$ are? If not, please explain why, if so, please give their values.
++ #strong[(3 pt)] #raw("TRUE") or #raw("FALSE"). If $T:RR^3->RR^3$ is a one-to-one linear transformation, then it is also onto.
++ #strong[(3 pt)] #raw("TRUE") or #raw("FALSE"). If $A$ is a 3 by 3 matrix and $A^5$ is invertible, then so is $A$.
++ #strong[(3 pt)] #raw("TRUE") or #raw("FALSE"). If $A$ is a 5 by 3 matrix, then $A bold(x)=bold(b)$ cannot have non-trivial solution(s)
+]
 
-// #solution[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - $h=1$, $k=0$. Since $h$ has be in a pivot position, and $k$ is in a pivot column.
-// - \texttt{TRUE}. Since its standard matrix would have a pivot in each column, that is three pivots, so there must be a pivot in each row also, hence $T$ is also onto.
-// - \texttt{TRUE}. Since $A^5$ is invertible, we may assume its inverse is $B=(A^5)^(-1)$, so that $A^5B=BA^5=I$. Let's show $A^(-1)=A^4B$, first we note that
-//  $
-// A^4B=IA^4B=(BA^5)A^4B=BA^9B=BA^4(A^5B)=BA^4I=BA^4
-//  $
-// then
-//  $
-// A A^(-1)=A(A^4B)=A^5B=I
-//  $
-//  $
-// A^(-1)A=(A^4B)A=(BA^4)A=BA^5=I
-//  $
-// Alternatively, we could consider its determinant $0!="det"(A^5)=("det "A)^5 => "det "A!=0$, hence $A$ is invertible.
-// - \texttt{FALSE}. Take $A$ to be $mat(
-// 1,1,1;
-// 0,0,0;
-// 0,0,0;
-// 0,0,0;
-// 0,0,0;
-// )$, and $bold(b)=bold(0)$, and the linear system have two free variables.
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ $h=1$, $k=0$. Since $h$ has be in a pivot position, and $k$ is in a pivot column.
++ #raw("TRUE"). Since its standard matrix would have a pivot in each column, that is three pivots, so there must be a pivot in each row also, hence $T$ is also onto.
++ #raw("TRUE"). Since $A^5$ is invertible, we may assume its inverse is $B=(A^5)^(-1)$, so that $A^5 B=B A^5=I$. Let's show $A^(-1)=A^4 B$, first we note that
+$
+A^4 B=I A^4 B=(B A^5) A^4 B=B A^9 B=B A^4(A^5 B)=B A^4 I=B A^4
+$
+then
+$
+A A^(-1)=A(A^4 B)=A^5 B=I
+$
+$
+A^(-1) A=(A^4 B) A=(B A^4) A=B A^5=I
+$
+Alternatively, we could consider its determinant $0!="det"(A^5)=("det "A)^5 => "det "A!=0$, hence $A$ is invertible.
++ #raw("FALSE"). Take $A$ to be $mat(
+1,1,1;
+0,0,0;
+0,0,0;
+0,0,0;
+0,0,0;
+)$, and $bold(b)=bold(0)$, and the linear system have two free variables.
+]
 
-// #problem[
-// Suppose $T_1$, $T_2$, $T_3$ and $T$ are all linear transformations from the $xy$-plane to itself.
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(6 pt)} $T_1$ takes a vector and rotates it \textbf{clockwise} around the origin through an angle $45^circle.small$. Writes down its standard matrix $A_1$.
-// \item\textbf{(6 pt)} $T_2$ reflects over the $x$-axis. Writes down its standard matrix $A_2$.
-// \item\textbf{(6 pt)} $T_3$ switches $x,y$ coordinates. Writes down its standard matrix $A_3$.
-// \item\textbf{(6 pt)} Suppose $T$ is such that $T(bold(x))=T_3(T_2(T_1(bold(x))))$. What the standard matrix of $T$?
-// // ]
+#problem[
+Suppose $T_1$, $T_2$, $T_3$ and $T$ are all linear transformations from the $x y$-plane to itself.
+#set enum(numbering: "a)")
++ #strong[(6 pt)] $T_1$ takes a vector and rotates it #strong[clockwise] around the origin through an angle $45^circle.small$. Writes down its standard matrix $A_1$.
++ #strong[(6 pt)] $T_2$ reflects over the $x$-axis. Writes down its standard matrix $A_2$.
++ #strong[(6 pt)] $T_3$ switches $x,y$ coordinates. Writes down its standard matrix $A_3$.
++ #strong[(6 pt)] Suppose $T$ is such that $T(bold(x))=T_3(T_2(T_1(bold(x))))$. What the standard matrix of $T$?
+]
 
-// #solution[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - The standard matrix $A_1=mat(
-//  cos (-45^circle.small), cos (45^circle.small); sin (-45^circle.small), sin (45^circle.small)
-// )=mat(
-//  (sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2)) ;- (sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2))
-// )$
-// - The standard matrix $A_2=mat(
-// 1,0;0,-1
-// )$
-// - The standard matrix $A_3=mat(
-// 0,1;1,0
-// )$
-// - The standard matrix
-// $
-// A,=A_3A_2A_1=mat(
-// 0,1;1,0
-// )mat(
-// 1,0;0,-1
-// )mat(
-//  (sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2)) ;- (sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2))
-// );
-// ,=mat(
-// 0,-1;1,0
-// )mat(
-//  (sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2)) ;- (sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2))
-// );
-// ,=mat(
-//  (sqrt(2)) / (sqrt(2)) ,- (sqrt(2)) / (sqrt(2)) ; (sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2))
-// )
-// $
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ The standard matrix $A_1=mat(
+cos (-45^circle.small), cos (45^circle.small); sin (-45^circle.small), sin (45^circle.small)
+)=mat(
+(sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2)) ;- (sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2))
+)$
++ The standard matrix $A_2=mat(
+1,0;0,-1
+)$
++ The standard matrix $A_3=mat(
+0,1;1,0
+)$
++ The standard matrix
+$
+A&=A_3A_2A_1=mat(
+0,1;1,0
+)mat(
+1,0;0,-1
+)mat(
+(sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2)) ;- (sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2))
+) \
+&=mat(
+0,-1;1,0
+)mat(
+(sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2)) ;- (sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2))
+) \
+&=mat(
+(sqrt(2)) / (sqrt(2)) ,- (sqrt(2)) / (sqrt(2)) ; (sqrt(2)) / (sqrt(2)) , (sqrt(2)) / (sqrt(2))
+)
+$
+]
 
-// % #problem[
-// % Suppose $A=mat(
-// % 1,0,3,0;
-// % 2,0,6,1;
-// % 2,1,2,-4;
-// % 3,0,2,1
-// % )$.
-// % \begin{enumerate}[label=\textbf{\alph*)}]
-// % \item\textbf{(16 pt)} Evaluate $"det "A$.
-// % \item\textbf{(3 pt)} Is $A$ invertible?
-// % \item\textbf{(4 pt)} What is $"det"(-2A)$?
-// % // % ]
+#problem[
+Suppose $A=mat(
+1,0,3,0;
+2,0,6,1;
+2,1,2,-4;
+3,0,2,1
+)$.
+#set enum(numbering: "a)")
++ #strong[(16 pt)] Evaluate $"det "A$.
++ #strong[(3 pt)] Is $A$ invertible?
++ #strong[(4 pt)] What is $"det"(-2A)$?
+]
 
-// % #solution[
-// % \begin{enumerate}[label=\textbf{\alph*)}]
-// % \item
-// % $
-// % ,| mat(
-// % 1,0,3,0;
-// % 2,0,6,1;
-// % 2,1,2,-4;
-// % 3,0,2,1
-// %  ) |xequal("cofactor expansion across second column")1(-1)^{3+2}| mat(
-// % 1,3,0;
-// % 2,6,1;
-// % 3,2,1
-// %  ) |;
-// % ,xequal( #`R2`-> #`R2`-2#`R1` \ #`R3`-> #`R3`-3#`R1` )(-1)| mat(
-// % 1,3,0;
-// % 0,0,1;
-// % 0,-7,1
-// %  ) |xequal(#`R2` arrow.l.r  #`R3`)(-1)(-1)| mat(
-// % 1,3,0;
-// % 0,-7,1;
-// % 0,0,1;
-// %  ) |=(-1)(-1)1(-7)1=-7
-// % $
-// % - $A$ is invertible since $"det "A=-7!= 0$
-// % - Since $A$ is a 4 by 4 matrix, $"det"(-2A)=(-2)^4"det "A=16 dot.c (-7)=-112$
-// % // % ]
+#solution[
+#set enum(numbering: "a)")
+-
+$
+& mat(delim: "|", 
+1,0,3,0;
+2,0,6,1;
+2,1,2,-4;
+3,0,2,1
+)xequal("cofactor expansion across second column")1(-1)^(3+2) mat(delim: "|", 
+1,3,0;
+2,6,1;
+3,2,1
+) \
+&xequal( #`R2`-> #`R2`-2#`R1` \ #`R3`-> #`R3`-3#`R1` )(-1) mat(delim: "|", 
+1,3,0;
+0,0,1;
+0,-7,1
+)xequal(#`R2` arrow.l.r  #`R3`)(-1)(-1) mat(delim: "|", 
+1,3,0;
+0,-7,1;
+0,0,1;
+)=(-1)(-1)1(-7)1=-7
+$
++ $A$ is invertible since $"det "A=-7!= 0$
++ Since $A$ is a 4 by 4 matrix, $"det"(-2A)=(-2)^4"det "A=16 dot.c (-7)=-112$
+]
 
 == Exam 2
 
-// #problem[
-// Suppose $A=mat(
-// 1 , -1, 5, 1 ,6 ,0;
-// 2 ,0, 3 ,5, 3, 6;
-// 0 ,1 ,-4 ,2 ,-1 ,2;
-// 3 ,-2 ,12 ,4, 10 ,4
-// )$.
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(6 pt)} Please find a basis for $"Col"A$.
-// \item\textbf{(6 pt)} Please find a basis for $"Row"A$.
-// \item\textbf{(6 pt)} Please find a basis for $"Nul"A$.
-// \item\textbf{(6 pt)} What is $"dim""Nul"A^T$?
-// // ]
+#problem[
+Suppose $A=mat(
+1 , -1, 5, 1 ,6 ,0;
+2 ,0, 3 ,5, 3, 6;
+0 ,1 ,-4 ,2 ,-1 ,2;
+3 ,-2 ,12 ,4, 10 ,4
+)$.
+#set enum(numbering: "a)")
++ #strong[(6 pt)] Please find a basis for $"Col"A$.
++ #strong[(6 pt)] Please find a basis for $"Row"A$.
++ #strong[(6 pt)] Please find a basis for $"Nul"A$.
++ #strong[(6 pt)] What is $"dim""Nul"A^T$?
+]
 
-// #solution[
-// First note that
-//  $
-// A tilde mat(
-// 1        ,     -1       ,       5    ,          1    ,          6         ,     0    ;
-// 0        ,      1       ,      -4     ,         2    ,         -1        ,      2  ;
-// 0         ,     0       ,       1      ,       -1    ,         -7        ,      2   ;
-// 0          ,    0        ,      0, 0, 0 ,0
-// )tilde mat(
-// 1         ,     0           ,   0         ,     4          ,   12   ,           0  ;
-// 0         ,     1          ,    0        ,     -2          ,  -29      ,       10  ;
-// 0          ,    0        ,      1       ,      -1           ,  -7       ,       2 ;
-// 0          ,    0          ,  0         ,     0      ,        0       ,       0
-// )
-//  $
-// So we may conclude that the pivot columns are the 1st, 2nd, 3rd column
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - A basis for $"Col"A$ could be ${mat(
-// 1;2;0;3
-// ),mat(
-// -1;0;1;-2
-// ),mat(
-// 5;3; -4; 12
-// )}$
-// - A basis for $"Row"A$ could be
-//  $
-// {mat(
-// 1,-1,5,1,6,0
-// ),mat(
-// 0,1,-4,2,-1,2
-// ),mat(
-// 0,0,1,-1,-7,2
-// )}
-//  $
-// - A basis for $"Nul"A$ could be ${mat(
-// -4;2;1;1;0;0
-// ),mat(
-// -12;29;7;0;1;0
-// ),mat(
-// 0;-10;-2;0;0;1
-// )}$
-// - By the rank nullity theorem. we have $"dim""Nul"A^T=4-\rank A^T=4-\rank A=4-3=1$
-// // ]
+#solution[
+First note that
+$
+A tilde mat(
+1        ,     -1       ,       5    ,          1    ,          6         ,     0    ;
+0        ,      1       ,      -4     ,         2    ,         -1        ,      2  ;
+0         ,     0       ,       1      ,       -1    ,         -7        ,      2   ;
+0          ,    0        ,      0, 0, 0 ,0
+)tilde mat(
+1         ,     0           ,   0         ,     4          ,   12   ,           0  ;
+0         ,     1          ,    0        ,     -2          ,  -29      ,       10  ;
+0          ,    0        ,      1       ,      -1           ,  -7       ,       2 ;
+0          ,    0          ,  0         ,     0      ,        0       ,       0
+)
+$
+So we may conclude that the pivot columns are the 1st, 2nd, 3rd column
+#set enum(numbering: "a)")
++ A basis for $"Col"A$ could be ${mat(
+1;2;0;3
+),mat(
+-1;0;1;-2
+),mat(
+5;3; -4; 12
+)}$
++ A basis for $"Row"A$ could be
+$
+{mat(
+1,-1,5,1,6,0
+),mat(
+0,1,-4,2,-1,2
+),mat(
+0,0,1,-1,-7,2
+)}
+$
++ A basis for $"Nul"A$ could be ${mat(
+-4;2;1;1;0;0
+),mat(
+-12;29;7;0;1;0
+),mat(
+0;-10;-2;0;0;1
+)}$
++ By the rank nullity theorem. we have $"dim""Nul"A^T=4-"rank" A^T=4-"rank" A=4-3=1$
+]
 
-// % #problem[
-// % Suppose $A=mat(
-// % 4, 2,-2;
-// % 4,2,4;
-// % -1,1,5
-// % )$.
-// % \begin{enumerate}[label=\textbf{\alph*)}]
-// % \item\textbf{(15 pt)} Find all eigenvalues and corresponding eigenvectors
-// % \item\textbf{(8 pt)} Diagonalize $A$.
-// % \item\textbf{(8 pt)} Evaluate $A^{77}$.
-// % // % ]
+#problem[
+Suppose $A=mat(
+4, 2,-2;
+4,2,4;
+-1,1,5
+)$.
+#set enum(numbering: "a)")
++ #strong[(15 pt)] Find all eigenvalues and corresponding eigenvectors
++ #strong[(8 pt)] Diagonalize $A$.
++ #strong[(8 pt)] Evaluate $A^(77)$.
+]
 
-// % #solution[
-// % \begin{enumerate}[label=\textbf{\alph*)}]
-// % - First we evaluate the characteristic polynomial of $A$
-// % $
-// % "det"(tI-A),=| mat(
-// % t-4,-2,2;
-// % -4,t-2,-4;
-// % 1,-1,t-5
-// %  ) |xequal( #`R1`-> #`R1`-(t-4)#`R3` \ #`R2`-> #`R2`+4#`R3` )| mat(
-// % 0,t-6,-t^2+9t-18;
-// % 0,t-6,4t-24;
-// % 1,-1,t-5
-// %  ) |;
-// % ,xequal(#`R1`-> #`R1`-#`R2`)| mat(
-// % 0,0,-t^2+5t+6;
-// % 0,t-6,4t-24;
-// % 1,-1,t-5
-// %  ) |=(t-6)^2(t+1)
-// % $
-// % So the eigenvalues are $ lambda _1= lambda _2=6$, $ lambda _3=-1$. For the 6-eigenspace, we consider
-// % $
-// % mat(
-// % 6I-A,bold(0)
-// % ; augment:#(-1)),=
-// % mat(
-// % 2,-2,2,0;
-// % -4,4,-4,0;
-// % 1,-1,1,0
-// % ; augment:#(-1))tilde mat(
-// % 1,-1,1,0;
-// % 0,0,0,0;
-// % 0,0,0,0
-// % ; augment:#(-1))
-// % $
-// % So we get two basis vectors ${bold(v)_1=mat(
-// % 1;1;0
-// % ),bold(v)_2=mat(
-// % -1;0;1
-// % )}$. For the $(-1)$-eigenspace, we consider
-// % $
-// % mat(
-// % -I-A,bold(0)
-// % ; augment:#(-1)),=
-// % mat(
-// % -5,-2,2,0;
-// % -4,-3,-4,0;
-// % 1,-1,-6,0
-// % ; augment:#(-1))tilde mat(
-// % 1,0,-2,0;
-// % 0,1,4,0;
-// % 0,0,0,0
-// % ; augment:#(-1))
-// % $
-// % So we get a basis vector ${bold(v)_3=mat(
-// % 2;-4;1
-// % )}$
-// % - From above, we get the diagonalization
-// %  $
-// % A=P D P^(-1)=mat(
-// % 1,-1,2;
-// % 1,0,-4;
-// % 0,1,1
-// % )mat(
-// % 6,0,0;
-// % 0,6,0;
-// % 0,0,-1
-// % )mat(
-// %  4 / 7 , 3 / 7 , 4 / 7 ;
-// % - 1 / 7 , 1 / 7 , 6 / 7 ;
-// %  1 / 7 ,- 1 / 7 , 1 / 7
-// % )
-// %  $
-// % \item
-// %  $
-// % A^{77}=PD^{77}P^(-1)=mat(
-// % 1,-1,2;
-// % 1,0,-4;
-// % 0,1,1
-// % )mat(
-// % 6^{77},0,0;
-// % 0,6^{77},0;
-// % 0,0,-1
-// % )mat(
-// %  4 / 7 , 3 / 7 , 4 / 7 ;
-// % - 1 / 7 , 1 / 7 , 6 / 7 ;
-// %  1 / 7 ,- 1 / 7 , 1 / 7
-// % )
-// %  $
-// % // % ]
+#solution[
+#set enum(numbering: "a)")
++ First we evaluate the characteristic polynomial of $A$
+$
+"det"(t I-A)&= mat(delim: "|", 
+t-4,-2,2;
+-4,t-2,-4;
+1,-1,t-5
+)xequal( #`R1`-> #`R1`-(t-4)#`R3` \ #`R2`-> #`R2`+4#`R3` ) mat(delim: "|", 
+0,t-6,-t^2+9t-18;
+0,t-6,4t-24;
+1,-1,t-5
+) \
+&xequal(#`R1`-> #`R1`-#`R2`) mat(delim: "|", 
+0,0,-t^2+5t+6;
+0,t-6,4t-24;
+1,-1,t-5
+)=(t-6)^2(t+1)
+$
+So the eigenvalues are $ lambda _1= lambda _2=6$, $ lambda _3=-1$. For the 6-eigenspace, we consider
+$
+mat(
+6I-A,bold(0)
+; augment:#(-1))&=
+mat(
+2,-2,2,0;
+-4,4,-4,0;
+1,-1,1,0
+; augment:#(-1))tilde mat(
+1,-1,1,0;
+0,0,0,0;
+0,0,0,0
+; augment:#(-1))
+$
+So we get two basis vectors ${bold(v)_1=mat(
+1;1;0
+),bold(v)_2=mat(
+-1;0;1
+)}$. For the $(-1)$-eigenspace, we consider
+$
+mat(
+-I-A,bold(0)
+; augment:#(-1))&=
+mat(
+-5,-2,2,0;
+-4,-3,-4,0;
+1,-1,-6,0
+; augment:#(-1))tilde mat(
+1,0,-2,0;
+0,1,4,0;
+0,0,0,0
+; augment:#(-1))
+$
+So we get a basis vector ${bold(v)_3=mat(
+2;-4;1
+)}$
++ From above, we get the diagonalization
+$
+A=P D P^(-1)=mat(
+1,-1,2;
+1,0,-4;
+0,1,1
+)mat(
+6,0,0;
+0,6,0;
+0,0,-1
+)mat(
+4 / 7 , 3 / 7 , 4 / 7 ;
++ 1 / 7 , 1 / 7 , 6 / 7 ;
+1 / 7 ,- 1 / 7 , 1 / 7
+)
+$
+-
+$
+A^(77)=P D^(77)P^(-1)=mat(
+1,-1,2;
+1,0,-4;
+0,1,1
+)mat(
+6^(77),0,0;
+0,6^(77),0;
+0,0,-1
+)mat(
+4 / 7 , 3 / 7 , 4 / 7 ;
++ 1 / 7 , 1 / 7 , 6 / 7 ;
+1 / 7 ,- 1 / 7 , 1 / 7
+)
+$
+]
 
-// #problem[
-// Suppose $A=mat(
-// 1,0,3,0;
-// 2,0,6,1;
-// 2,1,2,-4;
-// 3,0,2,1
-// )$.
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(8 pt)} Write down the cofactor expansion along a row or a column of your own choice. (No simplification needed)
-// \item\textbf{(10 pt)} Evaluate $"det "A$.
-// \item\textbf{(4 pt)} Is $A$ invertible? If so, evaluate $"det"(A^(-1))$, if not, explain why.
-// \item\textbf{(4 pt)} What is $"det"(-2A)$?
-// // ]
+#problem[
+Suppose $A=mat(
+1,0,3,0;
+2,0,6,1;
+2,1,2,-4;
+3,0,2,1
+)$.
+#set enum(numbering: "a)")
++ #strong[(8 pt)] Write down the cofactor expansion along a row or a column of your own choice. (No simplification needed)
++ #strong[(10 pt)] Evaluate $"det "A$.
++ #strong[(4 pt)] Is $A$ invertible? If so, evaluate $"det"(A^(-1))$, if not, explain why.
++ #strong[(4 pt)] What is $"det"(-2A)$?
+]
 
-// #solution[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - We choose second for the cofactor expansion.
-// $
-// "det "A,=0C_(12)+0C_(22)+1C_(32)+0C_(42);
-// ,=0(-1)^{1+2}"det "A_(1 2)+0(-1)^{2+2}"det "A_(2 2)+1(-1)^{3+2}"det "A_(3 2)+0(-1)^{4+2}"det "A_(42);
-// ,=0(-1)^{1+2}| mat(
-// 2,6,1;
-// 2,2,-4;
-// 3,2,1
-//  ) |+0(-1)^{2+2}| mat(
-// 1,3,0;
-// 2,2,-4;
-// 3,2,1
-//  ) |+1(-1)^{3+2}| mat(
-// 1,3,0;
-// 2,6,1;
-// 3,2,1
-//  ) |+0(-1)^{4+2}| mat(
-// 1,3,0;
-// 2,6,1;
-// 2,2,-4
-//  ) |;
-// ,=1(-1)^{3+2}| mat(
-// 1,3,0;
-// 2,6,1;
-// 3,2,1
-//  ) |=(-1)| mat(
-// 1,3,0;
-// 2,6,1;
-// 3,2,1
-//  ) |
-// $
-// - Continue on the cofactor expansion
-// $
-// "det "A,=(-1)| mat(
-// 1,3,0;
-// 2,6,1;
-// 3,2,1
-//  ) |xequal( #`R2`-> #`R2`-2#`R1` \ #`R3`-> #`R3`-3#`R1` )(-1)| mat(
-// 1,3,0;
-// 0,0,1;
-// 0,-7,1
-//  ) |xequal(#`R2` arrow.l.r  #`R3`)(-1)(-1)| mat(
-// 1,3,0;
-// 0,-7,1;
-// 0,0,1;
-//  ) |;
-// ,=(-1)(-1)1(-7)1=-7
-// $
-// - Since $"det "A!=0$, $A$ is invertible and $"det"(A^(-1))=("det "A)^(-1)=- 1 / 7 $.
-// - Since $A$ is 4 by 4, $"det"(-2A)=(-2)^4"det "A=16 dot.c (-7)=-112$.
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ We choose second for the cofactor expansion.
+$
+"det "A&=0C_(12)+0C_(22)+1C_(32)+0C_(42) \
+&=0(-1)^(1+2)"det "A_(1 2)+0(-1)^(2+2)"det "A_(2 2)+1(-1)^(3+2)"det "A_(3 2)+0(-1)^(4+2)"det "A_(42) \
+&=0(-1)^(1+2) mat(delim: "|", 
+2,6,1;
+2,2,-4;
+3,2,1
+)+0(-1)^(2+2) mat(delim: "|", 
+1,3,0;
+2,2,-4;
+3,2,1
+)+1(-1)^(3+2) mat(delim: "|", 
+1,3,0;
+2,6,1;
+3,2,1
+)+0(-1)^(4+2) mat(delim: "|", 
+1,3,0;
+2,6,1;
+2,2,-4
+) \
+&=1(-1)^(3+2) mat(delim: "|", 
+1,3,0;
+2,6,1;
+3,2,1
+)=(-1) mat(delim: "|", 
+1,3,0;
+2,6,1;
+3,2,1
+)
+$
++ Continue on the cofactor expansion
+$
+"det "A&=(-1) mat(delim: "|", 
+1,3,0;
+2,6,1;
+3,2,1
+)xequal( #`R2`-> #`R2`-2#`R1` \ #`R3`-> #`R3`-3#`R1` )(-1) mat(delim: "|", 
+1,3,0;
+0,0,1;
+0,-7,1
+)xequal(#`R2` arrow.l.r  #`R3`)(-1)(-1) mat(delim: "|", 
+1,3,0;
+0,-7,1;
+0,0,1;
+) \
+&=(-1)(-1)1(-7)1=-7
+$
++ Since $"det "A!=0$, $A$ is invertible and $"det"(A^(-1))=("det "A)^(-1)=- 1 / 7 $.
++ Since $A$ is 4 by 4, $"det"(-2A)=(-2)^4"det "A=16 dot.c (-7)=-112$.
+]
 
-// #problem[
-// Suppose $V$ is the set of 2 by 2 matrices that diagonal elements sum to 0. for example $mat(
-// 3, 7 ;
-// 2, -3
-// )$ is in $V$ since $3+(-3)=0$ while $mat(
-// 3, 4;
-// 2, -2
-// )$ is not because $3+(-2)=1!=0$.
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(10 pt)} Show that $V$ is a vector space.
-// \item\textbf{(10 pt)} Find a basis $cal(B)$ (this cannot simply be $cal(C)$) of $V$ and justify your choice.
-// \item\textbf{(8 pt)} Explain why $cal(C)={C_1=mat(
-// 2, 1 ;
-// 1, -2
-// ),C_2=mat(
-// 1, 2 ;
-// -1, -1
-// ),C_3=mat(
-// 3, -3 ;
-// 2, -3
-// )}$ also form a basis for $V$.
-// \item\textbf{(8 pt)} Find the change-of-coordinates matrix $\underset{cal(C)\leftarrowcal(B)}{P}$.
-// // ]
+#problem[
+Suppose $V$ is the set of 2 by 2 matrices that diagonal elements sum to 0. for example $mat(
+3, 7 ;
+2, -3
+)$ is in $V$ since $3+(-3)=0$ while $mat(
+3, 4;
+2, -2
+)$ is not because $3+(-2)=1!=0$.
+#set enum(numbering: "a)")
++ #strong[(10 pt)] Show that $V$ is a vector space.
++ #strong[(10 pt)] Find a basis $cal(B)$ (this cannot simply be $cal(C)$) of $V$ and justify your choice.
++ #strong[(8 pt)] Explain why $cal(C)={C_1=mat(
+2, 1 ;
+1, -2
+),C_2=mat(
+1, 2 ;
+-1, -1
+),C_3=mat(
+3, -3 ;
+2, -3
+)}$ also form a basis for $V$.
++ #strong[(8 pt)] Find the change-of-coordinates matrix $P_(cal(C)arrow.l cal(B))$.
+]
 
-// #solution[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - Consider linear transformation $T:M_{2 times 2}(RR)->RR$, $mat(
-// a,b;c,d
-// )|-> a+d$, we see that $V="ker" T$ which is a subspace of $M_{2 times 2}(RR)$, thus a vector space.
-// - Note that $V={mat(
-// a,b;
-// c,-a
-// )}$
-// A basis for $V$ could be ${B_1=mat(
-// 1,0;
-// 0,-1
-// ),B_2=mat(
-// 0, 1 ;
-// 0, 0
-// ),B_3=mat(
-// 0, 0 ;
-// 1, 0
-// )}$, this is spanning since
-//  $
-// mat(
-// a,b;
-// c,-a
-// )=amat(
-// 1,0;
-// 0,-1
-// )+bmat(
-// 0, 1 ;
-// 0, 0
-// )+cmat(
-// 0, 0 ;
-// 1, 0
-// )
-//  $
-// This is linearly independent because if a linear combination
-//  $
-// amat(
-// 1,0;
-// 0,-1
-// )+b=mat(
-// 0, 1 ;
-// 0, 0
-// )+cmat(
-// 0, 0 ;
-// 1, 0
-// )=mat(
-// a,b;
-// c,-a
-// )=mat(
-// 0, 0 ;
-// 0, 0
-// )
-//  $
-// Then $a=b=c=0$.
-// - The $cal(B)$ coordinates of $cal(C)$ is ${[C_1]_{cal(B)}=mat(
-// 2;1 ;1
-// ),[C_2]_{cal(B)}=mat(
-// 1;2 ;-1
-// ),[C_3]_{cal(B)}=mat(
-// 3;-3 ;2
-// )}$, we can show that they are linearly independent and span $V$ since
-// $
-// mat(
-// 2,1,3;
-// 1,2,-3;
-// 1,-1,2
-// )tilde mat(
-// 1,-1,2;
-// 1,2,-3;
-// 2,1,3
-// )tilde mat(
-// 1,-1,2;
-// 0,1,-5;
-// 0,-1,-1
-// )tilde mat(
-// 1,-1,2;
-// 0,1,-5;
-// 0,0,-6
-// )
-// $
-// has a pivot in each row and column.
-// - From above we know
-//  $
-// \underset{cal(B)\leftarrowcal(C)}{P}=mat(
-// [C_1)_{cal(B)},[C_2]_{cal(B)},[C_3]_{cal(B)}
-// ]=mat(
-// 2,1,3;
-// 1,2,-3;
-// 1,-1,2
-// )
-//  $
-// So we know
-//  $
-// \underset{cal(C)\leftarrowcal(B)}{P}=(\underset{cal(B)\leftarrowcal(C)}{P})^(-1)=mat(
-// 2,1,3;
-// 1,2,-3;
-// 1,-1,2
-// )^(-1)=mat(
-// - 1 / 12 , 5 / 12 , 3 / 4 ;
-//  5 / 12 ,- 1 / 12 ,- 3 / 4 ;
-//  1 / 4 ,- 1 / 4 ,- 1 / 4
-// )
-//  $
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ Consider linear transformation $T:M_(2 times 2)(RR)->RR$, $mat(
+a,b;c,d
+)|-> a+d$, we see that $ V="ker" T $ which is a subspace of $M_(2 times 2)(RR)$, thus a vector space.
++ Note that $V={mat(
+a,b;
+c,-a
+)}$
+A basis for $V$ could be ${B_1=mat(
+1,0;
+0,-1
+),B_2=mat(
+0, 1 ;
+0, 0
+),B_3=mat(
+0, 0 ;
+1, 0
+)}$, this is spanning since
+$
+mat(
+a,b;
+c,-a
+)=a mat(
+1,0;
+0,-1
+)+b mat(
+0, 1 ;
+0, 0
+)+c mat(
+0, 0 ;
+1, 0
+)
+$
+This is linearly independent because if a linear combination
+$
+a mat(
+1,0;
+0,-1
+)+b=mat(
+0, 1 ;
+0, 0
+)+c mat(
+0, 0 ;
+1, 0
+)=mat(
+a,b;
+c,-a
+)=mat(
+0, 0 ;
+0, 0
+)
+$
+Then $a=b=c=0$.
++ The $cal(B)$ coordinates of $cal(C)$ is ${[C_1]_(cal(B))=mat(
+2;1 ;1
+),[C_2]_(cal(B))=mat(
+1;2 ;-1
+),[C_3]_(cal(B))=mat(
+3;-3 ;2
+)}$, we can show that they are linearly independent and span $V$ since
+$
+mat(
+2,1,3;
+1,2,-3;
+1,-1,2
+)tilde mat(
+1,-1,2;
+1,2,-3;
+2,1,3
+)tilde mat(
+1,-1,2;
+0,1,-5;
+0,-1,-1
+)tilde mat(
+1,-1,2;
+0,1,-5;
+0,0,-6
+)
+$
+has a pivot in each row and column.
++ From above we know
+$
+P_(cal(B)arrow.l cal(C))=mat(
+[C_1]_(cal(B)),[C_2]_(cal(B)),[C_3]_(cal(B))
+)=mat(
+2,1,3;
+1,2,-3;
+1,-1,2
+)
+$
+So we know
+$
+P_(cal(C)arrow.l cal(B))=(P_(cal(B)arrow.l cal(C)))^(-1)=mat(
+2,1,3;
+1,2,-3;
+1,-1,2
+)^(-1)=mat(
++ 1 / 12 , 5 / 12 , 3 / 4 ;
+5 / 12 ,- 1 / 12 ,- 3 / 4 ;
+1 / 4 ,- 1 / 4 ,- 1 / 4
+)
+$
+]
 
-// #problem[
-// Answer the following questions.
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(3 pt)} \texttt{TRUE} or \texttt{FALSE}. Suppose $D$ is the unit disk and $T:RR^2->RR^2$ has a standard matrix $mat(1,2;0,1)$. Then the area of the image $T(D)=2\pi$.
-// \item\textbf{(3 pt)} \texttt{TRUE} or \texttt{FALSE}. Suppose $A$ is a $2 times 2$ matrix with integer entries such that $A^(-1)=A^T$ and $A^2=A$, then we know that $"det "A=1$.
-// \item\textbf{(3 pt)} \texttt{TRUE} or \texttt{FALSE}. Suppose $T:RR->RR$ is the map that adds 1, then $T$ is a linear transformation of rank $1$.
-// \item\textbf{(3 pt)} \texttt{TRUE} or \texttt{FALSE}. Suppose $V$ is the set of 2 by 2 matrices with all four entries sums to zero, and $T:V->PP_2$ is a linear transformation, then $T$ can never be one-to-one.
-// // ]
+#problem[
+Answer the following questions.
+#set enum(numbering: "a)")
++ #strong[(3 pt)] #raw("TRUE") or #raw("FALSE"). Suppose $D$ is the unit disk and $T:RR^2->RR^2$ has a standard matrix $mat(1,2;0,1)$. Then the area of the image $T(D)=2pi$.
++ #strong[(3 pt)] #raw("TRUE") or #raw("FALSE"). Suppose $A$ is a $2 times 2$ matrix with integer entries such that $A^(-1)=A^T$ and $A^2=A$, then we know that $"det "A=1$.
++ #strong[(3 pt)] #raw("TRUE") or #raw("FALSE"). Suppose $T:RR->RR$ is the map that adds 1, then $T$ is a linear transformation of rank $1$.
++ #strong[(3 pt)] #raw("TRUE") or #raw("FALSE"). Suppose $V$ is the set of 2 by 2 matrices with all four entries sums to zero, and $T:V->PP_2$ is a linear transformation, then $T$ can never be one-to-one.
+]
 
-// #solution[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - \texttt{FALSE}. $"Area"(T(D))=| "det" mat(1,2;0,1)| dot.c "Area"(D)=|1| dot.c \pi=\pi$.
-// - \texttt{TRUE}. First we see that $"det"(A^2)="det"(A)^2="det"(A) => "det"(A)=1$ or $0$. Since $A^(-1)$ exists, $A$ is invertible, so $"det "A!=0$, and $"det "A=1$.
-// - \texttt{FALSE}. $T$ is not a linear transformation, since $T(0)=0+1=1!=0$, but we are supposed to have $T(0)=T(0 dot.c 0)=0 dot.c  T(0)=0$, this is contradiction.
-// - \texttt{FALSE}. $T$ can be an isomorphism(thus one-to-one) since $"dim"PP_2=3$ and the $"dim" V=4-1=3$, as $V$ is $"ker" T$ for $T:M_{2 times 2}->RR$, $T(mat(
-// a,b;
-// c,d
-// ))=a+b+c+d$.
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ #raw("FALSE"). $"Area"(T(D))=| "det" mat(1,2;0,1)| dot.c "Area"(D)=|1| dot.c pi=pi$.
++ #raw("TRUE"). First we see that $"det"(A^2)="det"(A)^2="det"(A) => "det"(A)=1$ or $0$. Since $A^(-1)$ exists, $A$ is invertible, so $"det "A!=0$, and $"det "A=1$.
++ #raw("FALSE"). $T$ is not a linear transformation, since $T(0)=0+1=1!=0$, but we are supposed to have $T(0)=T(0 dot.c 0)=0 dot.c  T(0)=0$, this is contradiction.
++ #raw("FALSE"). $T$ can be an isomorphism(thus one-to-one) since $"dim"PP_2=3$ and the $"dim" V=4-1=3$, as $V$ is $"ker" T$ for $T:M_(2 times 2)->RR$, $T(mat(
+a,b;
+c,d
+))=a+b+c+d$.
+]
 
-// % #problem[
-// % Determine whether the following is true.
-// % \begin{enumerate}[label=\textbf{\alph*)}]
-// % \item\textbf{(3 pt)} \texttt{TRUE} or \texttt{FALSE}. If the eigenvalues for a 3 by 3 matrix $A$ are $1,-1,2$, then $A$ is diagonalizable.
-// % \item\textbf{(3 pt)} \texttt{TRUE} or \texttt{FALSE}. If both $bold(v)_1,bold(v)_2$ are eigenvectors of a matrix $A$, then $bold(v)_1+bold(v)_2$ is again an eigenvector for $A$.
-// % \item\textbf{(3 pt)} \texttt{TRUE} or \texttt{FALSE}. If $A$ is similar to $mat(
-// % 2,0,0;
-// % 0,1,-1;
-// % 0,0,1
-// % )$, then $A$ is not diagonalizable.
-// % // % ]
+#problem[
+Determine whether the following is true.
+#set enum(numbering: "a)")
++ #strong[(3 pt)] #raw("TRUE") or #raw("FALSE"). If the eigenvalues for a 3 by 3 matrix $A$ are $1,-1,2$, then $A$ is diagonalizable.
++ #strong[(3 pt)] #raw("TRUE") or #raw("FALSE"). If both $bold(v)_1,bold(v)_2$ are eigenvectors of a matrix $A$, then $bold(v)_1+bold(v)_2$ is again an eigenvector for $A$.
++ #strong[(3 pt)] #raw("TRUE") or #raw("FALSE"). If $A$ is similar to $mat(
+2,0,0;
+0,1,-1;
+0,0,1
+)$, then $A$ is not diagonalizable.
+]
 
-// % #solution[
-// % \begin{enumerate}[label=\textbf{\alph*)}]
-// % - \texttt{TRUE}. By Theorem @(13:41-07/08/2022)
-// % - \texttt{FALSE}. Consider $A=mat(
-// % 1,0;
-// % 0,-1
-// % )$, $bold(v)_1=mat(
-// % 1;0
-// % )$ is eigenvector for $ lambda _1=1$ and $bold(v)_2=mat(
-// % 0;1
-// % )$ is eigenvector for $ lambda _2=-1$, however $bold(v)_1+bold(v)_2=mat(
-// % 1;1
-// % )$ is not an eigenvector.
-// % - \texttt{TRUE}. Since $mat(
-// % 2,0,0;
-// % 0,1,-1;
-// % 0,0,1
-// % )$ is not diagonalizable, the geometric multiplicity for eigenvalue 1 is only 1 which is less than its algebraic multiplicity, which is 2.
-// % // % ]
+#solution[
+#set enum(numbering: "a)")
++ #raw("TRUE"). By @ref-13:41-07-08-2022
++ #raw("FALSE"). Consider $A=mat(
+1,0;
+0,-1
+)$, $bold(v)_1=mat(
+1;0
+)$ is eigenvector for $ lambda _1=1$ and $bold(v)_2=mat(
+0;1
+)$ is eigenvector for $ lambda _2=-1$, however $bold(v)_1+bold(v)_2=mat(
+1;1
+)$ is not an eigenvector.
++ #raw("TRUE"). Since $mat(
+2,0,0;
+0,1,-1;
+0,0,1
+)$ is not diagonalizable, the geometric multiplicity for eigenvalue 1 is only 1 which is less than its algebraic multiplicity, which is 2.
+]
 
 == Final
 
-// #problem[
-// Suppose $A=mat(
-// 0,1,b,0,2;
-// 0,0,a,0,-3;
-// 0,0,0,1,1
-// )$ is of reduced row echelon form (RREF).
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(4 pt)} Evaluate $a,b$.
-// \item\textbf{(6 pt)} Find a basis for $"Col"A$.
-// \item\textbf{(8 pt)} Find a basis for $("Row"A)^perp$.
-// // ]
+#problem[
+Suppose $A=mat(
+0,1,b,0,2;
+0,0,a,0,-3;
+0,0,0,1,1
+)$ is of reduced row echelon form (RREF).
+#set enum(numbering: "a)")
++ #strong[(4 pt)] Evaluate $a,b$.
++ #strong[(6 pt)] Find a basis for $"Col"A$.
++ #strong[(8 pt)] Find a basis for $("Row"A)^perp$.
+]
 
-// #solution[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - $a=1,b=0$. Because pivots of an RREF must be 1 and pivot columns has zeros except the the pivot position.
-// - A basis for $"Col"A$ could be ${mat(
-// 1;0;0
-// ),mat(
-// 0;1;0
-// ),mat(
-// 0;0;1
-// )}$ because the pivot columns are the 2nd, 3rd and 4th columns.
-// - A basis for $("Row"A)^perp="Nul"A$ is ${mat(
-// 1;0;0;0;0
-// ),mat(
-// 0;-2;3;-1;1
-// )}$
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ $a=1,b=0$. Because pivots of an RREF must be 1 and pivot columns has zeros except the the pivot position.
++ A basis for $"Col"A$ could be ${mat(
+1;0;0
+),mat(
+0;1;0
+),mat(
+0;0;1
+)}$ because the pivot columns are the 2nd, 3rd and 4th columns.
++ A basis for $("Row"A)^perp="Nul"A$ is ${mat(
+1;0;0;0;0
+),mat(
+0;-2;3;-1;1
+)}$
+]
 
-// #problem[
-// Recall that $cal(E)=\{1,t,t^2\}$ is the _standard basis_ for $PP_2$. Given that $cal(B)=\{1+t,2-t^2,3-t+2t^2\}$, $cal(C)=\{2, 1+t,-t^2\}$ are bases for $PP_2$.
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(15 pt)} Find the change-of-coordinate matrix $\underset{cal(C)\leftarrowcal(B)}{P}$.
-// \item\textbf{(15 pt)} Suppose $T:PP_2->PP_2$ is a linear transformation with $cal(B)$ matrix $[T]_{cal(B)}=mat(
-// 1,0,1;
-// 0,-1,0;
-// 1,0,1
-// )$, please find the $cal(C)$ matrix $[T]_{cal(C)}$ for $T$.
-// \item\textbf{(15 pt)} Suppose $p(t)$ is a polynomial in $PP_2$ such that $[p(t)]_{cal(B)}=mat(
-// 0;2;-1
-// )$. Evalue polynomial $T(p(t))$ in $PP_2$.
-// // ]
+#problem[
+Recall that $cal(E)=\{1,t,t^2\}$ is the _standard basis_ for $PP_2$. Given that $cal(B)=\{1+t,2-t^2,3-t+2t^2\}$, $cal(C)=\{2, 1+t,-t^2\}$ are bases for $PP_2$.
+#set enum(numbering: "a)")
++ #strong[(15 pt)] Find the change-of-coordinate matrix $P_(cal(C)arrow.l cal(B))$.
++ #strong[(15 pt)] Suppose $T:PP_2->PP_2$ is a linear transformation with $cal(B)$ matrix $[T]_(cal(B))=mat(
+1,0,1;
+0,-1,0;
+1,0,1
+)$, please find the $cal(C)$ matrix $[T]_(cal(C))$ for $T$.
++ #strong[(15 pt)] Suppose $p(t)$ is a polynomial in $PP_2$ such that $[p(t)]_(cal(B))=mat(
+0;2;-1
+)$. Evalue polynomial $T(p(t))$ in $PP_2$.
+]
 
-// #solution[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - First we evaluate matrices
-//  $
-// \underset{cal(E)\leftarrowcal(B)}{P}=mat(
-// 1,2,3;
-// 1,0,-1;
-// 0,-1,2
-// )
-//  $
-//  $
-// \underset{cal(E)\leftarrowcal(C)}{P}=mat(
-// 2,1,0;
-// 0,1,0;
-// 0,0,-1
-// )
-//  $
-//  $
-// \underset{cal(C)\leftarrowcal(B)}{P}=(\underset{cal(E)\leftarrowcal(C)}{P})^(-1)\underset{cal(E)\leftarrowcal(B)}{P}=mat(
-// 0,1,2;
-// 1,0,-1;
-// 0,1,-2
-// )
-//  $
-// \item
-//  $
-// \underset{cal(B)\leftarrowcal(C)}{P}=(\underset{cal(C)\leftarrowcal(B)}{P})^(-1)=mat(
-//  1 / 4 ,1,- 1 / 4 ;
-//  1 / 2 ,0, 1 / 2 ;
-//  1 / 4 ,0,- 1 / 4
-// )
-//  $
-//  $
-// [T]_{cal(C)}=\underset{cal(C)\leftarrowcal(B)}{P}[T]_{cal(B)}\underset{cal(B)\leftarrowcal(C)}{P}=mat(
-//  1 / 2 ,2,- 3 / 2 ;
-// 0,0,0;
-// - 3 / 2 ,-2, 1 / 2
-// )
-//  $
-// - First note that
-//  $
-// [T(p(t))]_{cal(B)}=[T]_{cal(B)}[p(t)]_{cal(B)}=mat(
-// -1;-2;-1
-// )
-//  $
-// So $T(p(t))=(-1)(1+t)+(-2)(2-t^2)+(-1)(3-t+2t^2)=-8$.
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ First we evaluate matrices
+$
+P_(cal(E)arrow.l cal(B))=mat(
+1,2,3;
+1,0,-1;
+0,-1,2
+)
+$
+$
+P_(cal(E)arrow.l cal(C))=mat(
+2,1,0;
+0,1,0;
+0,0,-1
+)
+$
+$
+P_(cal(C)arrow.l cal(B))=(P_(cal(E)arrow.l cal(C)))^(-1)P_(cal(E)arrow.l cal(B))=mat(
+0,1,2;
+1,0,-1;
+0,1,-2
+)
+$
+-
+$
+P_(cal(B)arrow.l cal(C))=(P_(cal(C)arrow.l cal(B)))^(-1)=mat(
+1 / 4 ,1,- 1 / 4 ;
+1 / 2 ,0, 1 / 2 ;
+1 / 4 ,0,- 1 / 4
+)
+$
+$
+[T]_(cal(C))=P_(cal(C)arrow.l cal(B))[T]_(cal(B))P_(cal(B)arrow.l cal(C))=mat(
+1 / 2 ,2,- 3 / 2 ;
+0,0,0;
++ 3 / 2 ,-2, 1 / 2
+)
+$
++ First note that
+$
+[T(p(t))]_(cal(B))=[T]_(cal(B))[p(t)]_(cal(B))=mat(
+-1;-2;-1
+)
+$
+So $T(p(t))=(-1)(1+t)+(-2)(2-t^2)+(-1)(3-t+2t^2)=-8$.
+]
 
-// #problem[
-// Consider linear transformation $T:RR^3->RR^3$ which is defined by $T(mat(
-// x_1;x_2;x_3
-// ))=mat(
-// x_1+x_2-2x_3;-x_1+2x_2;x_1+4x_2-4x_3
-// )$.
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(5 pt)} Is $T$ onto? Explain why.
-// \item\textbf{(5 pt)} Is $T$ one-to-one? Explain why.
-// \item\textbf{(5 pt)} Is $T$ is invertible? If so, please find $T^(-1)$.
-// // ]
+#problem[
+Consider linear transformation $T:RR^3->RR^3$ which is defined by $T(mat(
+x_1;x_2;x_3
+))=mat(
+x_1+x_2-2x_3;-x_1+2x_2;x_1+4x_2-4x_3
+)$.
+#set enum(numbering: "a)")
++ #strong[(5 pt)] Is $T$ onto? Explain why.
++ #strong[(5 pt)] Is $T$ one-to-one? Explain why.
++ #strong[(5 pt)] Is $T$ is invertible? If so, please find $T^(-1)$.
+]
 
-// #solution[
-// The standard matrix for $T$ is $A=mat(
-// 1,1,-2;
-// -1,2,0;
-// 1,4,-4
-// )tilde mat(
-// 1,1,-2;
-// 0,3,-2;
-// 0,0,0
-// )$
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - $T$ is not onto since there is not a pivot on each row of $A$.
-// - $T$ is not one-to-one since there is not a pivot on each column of $A$.
-// - $T$ is not invertible, since $T$ is neither one-to-one nor onto.
-// // ]
+#solution[
+The standard matrix for $T$ is $A=mat(
+1,1,-2;
+-1,2,0;
+1,4,-4
+)tilde mat(
+1,1,-2;
+0,3,-2;
+0,0,0
+)$
+#set enum(numbering: "a)")
++ $T$ is not onto since there is not a pivot on each row of $A$.
++ $T$ is not one-to-one since there is not a pivot on each column of $A$.
++ $T$ is not invertible, since $T$ is neither one-to-one nor onto.
+]
 
-// #problem[
-// Suppose $A=mat(
-// 3,-4;
-// 2,-1
-// )$.
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(8 pt)} Please find the eigenvalues of $A$ (they may be complex).
-// \item\textbf{(12 pt)} Please find the corresponding eigenvectors.
-// \item\textbf{(6 pt)} Write down a factorization of the form $A=P C P^(-1)$, where $C$ is of the form $mat(
-// a,-b;b,a
-// )$.
-// // ]
+#problem[
+Suppose $A=mat(
+3,-4;
+2,-1
+)$.
+#set enum(numbering: "a)")
++ #strong[(8 pt)] Please find the eigenvalues of $A$ (they may be complex).
++ #strong[(12 pt)] Please find the corresponding eigenvectors.
++ #strong[(6 pt)] Write down a factorization of the form $A=P C P^(-1)$, where $C$ is of the form $mat(
+a,-b;b,a
+)$.
+]
 
-// #solution[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - The eigenvalues of $A$ are $ lambda =1-2i$ and $#overline[lambda] =1+2i$, so we have $a=1$, $b=2$.
-// - The eigenvectors of $A$ are $bold(v)=mat(
-// 1-i;1
-// )=mat(
-// 1;1
-// )+i mat(
-// -1;0
-// )$ and $#overline[bold(v)]=mat(
-// 1;1
-// )-i mat(
-// -1;0
-// )$.
-// \item
-//  $
-// A=mat(
-// 3,-4;
-// 2,-1
-// )=mat(
-// 1,-1;
-// 1,0
-// )mat(
-// 1,-2;
-// 2,1
-// )mat(
-// 0,1;
-// -1,1
-// )=P C P^(-1)
-//  $
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ The eigenvalues of $A$ are $ lambda =1-2i$ and $overline(lambda) =1+2i$, so we have $a=1$, $b=2$.
++ The eigenvectors of $A$ are $bold(v)=mat(
+1-i;1
+)=mat(
+1;1
+)+i mat(
+-1;0
+)$ and $overline(bold(v))=mat(
+1;1
+)-i mat(
+-1;0
+)$.
+-
+$
+A=mat(
+3,-4;
+2,-1
+)=mat(
+1,-1;
+1,0
+)mat(
+1,-2;
+2,1
+)mat(
+0,1;
+-1,1
+)=P C P^(-1)
+$
+]
 
-// #problem[
-// Suppose $A=mat(
-// 1,3;
-// 2,2;
-// 3,1
-// )$, $bold(b)=mat(1;0;1)$.
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(6 pt)} Show that the linear system is linearly inconsistent.
-// \item\textbf{(10 pt)} Find the least-square solution(s).
-// // ]
+#problem[
+Suppose $A=mat(
+1,3;
+2,2;
+3,1
+)$, $bold(b)=mat(1;0;1)$.
+#set enum(numbering: "a)")
++ #strong[(6 pt)] Show that the linear system is linearly inconsistent.
++ #strong[(10 pt)] Find the least-square solution(s).
+]
 
-// #solution[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item
-//  $
-// mat(
-// 1,3,1;
-// 2,2,0;
-// 3,1,1
-// )tilde mat(
-// 1,3,1;
-// 0,-4,-2;
-// 0,0,2
-// )
-//  $
-// Which has a pivot in the last column.
-// - $A^T A=mat(
-// 14,10;10,14
-// )$, $A^T bold(b)=mat(
-// 4;4
-// )$, then $\hat{bold(x)}=(A^T A)^(-1)(A^T bold(b))=mat(
-//  1 / 6 ; 1 / 6
-// )$ is the least-square solution.
-// // ]
+#solution[
+#set enum(numbering: "a)")
+-
+$
+mat(
+1,3,1;
+2,2,0;
+3,1,1
+)tilde mat(
+1,3,1;
+0,-4,-2;
+0,0,2
+)
+$
+Which has a pivot in the last column.
++ $A^T A=mat(
+14,10;10,14
+)$, $A^T bold(b)=mat(
+4;4
+)$, then $hat(bold(x))=(A^T A)^(-1)(A^T bold(b))=mat(
+1 / 6 ; 1 / 6
+)$ is the least-square solution.
+]
 
-// #problem[
-// Suppose $A=mat(
-// 4,1,0;
-// 1,4,0;
-// 0,0,5
-// )$.
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// \item\textbf{(6 pt)} Please find the characteristic polynomial of $A$.
-// \item\textbf{(4 pt)} Please find the eigenvalues of $A$.
-// \item\textbf{(12 pt)} Please find an orthonormal basis for $RR^3$ consists of eigenvectors.
-// \item\textbf{(8 pt)} Please orthogonal diagonalize $A$.
-// // ]
+#problem[
+Suppose $A=mat(
+4,1,0;
+1,4,0;
+0,0,5
+)$.
+#set enum(numbering: "a)")
++ #strong[(6 pt)] Please find the characteristic polynomial of $A$.
++ #strong[(4 pt)] Please find the eigenvalues of $A$.
++ #strong[(12 pt)] Please find an orthonormal basis for $RR^3$ consists of eigenvectors.
++ #strong[(8 pt)] Please orthogonal diagonalize $A$.
+]
 
-// #solution[
-// \begin{enumerate}[label=\textbf{\alph*)}]
-// - The characteristic polynomial is $(t-3)(t-5)^2$.
-// - The eigenvalues of $A$ are $ lambda _1=3$, $ lambda _2= lambda _3=5$.
-// - An orthonormal basis consists of eigenvectors could be ${mat(
-//  1 / (sqrt(2)) ;- 1 / (sqrt(2)) ;0
-// ),mat(
-//  1 / (sqrt(2)) ; 1 / (sqrt(2)) ;0
-// ),mat(
-// 0;0;1
-// )}$.
-// \item
-//  $
-// A=mat(
-// 4,1,0;
-// 1,4,0;
-// 0,0,5
-// )=mat(
-//  1 / (sqrt(2)) , 1 / (sqrt(2)) ,0;
-// - 1 / (sqrt(2)) , 1 / (sqrt(2)) ,0;
-// 0,0,1
-// )mat(
-// 3,0,0;
-// 0,5,0;
-// 0,0,5
-// )mat(
-//  1 / (sqrt(2)) ,- 1 / (sqrt(2)) ,0;
-//  1 / (sqrt(2)) , 1 / (sqrt(2)) ,0;
-// 0,0,1
-// )=P D P^T
-//  $
-// // ]
+#solution[
+#set enum(numbering: "a)")
++ The characteristic polynomial is $(t-3)(t-5)^2$.
++ The eigenvalues of $A$ are $ lambda _1=3$, $ lambda _2= lambda _3=5$.
++ An orthonormal basis consists of eigenvectors could be ${mat(
+1 / (sqrt(2)) ;- 1 / (sqrt(2)) ;0
+),mat(
+1 / (sqrt(2)) ; 1 / (sqrt(2)) ;0
+),mat(
+0;0;1
+)}$.
+-
+$
+A=mat(
+4,1,0;
+1,4,0;
+0,0,5
+)=mat(
+1 / (sqrt(2)) , 1 / (sqrt(2)) ,0;
++ 1 / (sqrt(2)) , 1 / (sqrt(2)) ,0;
+0,0,1
+)mat(
+3,0,0;
+0,5,0;
+0,0,5
+)mat(
+1 / (sqrt(2)) ,- 1 / (sqrt(2)) ,0;
+1 / (sqrt(2)) , 1 / (sqrt(2)) ,0;
+0,0,1
+)=P D P^T
+$
+]
 
-// \bibliography{Bibliography}
+\bibliography{Bibliography}
 
 #pagebreak()
 #columns(3)[
     #make-index(title: "Index", outlined: true, use-page-counter: true)
 ]
+

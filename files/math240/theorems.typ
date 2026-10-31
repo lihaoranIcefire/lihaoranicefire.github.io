@@ -242,6 +242,10 @@
       supplement = it.citation.supplement
     }
 
+    if it.element.numbering == none {
+      return link(it.target, supplement)
+    }
+
     let loc = it.element.location()
     let thms = query(selector(<meta:thmenvcounter>).after(loc))
     let number = thmcounters.at(thms.first().location()).at("latest")
