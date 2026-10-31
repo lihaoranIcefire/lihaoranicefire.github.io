@@ -17,12 +17,13 @@ Education
 Work experience
 ---
 * Fixed-Income Quant Researcher at LSEG, *Feb 2025 - Present*
-  * Conducted P&L portfolio optimization on corporate bonds, using ex-ante analysis
+  * Conducted P&L attribution analysis with Ex-Ante/Ex-Post functionalities
+  * Implemented portfolio hedging optimization under various scenarios
+  * Bugfixing and implementing analytic functionalities on bond & derivative pricing
+  * Client support on analytics and modeling
 
 * Software Engineer Intern at Wolfram\|Alpha, *Jun 2023 – Aug 2023*
-  * Developed step-by-step functions to solve sums and partial sums of several types of series
-  * Designed efficient algorithms to handle both standard and novel inputs, ensuring flexibility and accuracy
-  * Conducted rigorous iterative testing to refine the functions, enhancing their robustness and reliability
+  * Developed step-by-step functions to solve sums and partial sums of several types of series, using efficient algorithms to handle both standard and novel inputs, ensuring flexibility and accuracy. Conducted rigorous iterative testing to refine the functions, enhancing their robustness and reliability
   * Initiated pull requests and sought peer reviews, continuously revising the code until achieving unanimous approval. Successfully integrated selected implementations into the Wolfram\|Alpha codebase for user access
 
 * Graduate Assistant at University of Maryland, *Sep 2018 – Dec 2024*
