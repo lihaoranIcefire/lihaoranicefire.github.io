@@ -1,0 +1,55 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Set theory}
+\tableofcontents
+
+\begin{definition}
+$\{A_i\}\subseteq \mathcal P(X)$, $X\xrightarrow f Y$ is a map. $f$ \textbf{separates}\index{Separating function} $A_i$ if $\bigcap_{i}f(A_i)=\varnothing$. $f$ \textbf{completely separates}\index{Completely separating function} $A_i$ if $f(A_i)=f(a_i)$ for some distinct $a_i\in A_i$. $f$ \textbf{perfectly separates}\index{Perfectly separating function} $A,B$ if $A_i=f^{-1}(a_i)$ for some $a_i\in A_i$
+\end{definition}
+
+\begin{lemma}[Zorn's lemma]\label{Zorn's lemma}
+$P$ is a nonempty poset and every chain has an upper bound, then $P$ contains a maximal element
+\end{lemma}
+
+\begin{theorem}[Schr\"oder–Bernstein theorem]
+$A\xrightarrow fB$ and $B\xrightarrow gA$ are injective, then there exists $A\xrightarrow hB$ bijective
+\end{theorem}
+
+\begin{theorem}[Inclusion-exclusion principle]\index{Inclusion-exclusion principle}\label{Inclusion-exclusion principle}
+$A_1,\cdots,A_n\subseteq S$ are of finite cardinality, then
+\[\left|\bigcup_{i=1}^nA_n\right|=\sum_{k=1}^n(-1)^k\sum_{i_1<\cdots<i_k}\left|A_{i_1}\cap\cdots\cap A_{i_k}\right|\]
+\end{theorem}
+
+\begin{definition}
+A \textbf{lattice}\index{Lattice} is a partially ordered set in which the supremum and infinimum of any two elements exists uniquely
+\end{definition}
+
+\begin{lemma}
+Trees are bipartite
+\end{lemma}
+
+\begin{proof}
+Take some $v\in T$ as the root, and label the nodes that are even distance away from $2$ and odd distance away from $1$
+\end{proof}
+
+\begin{definition}
+A \textbf{Hasse diagram}\index{Hasse diagram} is a mathematical diagram used to represent a partially ordered set
+\begin{center}
+\begin{tikzcd}
+                           & {\{x,y,z\}}                          &                            & 2  \\
+{\{x,y\}} \arrow[ru]       & {\{x,z\}} \arrow[u]                  & {\{y,z\}} \arrow[lu]       & 1  \\
+\{x\} \arrow[u] \arrow[ru] & \{y\} \arrow[lu] \arrow[ru]          & \{z\} \arrow[u] \arrow[lu] & 0  \\
+                           & \{\} \arrow[ru] \arrow[lu] \arrow[u] &                            & -1
+\end{tikzcd}
+\end{center}
+\end{definition}
+
+\begin{definition}
+The \textit{Bermoulli numbers}\index{Bermoulli number} $B_n$ are defined by
+\[\frac{t}{e^t-1}=\sum_{k=0}^\infty\frac{B_kt^k}{k!}\]
+For instance, $B_0=1$, $B_1=-\dfrac{1}{2}$, $B_2=\dfrac{1}{6}$, $B_3=0$, $B_4=-\dfrac{1}{30}$, etc.
+\end{definition}
+
+\end{document}

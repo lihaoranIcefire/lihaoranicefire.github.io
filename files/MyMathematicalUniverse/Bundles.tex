@@ -1,0 +1,440 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+A \textbf{bundle}\index{Bundle} is $E\overset{p}{\to}B$, where $E$ is the \textbf{total space}, $B$ is the \textbf{base space}, and $p$ is the projection, $p^{-1}(b)$ is the \textbf{fiber} over $b$. A \textbf{cross section}\index{Cross section} is $s: X\rightarrow E$, such that $ps=1_X$. The restriction $p^{-1}(A)\overset{\pi}{\to}A$, $A\subseteq B$ is also a bundle
+\end{definition}
+
+\begin{definition}
+Suppose $E\overset{p}{\to}B$ is a bundle, $f:A\to B$ is a map, then the pullback $f^*(E)=A\times_pE\to A$ is the \textbf{pullback bundle}\index{Pullback bundle}, the pullback of a section\index{Pullback of sections} $s: B\to E$ is defined as $f^*s:=s\circ f$, notice $p(f^*s(y))=p(s(f(y)))=f(y)$
+\end{definition}
+
+\begin{definition}
+A \textbf{fiber bundle}\index{Fiber bundle} is a bundle $E\overset{p}{\to}B$ such that there exists an open neighborhood $U$ of $b$ and a homeomorphism $\phi$ making the following diagram commute
+\begin{center}
+\begin{tikzcd}
+p^{-1}(U) \arrow[r, "\phi"] \arrow[d, "p"'] & U\times F \arrow[ld, "pr_1"] \\
+U                                           &                             
+\end{tikzcd}
+\end{center}
+\end{definition}
+
+\begin{definition}
+$G$ is a topological group, a $G$ \textbf{fiber bundle} $E\xrightarrow{p}B$ is a fiber bundle and also a morphism of $G$ spaces
+\end{definition}
+
+\begin{lemma}
+A fiber bundle is a Serre fibration
+\end{lemma}
+
+\begin{definition}
+$\mathbb F$ is a topological field, a \textbf{vector bundle}\index{Vector bundle} is a fiber bundle $E\overset{p}{\rightarrow}X$ with fiber being $\mathbb F^n$ and $\phi$ restricts on each fiber is an $\mathbb F$ isomorphism
+\end{definition}
+
+\begin{definition}
+$G$ is a topological group, a \textbf{principal} $G$ \textbf{bundle} $p:P\to B$ is a morphism of $G$ spaces, $B$ with the trivial $G$ action, and for each $b\in B$, there is a local trivialization
+\begin{center}
+\begin{tikzcd}
+p^{-1}(U)\arrow[r,"\phi"] \arrow[d,"p"] &U\times G \arrow[dl,"pr_1"] \\
+U
+\end{tikzcd}
+\end{center}
+$\phi$ is an isomorphism
+\end{definition}
+
+\begin{remark}
+$G$ action on $P$ preserves fibers, and the action on fiber is free and transitive, each fiber is a $G$ torsor. A morphism of principal $G$ bundles is always an isomorphism. A principal $G$ bundle is trivial iff it has a global section
+\end{remark}
+
+\begin{proposition}
+Suppose $P\to B$ is a principal $G$ bundle, $G\to G/H$ is a principal $H$ bundle, then $P\to P/H$ is a principal $H$ bundle
+\end{proposition}
+
+\begin{proof}
+$P\cong P\times_GG\to P\times_G(G/H)\cong P/H$
+\end{proof}
+
+\begin{proposition}
+Suppose $P\to B$ is a principal $G$ bundle, $F$ is a left $G$ space, $P\times_GF\to P\times_G*\cong B$ is a $G$ fiber bundle. $X\xrightarrow{f}Y$ is a map, $f^*(P\times_G F)\to f^*(P)\times_GF$ is a natural homeomorphism
+\end{proposition}
+
+\begin{proposition}
+$P\xrightarrow{p}B$ is a principal $G$ bundle, $X$ is a right $G$ space, a morphism $P\xrightarrow{f}X$ induce $P\xrightarrow{\begin{pmatrix}
+1 \\
+f
+\end{pmatrix}} P\times X$, $B\cong P/G\to P\times X/G\cong P\times_GX$ which is a section $s_f$ of $P\times_G X\to B$, this is a natural bijection 
+\end{proposition}
+
+\begin{proposition}
+$P\to B\times I$ is principal $G$ bundle, then $P$ and $P_0\times I$ is an isomorphism, here $P_0$ is the restriction of $P$ over $B\times\{0\}$
+\end{proposition}
+
+\begin{proof}
+\begin{center}
+\begin{tikzcd}
+B \arrow[d, hook] \arrow[r]            & P\times_G(P_0\times I) \arrow[d] \\
+B\times I \arrow[r] \arrow[ru, dashed] & B\times I                       
+\end{tikzcd}
+\end{center}
+\end{proof}
+
+\iffalse
+\begin{definition}
+Let $E\overset{p}{\rightarrow}X$ be a vector bundle, consider two trivializations $\varphi_U: E_U\to U\times\mathbb R^n$ and $\varphi_V: E_V\to V\times\mathbb R^n$ around $x\in X$, then $\varphi_V\circ\varphi_U^{-1}$ restricted on $U\cap V\times\mathbb R^n$ is a local isomorphism with inverse $\varphi_U\circ\varphi_V^{-1}$ restricted on $U\cap V\times\mathbb R^n$, it is also called a transition function and it can also be regard as a continuous map $g_{VU}: U\cap V\to GL(n,\mathbb R)$ or $g_{VU}\in GL(n,C(U\cap V))$, such that $\varphi_V\circ\varphi_U(x,v)=(x,g_{VU}(x)v)$, notice then $g_{UV}=g_{VU}^{-1}$, and $g_{VU}$'s satisfy the cocycle relation $g_{WV}g_{VU}=g_{WU}$ on $U\cap V\cap W$\par
+Conversely, given $\displaystyle\bigsqcup_{\alpha\in A}U_\alpha\times\mathbb R^n\times A$ transition functions $g_{\alpha\beta}: U_\alpha\cap U_\beta \to GL(n,\mathbb R)$ that satisfying cocycle relation $g_{\gamma\beta}g_{\beta\alpha}=g_{\gamma\alpha}$ on $U_\alpha\cap U_\beta\cap U_\gamma$, mod equivalence relation $(x,v,\alpha)\sim(x,g_{\beta\alpha}(v),\beta),x\in U_\alpha\cap U_\beta$, you will get back the vector bundle \par
+Suppose $s: X\to E$, is a section, denote $\varphi_i\circ s|_{U_i}(x)=(x,f_i(x))$ over $U_i$, then $(x,f_j(x))=\varphi_j\circ s|_{U_j}(x)=\varphi_j\circ s|_{U_i}(x)=\varphi_j\circ\varphi_i^{-1}\circ\varphi_i\circ s|_{U_i}(x)=\varphi_j\circ\varphi_i^{-1}(x,f_i(x))=(x,g_{ji}(x)f_i(x)), \forall x\in U_i\cap U_j$, thus $f_j=g_{ji}f_i$, conversely, this relation also defines a section
+\end{definition}
+
+\begin{definition}
+The pullback of a transition function is defined to be $f^*g_{ij}:=g_{ij}\circ f$
+\end{definition}
+
+\begin{definition}
+A morphism between vector bundles $\varphi:E\to F$ is map such that the following diagram commutes \par
+\begin{center}
+\begin{tikzcd}
+E \arrow[r, "\varphi"] \arrow[d, "p"] & F \arrow[d, "q"] \\
+X \arrow[r, "f"]                      & Y               
+\end{tikzcd}
+\end{center}
+and $\varphi_x:E_x\to F_{f(x)}$ is a homomorphism between vector spaces
+\end{definition}
+
+\begin{definition}
+Let $E\overset{p}{\to}X$ and $F\overset{q}{\to}Y$ be vector bundles, then direct sum $E\times F\overset{p\times q}{\to}X\times Y$ is also a vector bundle, suppose $\varphi_U:U\to U\times\mathbb R^n$, $\psi_V:V\to V\times\mathbb R^m$ are trivializations, then $\varphi_U\times\psi_V:U\times V\to U\times\mathbb R^n\times V\times\mathbb R^m\cong U\times V\times\mathbb R^{n+m}$ is also a trivialization
+\end{definition}
+
+\begin{proposition}
+Let $E\overset{p}{\to} X$ is a vector bundle, and $f:X\to Y$ is a homeomorphism, then $E\xrightarrow{f\circ p}Y$ is a vector bundle, suppose $\varphi_U:E_U\to U\times\mathbb F^n$ is a trivialization, then $(f\times 1)\circ\varphi_U=:\psi_{f(U)}:E_U\to U\times\mathbb F^n\to f(U)\times\mathbb F^n$ is a trivialization
+\end{proposition}
+
+\begin{proposition}\label{Domain is homeomorphic to its graph}
+$p:\Gamma_f\to X, (x,f(x))\mapsto x$ is homeomorphism
+\end{proposition}
+
+\begin{proof}
+$p$ as a restriction on $\Gamma_f$ of $X\times Y$ projecting to $X$ is continuous, and define $q:X\to \Gamma_f, x\to (x,f(x))$, since the composition $X\overset{q}{\to}\Gamma_f\hookrightarrow X\times Y$ which is continuous because $X\overset{f}{\to} Y$, $X\overset{id}{\to} X$ are continuous, $q$ is continuous, and $p,q$ are inverses to each other
+\end{proof}
+
+\begin{definition}
+$E\overset{\pi}{\to}X$ ia vector bundle, $f:Y\to X$ is a continuous map, then we can construct the pullback bundle\index{pullback bundle} $f^*E\overset{p}{\to} Y$ \par
+\begin{center}
+\begin{tikzcd}
+f^*E\arrow[d, "p"] \arrow[r, "g"] & E \arrow[d, "\pi"] \\
+Y \arrow[r, "f"]                                                         & X                 
+\end{tikzcd}
+\end{center}
+satisfying universal property \par
+\begin{center}
+\begin{tikzcd}
+F \arrow[rdd, "\beta", bend right] \arrow[rrd, "\alpha", bend left] \arrow[rd, "\exists_1 h", dashed] &                                                       &                    \\
+                                                                                                      & Y\underset{X}{\times} E \arrow[d, "p"] \arrow[r, "g"] & E \arrow[d, "\pi"] \\
+                                                                                                      & Y \arrow[r, "f"]                                      & X                 
+\end{tikzcd}
+\end{center}
+Concrete construction: let $f^*E=Y\underset{X}{\times} E\subseteq Y\times X$ with subspace topology, where $Y\underset{X}{\times}E=\left\{(y,v)\in Y\times E\middle|f(y)=\pi(v)\right\}$, let's check it is a vector bundle over $Y$, notice that $Y\underset{X}{\times}E\to Y$ factor through $Y\underset{X}{\times}E\to \Gamma_f\to Y$, $(y,v)\mapsto (y,\pi(v))=(y,f(y))\mapsto y$, where $\Gamma_f$ is the graph of $f$ which is homeomorphic to $Y$ due to Proposition \ref{Domain is homeomorphic to its graph}, notice that $Y\underset{X}{\times}E\to\Gamma_f$ is the restriction of vector bundle $Y\times E\xrightarrow{1\times \pi}Y\times X$ over $\Gamma_f$, thus $Y\underset{X}{\times}E\to Y$ is a vector bundle, suppose $F$ as in the commutative diagram, then $h$ is simply defined as $h(w):=(\beta(w),\alpha(w))$ \par
+\end{definition}
+
+\begin{remark}
+In general, this is a pullback, but it has a vector bundle structure such that it induces an isomorphism on each fiber, now suppose $F\xrightarrow{q} Y$ is a another vector bundle such that not only the diagram commutes but also induce isomorphism on each fiber, then $F\cong f^*E$ \par
+Use this we have $(fg)^*E\cong g^*(f^*E)$, $f^*(E\oplus F)\cong f^*E\oplus f^*F$, $f^*(E\otimes F)\cong f^*E\otimes f^*F$, $1^*E\cong E$
+\end{remark}
+
+\begin{definition}
+Suppose $E,F$ are vector bundles both trivialized over $\{U_\alpha\}$(this can easily be achieved, just take intersections), suppose the transition functions are $g_{\alpha\beta},h_{\alpha\beta}$, then define the tensor product of vector bundles\index{tensor product of vector bundles} $E\otimes F$ by letting its transition functions be $g_{\alpha\beta}\otimes h_{\alpha\beta}$ \par
+Similarly, we can define symmetric power and exterior power of vector bundles by specifying its transition function \par
+Does it have universal property also?
+\end{definition}
+
+\begin{definition}
+Let $E\overset{p}{\rightarrow}X$, $E\overset{p}{\rightarrow}X$ be vector bundles, then the direct sum\index{direct sum of vector bundles} $E\oplus F\overset{p}{\rightarrow}X$ is defined by transition functions $g_{\alpha\beta}\oplus h_{\alpha\beta}$, where $g_{\alpha\beta},h_{\alpha\beta}$ are transition functions of $E,F$
+\end{definition}
+
+\begin{definition}
+Let $E\to X$ be a vector bundle, define its dual bundle as follows, if $g_{\alpha\beta}$ is a transition function, the transition function for $E^*$ would be $\left(g_{\alpha\beta}^{-1}\right)^{T}$
+\end{definition}
+
+\begin{definition}
+quotient bundle, exterior and symmetric power of vector bundle
+\end{definition}
+
+\begin{proposition}
+$E\overset{p}{\rightarrow}X$ is a vector bundle with $X$ being a paracompact space, then there exists a continuous map $\langle,\rangle: E\oplus E\rightarrow\mathbb R$ with $\langle,\rangle|_{E_x}$ defines an inner product
+\end{proposition}
+
+\begin{definition}
+$F\subseteq E$ is called a vector subbundle \index{vector subbundle} if $F$ is a subspace of $E$ and $F\overset{p}{\rightarrow}X$ is also a vector space
+\end{definition}
+
+\begin{proposition}
+$E\overset{p}{\rightarrow}X$ is a vector bundle with $X$ being a paracompact space and $F\subseteq E$ is a vector subbundle, then there exists a vector subbundle $F^{\perp}\subseteq E$ such that $F_x\oplus F^{\perp}|_x=E|_x$ and $\left(F|_x\right)^{\perp}=F^{\perp}|_x$ 
+\end{proposition}
+\begin{proof}
+\end{proof}
+
+\begin{theorem}\label{X compact Hausdorff => E has complement}
+If $E\overset{p}{\rightarrow}X$ is vector bundle over a compact Hausdorff space $X$, then there exists a vector bundle $E'\overset{p'}{\rightarrow}X$ such $E\oplus E'$ is a trivial bundle
+\end{theorem}
+
+\begin{proposition}
+Every Lie group $G$ is parallelizable
+\end{proposition}
+
+\begin{proof}
+Pick an arbitrary basis $e_1,\cdots,e_n$ of $T_1G$, then $L_g^*(e_i)$ will be a basis of $T_{g^{-1}}G$ since $L_g^*$ is an isomorphism, they form independent global sections of the tangent bundle
+\end{proof}
+
+\begin{definition}
+Tautological bundle
+\end{definition}
+
+\begin{definition}
+Let $X$ be a smooth manifold of dimension $n$(depending on the field), $\Omega$ denote the cotangent bundle, then $\omega:=\bigwedge^n\Omega$ is called the canonical bundle\index{Canonical bundle}
+\end{definition}
+
+\begin{definition}
+Universal bundle
+\end{definition}
+
+\begin{theorem}
+Let $X$ be a paracompact Hausdoff space, there is a bijection $\left[X,\varinjlim Gr_{\mathbb C}(n,N)\right]\to\mathrm{Vect}_{\mathbb C}^{n}(X),[f]\mapsto[f^*(E)]$
+\end{theorem}
+
+\begin{definition}
+Let $E\overset{p}{\rightarrow}X$ is a vector bundle, an inner product is a continuous map $\langle,\rangle: E\oplus E\rightarrow\mathbb R$ with $\langle,\rangle|_{E_x}$ defines an inner product on $E_x$
+\end{definition}
+
+\begin{proposition}
+Let $E\overset{p}{\rightarrow}X$ is a vector bundle with an inner product $\langle,\rangle$, then we can local trivialization to be isometry on each fiber, i.e. $\langle v,w\rangle=\left(\varphi_U(v),\varphi_U(w)\right), v,w\in E_x$, where $(,)$ is the standard inner product on $U\times\mathbb R^n$
+\end{proposition}
+
+\begin{proposition}
+$E\overset{p}{\rightarrow}X$ is a vector bundle with $X$ being a paracompact space, then there exists a continuous map $\langle,\rangle: E\oplus E\rightarrow\mathbb R$ with $\langle,\rangle|_{E_x}$ defines an inner product
+\end{proposition}
+
+\begin{definition}
+let $G$ be a topological group, $E,X$ be $G$-spaces, then $E\xrightarrow{p}X$ is a $G$-vector bundle\index{$G$-vector bundle} if it is a vector bundle, $p$ is a $G$ map, and for any $x\in X$, $g:E_x\to E_{gx}$ is a linear map
+\end{definition}
+
+\begin{definition}
+Let $G$ be a topological group, $H$ be a closed subgroup, a $G$ vector bundle $\pi:E\to G/H$ is called a homogeneous vector bundle\index{Homogeneous vector bundle}
+\end{definition}
+
+\begin{lemma}
+Let $Y\xrightarrow{f}X,Z\xrightarrow{g}X$ be open surjective continuous maps, then the projection $p_Y:Y\times_X Z\to Y$ is open surjective
+\end{lemma}
+
+\begin{proof}
+For surjectivity, if $y\in Y$, since $g$ is surjective, $\exists z\in Z$ such that $g(z)=f(y)$, then $(z,y)\in Y\times_X Z$ \par
+To prove $p_Y$ is open, suppose $(z_0,y_0)\in Y\times_X Z$ is in some open set, then $(z_0,y_0)\in U\times V\cap Y\times_X Z$ for some $y_0\in U,z_0\in V$ open, since $f,g$ are open, $U':=f(U)\cap g(V)$ is open, let $V':=V\cap f^{-1}(U')$, then we can show $V'$ is in the image of $U\times V\cap Y\times_X Z$, since $\forall y\in V'$, $f(y)\in U'\subseteq g(V)$, thus $f(y)=g(z)$ for some $z\in V$, hence $(y,z)\in U\times V\cap Y\times_X Z$
+\end{proof}
+
+\begin{proposition}
+Let $\pi:E\to G/H$ be a homogeneous vector bundle, $E_H$ be the fiber over the coset $H$, action $G\times E_H\to E$ can be regard as $\alpha: G\times_H E_H\to E$ which is an isomorphism of $G$ vector bundles. Moreover, if $H$ is locally compact, then for a given $\mathbb RH$ module $E_H$, $G\times_H E_H\to G/H$ is indeed a $G$ vector bundle, hence $G$ vector bundle $E$ is in one to one correspondence with representations of $H$ on $E_H$, so $K_G(G/H)\cong R(H)$
+\end{proposition}
+
+\begin{proof}
+$E_H$ is an $\mathbb RH$ module, let $G\times_H E_H$ denote the space of orbits of $G\times E_H$ under $H$ by $h\cdot(g,\xi)=(gh^{-1},h\xi)$, $G\times_H E_H$ is a $G$ space with $G$ action $g\cdot(g',\xi)\mapsto(gg',\xi)$, then the group action can be regarded as $\alpha: G\times_H E_H\to E,(g,\xi)\mapsto g\xi$, we can find its inverse $\beta:E\to G\times_H E_H,E_{gH}\ni\xi\mapsto(g,g^{-1}\xi)$, to show that this is continuous, consider $\gamma:G\times E\to G\times E,(g,\xi)\mapsto(g,g^{-1}\xi)$, then the preimage of $G\times E_H$ will be the pullback $G\times_{G/H}E:=\left\{(g,\xi)\in G\times E\middle|gH=\pi\xi\right\}$, then $G\times_{G/H}E\to G\times E_H\to G\times_H E_H,(g,\xi)\mapsto(g,g^{-1}\xi)$ factors as $G\times_{G/H}E\to E\xrightarrow{\beta} G\times_{H}E,(g,\xi)\mapsto\xi\mapsto(g,g^{-1}\xi)$ which open surjective, therefore $\beta$ is continuous due to the previous Lemma
+\end{proof}
+
+\begin{definition}
+A clutching function for $S^k$ is $f:S^{k-1}\to GL(n,\mathbb C)$, then we can define vector bundle $E_f$ with $f$ being the transition function, conversely, if $E$ is a vector bundle over $S^k$, since its upper and lower hemispheres are both contractible, $E=E_f$, where $f$ is the transition function, denoting the corresonding matrix $T_f$
+\end{definition}
+
+\begin{theorem}
+$[S^{k-1},GL(n,\mathbb C)]\to\mathrm{Vect}^n_{\mathbb C}(S^k), f\mapsto E_f$ is a bijection
+\end{theorem}
+
+\begin{lemma}
+Suppose $f,g:S^{k-1}\to GL(n,\mathbb C)$, then $(E_{f}\otimes E_g)\oplus\varepsilon^n\cong E_{fg}\oplus\varepsilon^n\cong E_f\oplus E_g$
+\end{lemma}
+
+\begin{proof}
+Since $GL(n,\mathbb C)$ is path connected, there is a path $A_t\in GL(2n,\mathbb C)$ that $A_0=\begin{pmatrix}
+1&\\
+&1
+\end{pmatrix},A_1=\begin{pmatrix}
+&1\\
+1&
+\end{pmatrix}$, then $\begin{pmatrix}
+T_f \\
+&I
+\end{pmatrix}A_t\begin{pmatrix}
+I \\
+&T_g
+\end{pmatrix}A_t$ is $\begin{pmatrix}
+T_f \\
+&T_g
+\end{pmatrix}$ when $t=0$ and $\begin{pmatrix}
+T_fT_g \\
+&I
+\end{pmatrix}=\begin{pmatrix}
+T_{fg} \\
+&I
+\end{pmatrix}$ when $t=1$
+\end{proof}
+
+\begin{definition}
+Let $E\xrightarrow{p}X$ be vector bundle of rank $n$, and there is a inner product over $E$, we can define the sphere bundle $S(E)$ associated to $E$ to be $S(E)=\displaystyle\bigcup_{x\in X}S(E_x)$ with the subspace topology, this is a fiber bundle, suppose $\varphi_U$ is a local trivialization, since we can choose $\varphi_U$ to be isometry over each fiber, thus the following diagram commutes \par
+\begin{center}
+\begin{tikzcd}
+S(E)_U \arrow[r, "\varphi_U"] \arrow[d, hook] & U\times S(\mathbb R^n) \arrow[d, hook] \\
+E_U \arrow[r, "\varphi_U"] \arrow[rd, "p"] & U\times\mathbb R^n \arrow[d] \\
+& U
+\end{tikzcd}
+\end{center}
+\end{definition}
+
+\begin{definition}
+Let $E\xrightarrow{p}X$ be vector bundle of rank $n$, and there is a inner product over $E$, we can define the projective bundle $P(E)$ associated to $E$ to be $P(E)=\displaystyle\bigcup_{x\in X}P(E_x)$ with the quotient topology, this is a fiber bundle, suppose $\varphi_U$ is a local trivialization, since we can choose $\varphi_U$ to be isometry over each fiber, thus the following diagram commutes \par
+\begin{center}
+\begin{tikzcd}
+S(E)_U \arrow[rr, "\varphi_U"] \arrow[dr] \arrow[dd, "q"] & & U\times S(\mathbb R^n) \arrow[dl] \arrow[dd, "q"] \\
+& U \\
+P(E)_U \arrow[rr, "\varphi_U"] \arrow[ur] & & U\times P(\mathbb R^n) \arrow[ul]
+\end{tikzcd}
+\end{center}
+\end{definition}
+
+\begin{definition}
+Let $E\xrightarrow{p}X$ be vector bundle of rank $n$, and there is a inner product over $E$, we can define the flag bundle $F(E)$ associated to $E$ to be $F(E)=\displaystyle\bigcup_{x\in X}F(E_x)$ with the subspace topology in $P(E)\times\cdots\times P(E)$
+\end{definition}
+
+\begin{remark}
+Consider the pullback of $\pi:F(E)\to X$, $\pi^*(E)\subseteq F(E)\times 
+E$, consider its subbundles $L_1,\cdots,L_n$, where $L_i$ is the subbundle that over a point in $F(E)$, it is the $i$-th factor, then $\pi^*(E)\cong L_1\oplus\cdots\oplus L_n$
+\end{remark}
+
+\begin{definition}
+Let $X$ be a paracompact and Hausdorff space, there exist unique functions $w_1,w_2,\cdots$, $w_i: \mathrm{Vect_{\mathbb R}(X)}\to H^i(X,\mathbb Z_2)$, $E\to w_i(E)$, and they only depend on the isomorphism classes of $E$, satisfying \par
+1. $w_i(f^*(E))=f^*(w_i(E))$, for pullback bundle $f^*(E)$ \par
+2. $w(E_1\oplus E_2)=w(E_1)\smile w(E_2)$ where $w=1+w_1+w_2+\cdots\in H^*(X,\mathbb Z_2)$ \par
+3. $w_i(E)=0,\forall i>\dim E$ \par
+4. If $E\to \mathbb RP^\infty$ is the canonical line bundle, then $w_1(E)$ is the generator of $H^*(\mathbb RP^\infty,\mathbb Z_2)\cong\mathbb Z_2[x]$ \par
+$w_i(E)$ are called the Stiefel-Whitney classes of $E$
+\end{definition}
+
+\begin{definition}
+Let $X$ be a paracompact and Hausdorff space, there exist unique functions $c_1,c_2,\cdots$, $c_i: \mathrm{Vect_{\mathbb C}(X)}\to H^{2i}(X;\mathbb Z)$, $E\to c_i(E)$, and they only depend on the isomorphism classes of $E$, satisfying \par
+1. $c_i(f^*(E))=f^*(c_i(E))$, for pullback bundle $f^*(E)$ \par
+2. $c(E_1\oplus E_2)=c(E_1)\smile c(E_2)$ where $c=1+c_1+c_2+\cdots\in H^*(X;\mathbb Z)$ \par
+3. $c_i(E)=0,\forall i>\dim E$ \par
+4. If $E\to \mathbb CP^\infty$ is the canonical line bundle, then $c_1(E)$ is a generator of $H^*(\mathbb CP^\infty;\mathbb Z)\cong\mathbb Z[x]$, specify a generator in advance \par
+$c_i(E)$ are called the Chern classes of $E$, also we define the Chern polynomial to be $c_t=1+c_1t+c_2t^2+\cdots$ where $t$ is just a formal variable used to keep tracking of the degree
+\end{definition}
+
+\begin{lemma}
+Let $L_1,L_2$ be line bundles, then $c_1(L_1\otimes L_2)=c_1(L_1)+c_1(L_2)$
+\end{lemma}
+
+\begin{definition}
+Suppose $L$ is a line bundle, define the Chern character $ch(L)=e^{c_1(L)}=1+c_1(L)+\dfrac{c_1(L)^2}{2!}+\cdots\in H^*(X;\mathbb Q)$, then we have $ch(L_1\otimes L_2)=e^{c_1(L_1\otimes L_2)}=e^{c_1(L_1)+c_1(L_2)}=e^{c_1(L_1)}e^{c_1(L_2)}=ch(L_1)ch(L_2)$, If we assume $ch(L_1\oplus L_2)=ch(L_1)+ch(L_2)$, then for $E=L_1\oplus\cdots\oplus L_n$, $ch(E)=ch(L_1)+\cdots+ch(L_n)=n+\left(c_1(L_1)+\cdots+c_1(L_n)\right)+\left(c_1(L_1)^2+\cdots+c_1(L_n)^2\right)/2!+\cdots$, on the other hand, we have $c(E)=c(L_1)\smile\cdots\smile c(L_n)=(1+c_1(L_1))\smile\cdots\smile(1+c_1(L_n))=1+c_1(E)+\cdots+c_n(E)$, where $c_i(E)$ would just be the $i$-th elementary symmetric polynomial of $c_1(L_1),\cdots,c_1(L_n)$, i.e. $c_i(E)=\sigma_i(c_1(L_1),\cdots,c_1(L_n))$, so we can express $c_1(L_1)^k+\cdots+c_1(L_n)^k$ in terms of $c_i(E)$, i.e. $c_1(L_1)^k+\cdots+c_1(L_n)^k=s_k(c_1(E),\cdots,c_n(E))$, thus we have an abstract definition of Chern character, $ch(E)=\dim E+s_1(c_1(E),\cdots,c_n(E))+s_2(c_1(E),\cdots,c_n(E))/2!+\cdots$
+\end{definition}
+
+\begin{proposition}
+$ch(E_1\oplus E_2)=ch(E_1)+ch(E_2)$, $ch(E_1\otimes E_2)=ch(E_1)ch(E_2)$
+\end{proposition}
+
+\begin{theorem}[Thom isomorphism]
+$\Lambda$ is a ring, $p:E\to B$ is an oriented vector bundle of rank $r$, then there exists the \textit{Thom class}\index{Thom class} $u\in H^r(E,E\setminus B,\Lambda)$($B\subseteq E$ as the zero section) such that its restriction to any fiber $F$, $H^r(F,F\setminus0,\Lambda)$ is the local orientation. And $H^r(E,E\setminus B,\mathbb Z)\to H^r(E,\mathbb Z)\to H^r(B,\mathbb Z)$ defines the \textit{Euler class}\index{Euler class} $e(E)$
+
+For the tangent bundle of a smooth manifold, the Euler class evaluated at the fundamental class of $B$ is the Euler characteristic
+\end{theorem}
+\fi
+
+\begin{lemma}
+$V$ is a vector space of dimension $n$, $\mathscr V$ is the set of frames(bases) of $V$, then $\GL(\mathbb F,n)$ acts transitively and freely on the right of $\mathscr V$
+\end{lemma}
+
+\begin{definition}\index{Principal $G$-bundle}
+If $G$ is a topological group, then a principal $G$-bundle\index{Principal $G$-bundle} $P$ is a fiber bundle with a continuous right $G$ action $P\times G\to P$, and the action is free and transitive(thus regular), which imply each fiber is a $G$-torsor, also, $g\mapsto yg$ is a homeomorphism
+\end{definition}
+
+\begin{definition}[Vector bundle(Koszul) connection] \hfill\\
+$E\to B$ is a vector bundle. $E$ valued $k$-forms are
+\[\Omega^k(E)=\Gamma\left(\textstyle\bigwedge^kT^*B\otimes E\right)=\Omega^k(B)\otimes\Gamma(E)\]
+A \textit{vector bundle(Koszul) connection} is
+\[\nabla:\Omega^0(E)\to\Omega^1(E)=\Hom(TB,\mathbb F)\otimes\Gamma(E)\]
+Satisfying the Leibniz rule
+\begin{equation}\label{06/10/2021-13:50}
+\nabla (f\otimes s)=df\otimes s+f\wedge\nabla s
+\end{equation}
+By feeding $X\in TB$, $\nabla_X:\Gamma(E)\to\Gamma(E)$ is the covariant derivative along $X$. This extends to exterior covariant derivative $d_\nabla:\Omega^k(E)\to\Omega^{k+1}(E)$ through \eqref{06/10/2021-13:50}
+\end{definition}
+
+\begin{definition}[Connection form] \hfill\\
+Over a local trivialization, $s=\sum s_i\otimes e_i$, $\nabla e_j=\sum_i\omega_{ij}\otimes e_i$, $\nabla s=\sum_i(ds_i+\sum_j\omega_{ij}\wedge s_j)\otimes e_i$, in short, $\nabla s=ds+\omega\wedge s$ in local coordinates, here $\omega=(\omega_{ij})$ is the \textit{connection form}
+\end{definition}
+
+\begin{definition}[Curvature]
+In general $d_\nabla$ may not give a chain complex. The curvature tensor is
+\[d_\nabla^2:\Omega^0(E)\to\Omega^2(E)\]
+Over a local trivialization, $d_\nabla^2s=d_\nabla(ds+\omega\wedge s)=(d\omega+\omega\wedge\omega)\wedge s$, $d\omega+\omega\wedge\omega$ is the \textit{curvature form}. A connection is \textit{flat(completely integrable)} if its curvature is zero
+\end{definition}
+
+\begin{definition}
+Two vector bundles $E\to X$, $F\to X$ are stably isomorphic\index{Stably isomorphic} if $E\oplus\varepsilon^n\cong F\oplus\varepsilon^n$, denoted as $E\approx F$, we also denote $E\sim F$ if $E\oplus\varepsilon^n\cong F\oplus\varepsilon^m$ for some $n,m$
+\end{definition}
+
+\begin{remark}
+Here stably isomorphic does not imply isomorphic, for example, $TS^2\approx_s\varepsilon^2$, since $\varepsilon^3\approx T^2\oplus NS^2\approx T^2\oplus\varepsilon^1$ whereas $TS^2$ is not trivial by the hairy ball theorem, and $NS^2\approx\varepsilon^1$ is trivial because it is very easy to find a nonvanishing global section
+\end{remark}
+
+\begin{definition}
+Define the reduced K group to be $\tilde K(X)$ which consists of $\sim$-equivalent classes, and define K group to be the formal difference of isomorphic classes $E-F$, and $E-F=E'-F'$ if $E\oplus F'\oplus G\cong E'\oplus F\oplus G$ for some vector bundle $G$
+\end{definition}
+
+\begin{remark}
+When $X$ is compact Hausdorff, $E\oplus F'\oplus G\cong E'\oplus F\oplus G$ is equivalent to $E\oplus F'\oplus \varepsilon^m\cong E'\oplus F\oplus \varepsilon^m$, since we can find $G'$ such that $G\oplus G'\cong\varepsilon^m$ due to Theorem \ref{X compact Hausdorff => E has complement} \par
+$K(*)=\{\varepsilon^m-\varepsilon^n\}\cong\mathbb Z$, $\tilde K(*)=0$, and when $X$ compact Hausdorff we have an exact sequence $0\to K(*)\to K(X)\to \tilde K(X)\to 0$, where $K(*)\to K(X)$ is simply given by $\varepsilon^m-\varepsilon^n\mapsto\varepsilon^m-\varepsilon^n$, $K(X)\to \tilde K(X)$ is defined as follows, given $E-F\in K(X)$, $E-F=E\oplus F'-F\oplus F'=E'-\varepsilon^m$ is mapped to $E'$, this exact sequence splits since we have map $K(X)\to K(*)$ given by restriction
+\end{remark}
+
+\begin{conjecture}
+Let $M$ be the M\"{o}bius line bundle over $S^1$, since $M\oplus M\cong\varepsilon^2$, and $M\otimes M\cong\varepsilon^1$, thus real $K$-theory of $S^1$ is isomorphic to $\mathbb Z[M]/(M^2-1,2M-2)$
+\end{conjecture}
+
+\begin{example}
+Let $S^n\subset\mathbb R^{n+1}$ be the unit sphere, $TS^n,NS^n$ be the tangent bundle and normal bundle, then $TS^n\oplus NS^n$ can be seen as the restriction of the trivial bundle $\mathbb R^{n+1}\times\mathbb R^{n+1}$ on $S^n$, thus $TS^n\oplus NS^n$ is trivial
+\end{example}
+
+\begin{definition}
+Define external product $K(X)\otimes K(Y)\to K(X\times Y), a\otimes b\mapsto p_1^*(a)p_2^*(b)=:a\times b$, this is a ring homomorphism
+\end{definition}
+
+\begin{definition}
+Suppose $G$ is a topological group, $P_G$ is the contravariant functor from the category of CW complexes to the category of sets, mapping $X$ to all the principal $G$ bundles over $X$, a \textbf{classifying space} $BG$ is a topological space such that $[-,BG]\to P_G(-)$ is a natural isomorphism
+\end{definition}
+
+\begin{lemma}
+$BG$ is unique up to weak homotopy equivalence
+\end{lemma}
+
+\begin{proof}
+Suppose $B'G$ is also a classifying space, then $[-,BG]\cong P_G(-)\cong[-,B'G]$ are natural isomorphic, by Theorem \ref{CW approximation}, we may assume $BG$, $B'G$ are both CW complexes, and by Lemma \ref{Yoneda lemma}, $X\to Hom(-,X)$ is fully faithful functor, thus $BG,B'G$ are homotopic
+\end{proof}
+
+\begin{theorem}[Milnor's contruction for classifying space]
+Define $E^nG$ to be $\overbrace{G*\cdots*G}^{n+1}$ are formal sums $t_0g_0+t_1g_1+\cdots+t_ng_n$, with $\sum t_i=1$. $EG:=\varinjlim E^nG$ are finite formal sums $\sum t_ig_i$ with $\sum t_i=1$. $E^nG\to E^nG/G$, $EG\to EG/G=:BG$ are principal $G$ bundles, any principal $G$ bundle over $X$ is a pullback bundle of $EG\xrightarrow{p} BG$
+\end{theorem}
+
+\begin{proof}
+Define $G$ right action on $E^nG,EG$
+\[E^nG\times G\to E^nG, \left(\sum t_ig_i,g\right)\mapsto \sum t_ig_ig\]
+\[EG\times G\to EG, \left(\sum t_ig_i,g\right)\mapsto \sum t_ig_ig\]
+Let $U_i=\left\{p\left(\sum t_ig_i\right)\middle|t_i\neq0\right\}$, then we would have a equivariant homeomorphism $p^{-1}(U_i)\to U_i\times G,\sum t_ig_i\mapsto \left(p\left(\sum t_ig_i\right), g_i\right)$ with inverse $U_i\times G\to p^{-1}(U_i),\left(p\left(\sum t_ig_i\right), g\right)\mapsto \sum t_jg_jg_i^{-1}g$, this is well defined since $\left(p\left(\sum t_ig_ih\right), g\right)\mapsto \sum t_jg_jhh^{-1}g_i^{-1}g=\sum t_jg_jg_i^{-1}g$
+\end{proof}
+
+\begin{definition}
+A \textbf{topological category}\index{Topological category} $\mathscr C$ is a small category where $ob\mathscr C$, $mor\mathscr C$ are topological spaces and $i:ob\mathscr C\to mor\mathscr C, c\mapsto 1_c$, $s:mor\mathscr C\to ob\mathscr C, c\xrightarrow{f}d\mapsto c$, $t:mor\mathscr C\to ob\mathscr C, c\xrightarrow{f}d\mapsto d$, $\circ:mor\mathscr C\times mor\mathscr C\to mor\mathscr C$ are continuous. A \textbf{continuous functor}\index{Continuous functor} between topological categories is a functor that are continuous on both objects and morphisms
+\end{definition}
+
+\begin{definition}\label{Nerve of a category}
+Define \textbf{nerve}\index{Nerve} $N\mathscr C$ on category $\mathscr C$ which is also a simplicial set, $N\mathscr C([n]):=Hom([n],\mathscr C)$, the set of all functors from $[n]$ to $\mathscr C$, viewing $[n]=0\to1\to\cdots\to n$ as a category
+\end{definition}
+
+\begin{definition}[Segal's contruction for classifying space]
+Define the classifying space of $\mathscr C$ to be $B\mathscr C:=|N\mathscr C|$ as in Definition \ref{Nerve of a category}
+\end{definition}
+
+\end{document}

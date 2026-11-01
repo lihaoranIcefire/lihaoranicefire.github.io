@@ -1,0 +1,81 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}[Hyperbolic functions]
+$\sin z=\dfrac{e^{iz}-e^{-iz}}{2i}$, $\cos z=\dfrac{e^{iz}+e^{-iz}}{2}$
+$\sinh z=-i\sin(iz)=\dfrac{e^z-e^{-z}}{2}$, $\cosh z=\cos(iz)=\dfrac{e^z+e^{-z}}{2}$
+\end{definition}
+
+\begin{definition}
+$X$ is a convex set, $X\xrightarrow f\mathbb R$ is \textbf{convex}\index{Convex function} if $f(tx+(1-t)y)\leq tf(x)+(1-t)f(y)$ for $0\leq t\leq1$ and $x,y\in X$, $f$ is \textbf{strictly convex} if $f(tx+(1-t)y)< tf(x)+(1-t)f(y)$ for $0<t<1$ and $x\neq y\in X$. $f$ is \textbf{concave}\index{Concave function} if $-f$ is convex
+\end{definition}
+
+\begin{definition}
+$X\xrightarrow{f}[-\infty,\infty]$ is \textbf{upper semicontinuous}\index{Semicontinuity} at $x$ if for any $y>f(x)$, there exists a neighborhood $U$ of $x$ such that $f(U)<y$, i.e. $f$ can only jump down at $x$. Thus $X\xrightarrow{f}[-\infty,\infty]$ is upper semicontinuous if $\{f<a\}$ are open. $X\xrightarrow{f}[-\infty,\infty]$ is \textbf{lower semicontinuous} if $-f$ is upper semicontinuous, i.e. $f$ can only jump up
+\begin{center}
+\begin{tikzpicture}
+\draw[->](0,0)--(2.5,0);
+\draw[->](0,0)--(0,3.5);
+\draw(0,0)--(1,1);
+\draw(1,2)--(2,3);
+\filldraw (1,2) circle (0.04);
+\filldraw[color=black, fill=white] (1,1) circle (0.04);
+\end{tikzpicture}
+\begin{tikzpicture}
+\draw[->](0,0)--(2.5,0);
+\draw[->](0,0)--(0,3.5);
+\draw(0,0)--(1,1);
+\draw(1,2)--(2,3);
+\filldraw (1,1) circle (0.04);
+\filldraw[color=black, fill=white] (1,2) circle (0.04);
+\end{tikzpicture}
+\end{center}
+\end{definition}
+
+\begin{lemma}
+$\{f_{\alpha}\}_{\alpha\in A}$ is a family of upper semicontinuous functions, $\displaystyle f=\inf_{\alpha\in A}f_{\alpha}$ is also upper semicontinuous
+\end{lemma}
+
+\begin{proof}
+\[\{f<a\}=\bigcup_{\alpha\in A}\{f_{\alpha}<a\}\]
+\end{proof}
+
+\begin{lemma}
+$f$ is upper semicontinuous, $K$ is compact, then $f$ attains maximum over $K$
+\end{lemma}
+
+\begin{definition}
+$\Omega\xrightarrow{u}[-\infty,\infty)$ is \textbf{harmonic}\index{Harmonic} at $x\in\Omega$ if $u$ is continuous at $x$ and for any ball $B(x,r)$, $\displaystyle u(x)=\frac{1}{|B(x,r)|}\int_{B(x,r)}u(y)dy$. $\Omega\xrightarrow{u}[-\infty,\infty)$ is \textbf{subharmonic}\index{Subharmonic} at $x\in\Omega$ if $u$ is upper semicontinuous at $x$ and for any ball $B(x,r)$, any continuous $v$ harmonic on $B(x,r)$, $u\leq v$ on $\partial B(x,r)$ $\Rightarrow$ $u\leq v$ on $\overline{B(x,r)}$. $\Omega\xrightarrow{u}[-\infty,\infty)$ is \textbf{superharmonic}\index{Superharmonic} if $-u$ is subharmonic \par
+Harmonic $\Leftrightarrow$ subharmonic and superharmonic
+\end{definition}
+
+\begin{lemma}
+$\Omega\xrightarrow u\mathbb R$ is subharmonic, $\mathbb R\xrightarrow f\mathbb R$ is convex, then $f\circ u$ is also subharmonic
+\end{lemma}
+
+\begin{example}\label{f holomorphic => log|f| subharmonic}
+If $f$ is holomorphic, then $\log|f|$ is subharmonic
+\end{example}
+
+\begin{lemma}[Vitali covering lemma]
+$\{B_i\}_{i\in I}$ is a collection of balls in $\mathbb R^d$ such that $\sup_i B_i<\infty$, then there exists a disjoint subcollection $\{B_j\}_{j\in J}$, $J\subseteq I$ such that $\bigcup_{i\in I}B_i\subseteq\bigcup_{j\in J}5B_j$
+\end{lemma}
+
+\begin{proof}
+
+\end{proof}
+
+\begin{theorem}[Vitali covering theorem]
+
+\end{theorem}
+
+\begin{theorem}[Interpolation]
+If $f_n\to f$ in $L^\lambda\cap L^\mu$, $\lambda<\mu$, then $f_n\to f$ in $L^p$ for $\lambda<p<\mu$
+\end{theorem}
+
+\begin{proof}
+Holder's inequality
+\end{proof}
+
+\end{document}

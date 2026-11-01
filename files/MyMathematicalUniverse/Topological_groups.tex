@@ -1,0 +1,56 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+$G$ is a \textbf{topological group}\index{Topological groups} if it is a group and a topological space so that the group multiplication $G\times G\to G$ and the inverse map $G\to G$ are continuous maps
+\end{definition}
+
+\begin{definition}
+$f:G\to \mathbb R/\mathbb C$ is a continuous function, $L_yf(x)=f(y^{-1}x)$, $R_yf(x)=f(xy)$, $L_{yz}=L_yL_z$, $R_{yz}=R_yR_z$, $f$ is called left/right uniformly continuous if $\forall\varepsilon>0$, $\exists V\ni e$ such that $\|L_yf-f\|<\varepsilon$/$\|R_yf-f\|<\varepsilon$, $\forall y\in V$, $\|\cdot\|$ is the supremum norm
+\end{definition}
+
+\begin{proposition}
+If $f\in C_c(G)$, then $f$ is both left and right uniformly continuous
+\end{proposition}
+
+\begin{proof}
+Easy proof by a very standard analysis argument
+\end{proof}
+
+\begin{definition}
+If $f$ is a Borel measurable function on $G$, then $f$ factor through $G/H$, otherwise suppose $f(y)\neq f(z)$, $y,z\in xH$, $f^{-1}(f(y))\cap xH\subsetneq xH$ is a Borel set which is impossible, because then $x^{-1}f^{-1}(f(y))\cap H\subsetneq H$ will also be a Borel set, consider $\Gamma=\left\{S\in \mathscr{P}\middle| H\subseteq H \text{ or } H\cap S=\emptyset\right\}$, then $\Gamma$ is a sigma algebra containing all open sets hence Borel algebra, we reached a contradiction  \par
+Thus for most purposes one may as well work with $G/H$ which is Hausdorff($L^p$ spaces for instance, mod almost everywhere vanishing function) \par
+For a locally compact Hausdorff group, A Borel measure $\mu$ on $G$ is called left/right invariant if $\mu(xE)=\mu(E)$/$\mu(Ex)=\mu(E)$, $x\in G, E\in \mathscr{B}(G)$ \par
+A linear functional $I$ is left/right invariant if $I(L_xf)=I(f)$/$I(R_xf)=I(f)$ \par
+A left/right Haar measure on $G$ is a left/right invariant Radon measure $\mu$ on $G$, for example, Lebesgue measure on $\mathbb R^n$, counting measure on $G$ with discrete topology
+\end{definition}
+
+\begin{example}
+Continuous bijective group homomorphism doesn't imply homeomorphism, which is really obvious, by taking the identity map and a discrete topology on the topological group $G$
+\end{example}
+
+\begin{definition}
+Let $G$ be a topological group, then a $1$-parameter subgroup means a continuous group homomorphism $\varphi:\mathbb R\to G$, $\varphi(s+t)=\varphi(s)\varphi(t)$, in the case of a Lie group, $\varphi$ is required to be smooth
+\end{definition}
+
+\begin{definition}
+Suppose $G$ is a connected, locally pathconnected and (semi-)locally simply connected topological space, then it has a universal cover $\tilde G$ which is unique up to an isomorphism, a connected Lie group certain satisfies this
+\end{definition}
+
+\begin{proposition}
+Denote $\pi:\tilde G\to G$ as the covering map, let $\bar G$ be the set of maps $T:\tilde G\to\tilde G$, such that $\pi(Tx)=g(\pi x)$ for some $g\in G$, i.e. the following diagram commutes
+\begin{center}
+\begin{tikzcd}
+\tilde G \arrow[r,"T"] \arrow[d,"\pi"] & \tilde G \arrow[d,"\pi"] \\
+G \arrow[r,"g"] & G
+\end{tikzcd}
+\end{center}
+Then $\bar G$ which is a group acts transitively and freely on $\tilde G$, thus we can think of the universal cover $\tilde G$ also as a topological group
+\end{proposition}
+
+\begin{proof}
+Given $x,y\in \tilde G$, there is a unique $g\in G$ such that $g(\pi x)=\pi y$, since $\tilde G$ is the universal cover, there is a unique lift such that $T(x)=y$, thus the action is free and transitive
+\end{proof}
+
+\end{document}

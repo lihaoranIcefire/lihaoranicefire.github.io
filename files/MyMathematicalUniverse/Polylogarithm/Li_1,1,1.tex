@@ -1,0 +1,192 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{align*}
+\Li_{1,1,1}(x,y,z)&=\int -(dv_3dv_2+dv_{23}dw_{2,3})dv_1 \\
+&-(dv_3dv_{12}+dv_{123}dw_{12,3})dw_{1,2} \\
+&-(dv_{23}dv_1+dv_{123}dw_{1,23})dw_{2,3}
+\end{align*}
+\[\Lambda=\left[\begin{smallmatrix}
+1&&&&&&&\\
+\Li_{1}(z)&1&&&&&&\\
+\Li_{1}(yz)&&1&&&&&\\
+\Li_{1}(xyz)&&&1&&&&\\
+\Li_{1,1}(y,z)&\Li_1(y)&\Li_1(\frac{1-yz}{1-y})&&1&&&\\
+\Li_{1,1}(xy,z)&\Li_1(xy)&&\Li_1(\frac{1-xyz}{1-xy})&&1&&\\
+\Li_{1,1}(x,yz)&&\Li_1(x)&\Li_1(\frac{1-xyz}{1-x})&&&1&\\
+\Li_{1,1,1}(x,y,z)&\Li_{1,1}(x,y)&\Li_1(x)\Li_1(\frac{1-yz}{1-y})&\Li_{1,1}(\frac{1-xy}{1-x},\frac{1-xyz}{1-xy})&\Li_1(x)&\Li_1(\frac{1-xy}{1-x})&\Li_1(\frac{1-yz}{1-y})&1
+\end{smallmatrix}\right]\tau_{1,1,1}(2\pi i)\]
+Where
+\[\Li_{1,1}\left(\frac{1-xy}{1-x},\frac{1-xyz}{1-xy}\right)=\Li_{1,1}(y,1)-\Li_{1,1}(y,x^{-1}y^{-1})+\Li_1(x^{-1}y^{-1})\Li_1(x^{-1})\]
+\[\omega=\left[\begin{smallmatrix}
+0\\
+-dv_3&0\\
+-dv_{23}&0&0\\
+-dv_{123}&0&0&0\\
+0&-dv_2&-dw_{2,3}&0&0\\
+0&-dv_{12}&0&-dw_{12,3}&0&0\\
+0&0&-dv_1&-dw_{1,23}&0&0&0\\
+0&0&0&0&-dv_1&-dw_{1,2}&-dw_{2,3}&0
+\end{smallmatrix}\right]\]
+To compute the monodromy around $x=0$, take $q(\epsilon)$ to be the loop $(x=\epsilon e^{it},y=z=\epsilon)$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=0
+\end{align*}
+To compute the monodromy around $y=0$, take $q(\epsilon)$ to be the loop $(x=z=\epsilon,y=\epsilon e^{it})$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=0
+\end{align*}
+To compute the monodromy around $z=0$, take $q(\epsilon)$ to be the loop $(x=y=\epsilon,z=\epsilon e^{it})$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=-\int_qdv_3\int_p(dv_2dv_1+dv_{12}dw_{1,2})=0
+\end{align*}
+To compute the monodromy around $x=1$, take $q(\epsilon)$ to be the composition of $(x=(1-t)\epsilon+t(1-\epsilon),y=z=\epsilon)$, $(x=1-\epsilon e^{it},y=z=\epsilon)$ and $(x=(1-t)(1-\epsilon)+t\epsilon,y=z=\epsilon)$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=0
+\end{align*}
+To compute the monodromy around $y=1$, take $q(\epsilon)$ to be the composition of $(x=z=\epsilon,y=(1-t)\epsilon+t(1-\epsilon))$, $(x=z=\epsilon,y=1-\epsilon e^{it})$ and $(x=z=\epsilon,y=(1-t)(1-\epsilon)+t\epsilon)$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=0
+\end{align*}
+To compute the monodromy around $z=1$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=-\int_qdv_3\int_p(dv_2dv_1+dv_{12}dw_{1,2}) \\
+&=-2\pi i\Li_{1,1}(x,y)
+\end{align*}
+To compute the monodromy around $xy=1$, take $z=0$, $x$ to be constant
+\begin{align*}
+\int_{qp}-\int_{p}&=0
+\end{align*}
+To compute the monodromy around $yz=1$, take $x,y$ to be constants
+\begin{align*}
+\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=-\int_{q(\epsilon)}dv_{23}dv_3\int_{p(\epsilon)}dv_1-\int_{q(\epsilon)}dv_{123}dv_{23}\int_{p(\epsilon)}dw_{2,3} \\
+&-\int_{q(\epsilon)}dv_{23}\int_{p(\epsilon)}dw_{2,3}dv_1-\int_{q(\epsilon)}dv_{23}\int_{p(\epsilon)}dv_1dw_{2,3} \\
+&=-\int_{q(\epsilon)^{-1}}dv_3dv_{23}\int_{p(\epsilon)}dv_1-\int_{q(\epsilon)}dv_{123}dv_{23}\int_{p(\epsilon)}dw_{2,3} \\
+&-\int_{q(\epsilon)}dv_{23}\int_{p(\epsilon)}dw_{2,3}\int_{p(\epsilon)}dv_1 \\
+&=2\pi i\log\frac{1-\epsilon^{-1}}{1-\epsilon}\log\frac{1-x}{1-\epsilon} \\
+&-2\pi i\left(\log\frac{1-\epsilon}{1-\epsilon^3}+\log\frac{1-x}{1-\epsilon}\right)\left(\log\frac{y}{\epsilon}+\log\frac{1-z}{1-y}\right) \\
+\end{align*}
+Let $\epsilon\to0$, we get
+\[2\pi i\log(1-x)\log\frac{y-1}{y(1-z)}=-2\pi i\Li_1(x)\Li_1\left(\frac{1-yz}{1-y}\right)\]
+To compute the monodromy around $xyz=1$
+\begin{align*}
+\int_{pq}-\int_{p}&=-\int_qdv_{123}dv_{23}dv_3=\int_{q^{-1}}dv_{3}dv_{23}dv_{123} \\
+&=-2\pi i\int_{z}^{x^{-1}y^{-1}}\frac{dt}{1-t}\frac{dyt}{1-yt} \\
+&=-2\pi i\int_{xyz}^{1}\frac{dt}{xy-t}\frac{dt}{x-t} \\
+&=-2\pi i\int_{1}^{xyz}\frac{dt}{x-t}\frac{dt}{xy-t} \\
+&=-2\pi i\int_{0}^{xyz-1}\frac{dt}{(x-1)-t}\frac{dt}{(xy-1)-t} \\
+&=-2\pi i\int_{0}^{1}\frac{dt}{\frac{1-x}{1-xyz}-t}\frac{dt}{\frac{1-xy}{1-xyz}-t} \\
+&=-2\pi i\Li_{1,1}\left(\frac{1-xy}{1-x},\frac{1-xyz}{1-xy}\right)
+\end{align*}
+The monodromy representation $\rho$ is as follows \\
+For monodromy around $x=0$
+\[\begin{bmatrix}
+1\\
+&1\\
+&&1\\
+&&&1\\
+&&&&1\\
+&&&&&1\\
+&&&&&&1\\
+&&&&&&&1\\
+&&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $y=0$
+\[\begin{bmatrix}
+1\\
+&1\\
+&&1\\
+&&&1\\
+&&&&1\\
+&&&&&1\\
+&&&&&&1\\
+&&&&&&&1\\
+&&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $z=0$
+\[\begin{bmatrix}
+1\\
+&1\\
+&&1\\
+&&&1\\
+&&&&1\\
+&&&&&1\\
+&&&&&&1\\
+&&&&&&&1\\
+&&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $x=1$
+\[\begin{bmatrix}
+1\\
+&1\\
+&&1\\
+&&&1\\
+&&&&1\\
+&&&&&1\\
+&&&&&&1\\
+&&&&&&&1\\
+&&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $y=1$
+\[\begin{bmatrix}
+1\\
+&1\\
+&&1\\
+&&&1\\
+&&&&1\\
+&&&&&1\\
+&&&&&&1\\
+&&&&&&&1\\
+&&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $z=1$
+\[\begin{bmatrix}
+1\\
+&1\\
+&&1\\
+&&&1\\
+&&&&1\\
+&&&&&1\\
+&&&&&&1\\
+&&&&&&&1\\
+&&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $xy=1$
+\[\begin{bmatrix}
+1\\
+&1\\
+&&1\\
+&&&1\\
+&&&&1\\
+&&&&&1\\
+&&&&&&1\\
+&&&&&&&1\\
+&&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $yz=1$
+\[\begin{bmatrix}
+1\\
+&1\\
+&&1\\
+&&&1\\
+&&&&1\\
+&&&&&1\\
+&&&&&&1\\
+&&&&&&&1\\
+&&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $xyz=1$
+\[\begin{bmatrix}
+1\\
+&1\\
+&&1\\
+&&&1\\
+&&&&1\\
+&&&&&1\\
+&&&&&&1\\
+&&&&&&&1\\
+&&&&&&&&1
+\end{bmatrix}\]
+
+\end{document}

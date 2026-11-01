@@ -1,0 +1,145 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\[\Li_{1,1}(x,y)=\int_{(0,0)}^{(x,y)}dv_2dv_1+dv_{12}dw_{1,2}\]
+Here $w_{1,2}=u_1+v_2-v_1$, then
+\begin{align*}
+\Li_{n,1}(x,y)&=\int_{(0,0)}^{(x,y)} (dv_2dv_1+dv_{12}dw_{1,2})(du_1)^{n-1} +dv_{12}\left(\sum_{k=1}^{n-1}du_{12}^kdv_2(du_1)^{n-1-k}\right)
+\end{align*}
+since inductively
+\begin{align*}
+\Li_{n,1}(x,y)&=\int_{(0,0)}^{(x,y)} \Li_{n-1,1}(x,y)du_1-\Li_n(xy)dv_2 \\
+&=\int_{(0,0)}^{(x,y)} \left[(dv_2dv_1+dv_{12}dw_{1,2})(du_1)^{n-2} +dv_{12}\left(\sum_{k=1}^{n-2}du_{12}^kdv_2(du_1)^{n-2-k}\right)\right]du_1 \\
+&+dv_{12}(du_{12})^{n-1}dv_2
+\end{align*}
+
+Suppose $p$ is the path from $(0,0)$ to $(x,y)$ that give the value of $\Li_{n,1}(x,y)$, $q$ is a loop based at $(x,y)$ that induces monodromy, we can take $p$ to $p(\epsilon)$ to start at $(\epsilon,\epsilon)$ and then take limit $\epsilon\to0$, then $pq$ can be homotopied to some $q(\epsilon)p(\epsilon)$ \\
+To compute the monodromy around $x=0$, take $q(\epsilon)$ to be the loop $(x=\epsilon e^{it},y=\epsilon)$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=0
+\end{align*}
+To compute the monodromy around $y=0$, take $q(\epsilon)$ to be the loop $(x=\epsilon,y=\epsilon e^{it})$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=\int_qdv_2\int_pdv_1(du_1)^{n-1}=0
+\end{align*}
+To compute the monodromy around $x=1$, take $q(\epsilon)$ to be the composition of $(x=(1-t)\epsilon+t(1-\epsilon),y=\epsilon)$, $(x=1-\epsilon e^{it},y=\epsilon)$ and $(x=(1-t)(1-\epsilon)+t\epsilon,y=\epsilon)$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=0
+\end{align*}
+To compute the monodromy around $y=1$, take $q(\epsilon)$ to be the composition of $(x=\epsilon,y=(1-t)\epsilon+t(1-\epsilon))$, $(x=\epsilon,y=1-\epsilon e^{it})$ and $(x=\epsilon,y=(1-t)(1-\epsilon)+t\epsilon)$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=\int_qdv_2\int_pdv_1(du_1)^{n-1}=-2\pi i\Li_n(x)
+\end{align*}
+To compute the monodromy around $xy=1$, take $q$ to be the loop $(x=x^0,y\text{ such that }\int_qd\log(1-xy)=2\pi i)$
+First it's easy to show inductively
+\[\int_{(x^0,y^0)}^{(x,y)} dv_2du_2^{n-1}=\Li_n(y)-\sum_{k=1}^n\frac{(\log y-\log y^0)^{n-k}}{(n-k)!}\Li_k(y^0)\]
+Thus
+\begin{align*}
+\lim_{\epsilon\to0}\int_{pq}-\int_{p}&=\sum_{k=0}^{n-1}\int_pdv_{12}(du_{12})^k\int_q(du_{12})^{n-1-k}dv_2
++\int_qdv_{12}du_{12}^{n-1}dv_2 \\
+&=(-1)^{n+1}\int_{q^{-1}}dv_2du_{2}^{n-1}dv_{12} \\
+&=(-1)^{n+1}\int_{q^{-1}}\frac{\Li_n(y)-\sum_{k=1}^n\frac{(\log y-\log y^0)^{n-k}}{(n-k)!}\Li_k(y^0)}{y-1/x^0}dy \\
+&=(-1)^{n}2\pi i\left(-g_n(x^0,y^0)-\Li_n(1/x^0)\right)
+\end{align*}
+Where
+\[g_m(x,y)=\sum_{k=1}^{m}(-1)^{k+1}\frac{\log^{m-k}(xy)}{(m-k)!}\Li_{k}(y)\]
+The variation matrix is
+\[\Lambda=\left[\begin{smallmatrix}
+1\\
+\Li_1(y)&1\\
+\Li_1(xy)&0&1\\
+\Li_{1,1}(x,y)&\Li_1(x)&g_1(x,y)-\Li_1(x^{-1})&1\\
+\Li_2(xy)&0&\log x&0&1\\
+\Li_{2,1}(x,y)&\Li_2(x)&g_2(x,y)+\Li_2(x^{-1})&\log x&g_1(x,y)&1\\
+\vdots&\vdots&\vdots&\vdots&\vdots&\vdots&\ddots\\
+\Li_n(xy)&0&\frac{\log^{n-1}(xy)}{(n-1)!}&0&\frac{\log^{n-2}(xy)}{(n-2)!}&0&\cdots&1\\
+\Li_{n,1}(x,y)&\Li_n(x)&g_n(x,y)+(-1)^n\Li_n(x^{-1})&\frac{\log^{n-1}x}{(n-1)!}&g_{n-1}(x,y)&\frac{\log^{n-2}x}{(n-2)!}&\cdots&g_1(x,y)&1
+\end{smallmatrix}\right]\tau_{n,1}(2\pi i)\]
+\[\omega=\begin{bmatrix}
+0\\
+-dv_2&0\\
+-dv_{12}&0&0 \\
+&-dv_2&-dw_1&0 \\
+&&du_{12}&0&0 \\
+&&&du_1&-dv_2&0 \\
+&&&&\ddots&\ddots&\ddots \\
+&&&&&du_{12}&0&0 \\
+&&&&&&du_1&-dv_2&0 \\
+\end{bmatrix}\]
+
+\[dg_m(x,y)=g_{m-1}(x,y)du_1-\frac{\log^{m-1}(xy)}{(m-1)!}dv_2\]
+Justifies the differential equation $d\Lambda=\omega\Lambda$ \\
+Monodromy of $\log^mx/m!$ around $x=0$ is
+\[\sum_{k=0}^{m-1}\frac{\log^kx}{k!}\frac{(2\pi i)^{m-k}}{(m-k)!}\]
+Monodromy of $\log^m(xy)/m!$ around $x=0$ is
+\[\sum_{k=0}^{m-1}\frac{\log^k(xy)}{k!}\frac{(2\pi i)^{m-k}}{(m-k)!}\]
+Monodromy of $\Li_n(x^{-1})$ around $x=0$ is $2\pi i\log^{n-1}(x^{-1})/(n-1)!=(-1)^{n-1}2\pi i\log^{n-1}(x)/(n-1)!$ \\
+Monodromy of $g_n$ around $x=0$ or $y=0$ is
+\begin{align*}
+\sum_{k=1}^{m}\sum_{l=1}^{m-k}(-1)^{k+1}\Li_k(y)\frac{\log^{m-k-l}(xy)}{(m-k-l)!}\frac{(2\pi i)^{l}}{l!}&=\sum_{l=1}^{m}\sum_{k=1}^{m-l}(-1)^{k+1}\Li_k(y)\frac{\log^{m-k-l}(xy)}{(m-k-l)!}\frac{(2\pi i)^{l}}{l!} \\
+&=\sum_{l=1}^{m-1}\frac{(2\pi i)}{l!}g_{m-l}(x,y)
+\end{align*}
+Monodromy of $g_n$ around $y=1$ is
+\[2\pi i\sum_{k=1}^{m}(-1)^k\frac{\log^{m-k}(xy)}{(m-k)!}\]
+The monodromy representation $\rho$ is as follows \\
+For monodromy around $x=0$
+\[\begin{bmatrix}
+1\\
+&1\\
+&&1\\
+&&-1&1\\
+&&1&0&1\\
+&&0&1&0&1\\
+&&\frac{1}{2}&0&1&0&1\\
+&&0&\frac{1}{2}&0&1&0&1\\
+&&\frac{1}{3!}&0&\frac{1}{2}&0&1&0&1\\
+&&\vdots&\vdots&\vdots&\ddots&\ddots&\ddots&\ddots&\ddots\\
+&&\frac{1}{(n-1)!}&0&\frac{1}{(n-2)!}&\cdots&\frac{1}{2}&0&1&0&1 \\
+&&0&\frac{1}{(n-1)!}&0&\cdots&0&\frac{1}{2}&0&1&0&1
+\end{bmatrix}\]
+For monodromy around $y=0$
+\[\begin{bmatrix}
+1\\
+&1\\
+&&1\\
+&&0&1\\
+&&1&0&1\\
+&&0&0&0&1\\
+&&\frac{1}{2}&0&1&0&1\\
+&&0&0&0&0&0&1\\
+&&\vdots&\vdots&\vdots&\ddots&\ddots&\ddots&\ddots\\
+&&\frac{1}{(n-1)!}&0&\frac{1}{(n-2)!}&\cdots&0&1&0&1\\
+&&&&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $x=1$
+\[\begin{bmatrix}
+1\\
+&1\\
+&&1&&&\\
+&-1&1&1&&\\
+&&&&1&\\
+&&&&&\ddots\\
+&&&&&&1
+\end{bmatrix}\]
+For monodromy around $y=1$
+\[\begin{bmatrix}
+1&&&&&&&\\
+-1&1&&&&&&\\
+&&1&&&&&\\
+&&-1&1&&&&\\
+&&&\ddots&\ddots\\
+&&&&&1&\\
+&&&&&-1&1\\
+\end{bmatrix}\]
+For monodromy around $xy=1$
+\[\begin{bmatrix}
+1\\
+&1\\
+-1&&1\\
+&&&1\\
+&&&&\ddots\\
+&&&&&1
+\end{bmatrix}\]
+
+\end{document}

@@ -1,0 +1,23 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+$D$ is a simple normal crossing divisor of $X$, $Y=X-D$, $Y\xhookrightarrow j X$ is the embedding, the \textit{log de Rham commplex} of $X$ along $D$ is $\Omega_X^*(\log D)$, which is the smallest chain complex of $j_*\Omega^*_Y$ closed under wedge product such that for any $f\in j_*\mathcal O^*_X(U)$ meromorphic along $D$, $\dfrac{df}{f}\in\Omega^*_X(\log D)(U)$. A section of $j_*\Omega^*_Y$ has \textit{logarithmic poles} if it is a section of $\Omega^*_X(\log D)$
+\end{definition}
+
+\begin{proposition}\hfill
+\begin{enumerate}[leftmargin=*,label=\textbf{\arabic*.}]
+\item Section $\omega$ of $j_*\Omega^*_Y$ has logarithmic poles along $D$ iff both $\omega,d\omega$ have at most simple poles along $D$
+\item $\Omega^1_X(\log D)$ is locally free and $\Omega^p_X(\log D)=\bigwedge^p\Omega^1_X(\log D)$
+\item For $(X,D)=(X_1,D_1)\times(X_2,D_2)=(X_1\times X_2,X_1\times D_2\cup X_2\times D_1)$, isomorphism $\Omega^*_{Y_1}\boxtimes\Omega^*_{Y_2}\to\pr^*_{X_1}\Omega^*_{X_1}\otimes\pr^*_{X_2}\Omega^*_{X_2}$ induces isomorphism $\Omega^*_{X_1}(\log D_1)\boxtimes\Omega^*_{X_2}(\log D_2)\to\Omega^*_{X}(\log D)$
+\item For $f:X_1\to X_2$, $f^{-1}(D_2)=D_1$, $f^*:{j_2}_*\Omega^*_{Y_2}\to{j_1}_*\Omega^*_{Y_1}$ induces $f^*:\Omega^*_{X_2}(\log D_2)\to\Omega^*_{X_1}(\log D_1)$
+\end{enumerate}
+\end{proposition}
+
+\begin{lemma}
+$X=D^n$, $D=\displaystyle\bigcup_{1\leq i\leq k} D_i$ with $D_i=\pr_i^{-1}(0)$, $Y={D^*}^k\cup D^{n-k}$. Then $\Omega^1_X(\log D)$ is a free sheaf with base $\left\{\dfrac{dz_i}{z_i}\right\}_{1\leq i\leq k}$ and $\{dz_i\}_{k\leq i\leq n}$. In fact, any section of $j_*\mathcal O^*_Y$ meromorphic along $D$ can be written locally as $\displaystyle f=g\prod_{i=1}^kz_i^{n_i}$, then 
+\[\dfrac{df}{f}=\dfrac{dg}{g}+\sum_{i=1}^k\frac{n_i}{z_i}dz_i\]
+\end{lemma}
+
+\end{document}

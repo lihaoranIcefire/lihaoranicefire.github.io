@@ -1,0 +1,50 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+Chen's \textit{iterated integral} is defined to be
+\[\int_\gamma\omega_1(t)\cdots\omega_n(t)=\int\displaylimits_{0\leq t_1\leq\cdots\leq t_n\leq 1}\gamma^*\omega_1(t_1)\wedge\cdots\wedge\gamma^*\omega_n(t_n)\]
+\end{definition}
+
+\begin{theorem}\cite{Zhao_MultipleZetaFunctionsMultiplePolylogarithmsAndTheirSpecialValues}
+\begin{enumerate}[leftmargin=*]
+\item Inversion
+\[\int_\gamma\omega_1(t)\cdots\omega_n(t)=(-1)^n\int_\gamma\omega_n(t)\cdots\omega_1(t)\]
+\item Path composition ($\gamma_1(1)=\gamma_2(0)$)
+\[\int_{\gamma_2\circ\gamma_1}\omega_1(t)\cdots\omega_n(t)=\sum_{i=0}^n\int_{\gamma_1}\omega_1(t)\cdots\omega_i(t)\int_{\gamma_2}\omega_{i+1}(t)\cdots\omega_n(t)\]
+\item Shuffle Product
+\[\int_{\gamma}\omega_1(t)\cdots\omega_m(t)\int_{\gamma}\omega_{m+1}(t)\cdots\omega_{m+n}(t)=\sum_{\sigma\text{ runs over all $(m,n)$ shuffles}}\int_{\gamma}\omega_{\sigma^{-1}(1)}(t)\cdots\omega_{\sigma^{-1}(1)}(t)\]
+\item Homotopy invariance \\
+$\displaystyle\int_\gamma\sum_{j=1}^n\omega_1^{(j)}\cdots\omega_m^{(j)}$ is homotopy invariant if $\omega_i^{(j)}$ are closed and $\displaystyle\sum_j\omega_{i-1}^{(j)}\wedge\omega_i^{(j)}=0$
+\end{enumerate}
+\end{theorem}
+
+under the standard choice of path
+\[I(0;a_1,\cdots,a_n;1)=\int_{0<t_1<\cdots<t_n<1}\frac{dt_1}{t_1-a_1}\wedge\cdots\wedge\frac{dt_n}{t_n-a_n}\]
+
+\begin{theorem}[Differential of iterated integrals]
+\[dI(a_0;a_1,\cdots,a_n;a_{n+1})=\sum_{i=1}^nI(a_0;a_1,\cdots,\widehat{a_i},\cdots,a_n;a_{n+1})d\log\frac{(a_{i+1}-a_i)}{a_{i+1}-a_i}\]
+\end{theorem}
+
+\begin{proof}
+$dI(a_0;a_1,\cdots,a_n;a_{n+1})$ is
+\begin{equation*}
+\scalemath{0.8}{
+\begin{split}
+&\sum_{i=1}^n\int_{a_0<t_1<\cdots<t_n<a_{n+1}}\frac{dt_1}{t_1-a_1}\wedge\cdots\wedge\frac{dt_i}{(t_i-a_i)^2}\wedge\cdots\wedge\frac{dt_n}{t_n-a_n}da_i\\
+&=\sum_{i=1}^{n}\int_{a_0<t_1<\cdots<t_{i-1}<t_{i+1}<\cdots<t_n<a_{n+1}}\frac{dt_1}{t_1-a_1}\wedge\cdots\wedge\left(\frac{1}{t_{i-1}-a_{i}}-\frac{1}{t_{i+1}-a_{i}}\right)\wedge\cdots\wedge\frac{dt_n}{t_n-a_n}da_i\\
+&=\sum_{i=1}^n\int_{a_0<t_1<\cdots<t_{i-1}<t_{i+1}<\cdots<t_n<a_{n+1}}\frac{dt_1}{t_1-a_1}\wedge\cdots\wedge\frac{dt_{i-1}}{(t_{i-1}-a_{i-1})(t_{i-1}-a_{i})}\wedge\cdots\wedge\frac{dt_n}{t_n-a_n}da_i \\
+&-\sum_{i=1}^n\int_{a_0<t_1<\cdots<t_{i-1}<t_{i+1}<\cdots<t_n<a_{n+1}}\frac{dt_1}{t_1-a_1}\wedge\cdots\wedge\frac{dt_{i+1}}{(t_{i+1}-a_{i})(t_{i+1}-a_{i+1})}\wedge\cdots\wedge\frac{dt_n}{t_n-a_n}da_i\\
+&=
+\end{split}
+}
+\end{equation*}
+
+$dI(0;a_1,\cdots,a_n;1)$ with respect to $a_i$ is \[\int_{0<t_1<\cdots<t_n<1}\frac{dt_1}{t_1-a_1}\wedge\cdots\wedge\frac{dt_i}{(t_i-a_i)^2}\wedge\cdots\wedge\frac{dt_n}{t_n-a_n}\]
+By Fubini, we can first do integration
+\[\int_{t_{i-1}}^{t_{i+1}}\frac{dt_i}{(t_i-a_i)^2}=\frac{1}{t_{i-1}-a_{i}}-\frac{1}{t_{i+1}-a_{i}}\]
+On the other hand
+\end{proof}
+
+\end{document}

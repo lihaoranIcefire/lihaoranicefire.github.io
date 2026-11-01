@@ -1,0 +1,54 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{theorem}
+Linear differential equations $y'(t)=A(t)y(t)+b(t)$ with initial condition $y(0)=y_0$, where $A, b, y$ are smooth, then there exists unique local solution
+\end{theorem}
+
+\begin{proof}
+Define $Ty(t)=\displaystyle\int_0^tA(s)y(s)+b(s)ds+y_0$, note that $\|Ty(t)-Tz(t)\|=\displaystyle\left\|\int_0^tA(s)(y(s)-z(s))ds\right\|\leq|t|\|A\|\|y-z\|$, then there exists $\delta>0$ such that $|t|\|A\|<1,\forall |t|\leq\delta$, here we use $\|\cdot\|$ to denote the supremum norm in $|t|\leq\delta$, by Banach fixed point theorem, we have a unique local solution
+\end{proof}
+
+\begin{example}
+$v'(t)=Av(t),v(0)=v_0$, $A\in M_n(\mathbb C)$, the solution is $v(t)=e^{tA}v_0$ since $\dfrac{d}{dt}A^{tA}=Ae^{tA}$
+\end{example}
+
+\begin{theorem}(\textbf{Picard-Lindel\"of theorem})\label{Picard-Lindelof theorem}
+Suppose $f(y,t)$ is uniformly Lipschitz continuous in $y$ and continuous in $t$, then the ODE $$\begin{cases}
+y'(t)=f(y(t),t) \\
+y(0)=y_0
+\end{cases}$$Has a unique solution $y(t)$ on $[-\varepsilon,\varepsilon]$
+\end{theorem}
+
+\begin{remark}
+$f(y,t)$ is Lipschitz continuous in $y$ and continuous in $t$ would implie loacl uniformly Lipschitz in $y$ and $f$ uniformly continuous \par
+When you have a local solution, you can try to extend it to a maximal length, i.e. $y(t)$ is defined on $(a,b)\supset[-\varepsilon,\varepsilon]$, it is open precisely because of the theorem
+\end{remark}
+
+\begin{proof}
+Define $Ty(t)=\displaystyle\int_0^tf(y(s),s)ds$, then \\
+$\displaystyle\|Ty-Tz\|=\left\|\int_0^tf(y(s),s)-f(z(s),s)ds\right\|\leq\left\|C\int_0^t|y(s)-z(s)|ds\right\|\leq C|t|\|y-z\|$, then there exists $\varepsilon>0$ such that $C|t|<1$, $\forall t\in[-\varepsilon,\varepsilon]$, then by Banach fixed point theorem, we have a unique local solution
+\end{proof}
+
+\begin{theorem}(\textbf{Peano existence theorem})\label{Peano existence theorem}
+Let $f(y,t)$ be a continuous function around $(y_0,0)$, then the ODE $$\begin{cases}
+y'(t)=f(y(t),t) \\
+y(0)=y_0
+\end{cases}$$Has a local solution $y(t)$ on $[-\varepsilon,\varepsilon]$
+\end{theorem}
+
+\begin{proof}
+Say $|f|\leq M$ around $(y_0,0)$, 
+Define $\phi_n(t)=\begin{cases}
+y_0&, x\leq0 \\
+y_0+\displaystyle\int_0^t\phi_n\left(s-\frac{\varepsilon}{n}\right)ds&, 0\leq x\leq\varepsilon
+\end{cases}$ for $n\geq1$ \par
+By Arzel\`a-Ascoli theorem, we know that there is a subsequence $\phi_{n_k}$ converges on $[-\varepsilon,\varepsilon]$, and the limit $\phi(t)$ satisfies $\phi(t)=y_0+\displaystyle\int_0^t\phi_n\left(s\right)ds$ which is a local solution to the problem
+\end{proof}
+
+\begin{remark}
+The uniqueness may fail without the Lipschitz condition in $y$, for example, consider $\dfrac{dy}{dt}=y^{\frac{1}{3}}$, $y(0)=0$ has solutions $y(t)=0$ or $y(t)=\pm\left(\frac{2}{3}t\right)^{\frac{3}{2}}$
+\end{remark}
+
+\end{document}

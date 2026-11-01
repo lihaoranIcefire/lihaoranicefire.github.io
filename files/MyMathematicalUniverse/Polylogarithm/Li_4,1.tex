@@ -1,0 +1,159 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{align*}
+\Li_{n,1}(x,y)&=\int (dv_2dv_1+dv_{12}dw_1)(du_1)^{n-1} +dv_{12}\left(\sum_{k=1}^{n-1}du_{12}^kdv_2(du_1)^{n-1-k}\right)
+\end{align*}
+Here $w_{1}=u_1+v_2-v_1$
+
+To compute the monodromy around $x=0$, take $q(\epsilon)$ to be the loop $(x=\epsilon e^{it},y=\epsilon)$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=0
+\end{align*}
+To compute the monodromy around $y=0$, take $q(\epsilon)$ to be the loop $(x=\epsilon,y=\epsilon e^{it})$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=\int_qdv_2\int_pdv_1\cdots(du_1)^{n-1}=0
+\end{align*}
+To compute the monodromy around $x=1$, take $q(\epsilon)$ to be the composition of $(x=(1-t)\epsilon+t(1-\epsilon),y=\epsilon)$, $(x=1-\epsilon e^{it},y=\epsilon)$ and $(x=(1-t)(1-\epsilon)+t\epsilon,y=\epsilon)$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=0
+\end{align*}
+To compute the monodromy around $y=1$, take $q(\epsilon)$ to be the composition of $(x=\epsilon,y=(1-t)\epsilon+t(1-\epsilon))$, $(x=\epsilon,y=1-\epsilon e^{it})$ and $(x=\epsilon,y=(1-t)(1-\epsilon)+t\epsilon)$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{q(\epsilon)p(\epsilon)}-\int_{p(\epsilon)}&=\int_qdv_2\int_pdv_1(du_1)^{n-1}=-2\pi i\Li_n(x)
+\end{align*}
+To compute the monodromy around $xy=1$, take $q$ to be the loop $(x=x^0,y\text{ such that }\int_qd\log(1-xy)=2\pi i)$
+\begin{align*}
+\lim_{\epsilon\to0}\int_{pq}-\int_{p}&=\sum_{k=0}^{n-1}\int_pdv_{12}(du_{12})^k\int_q(du_{12})^{n-1-k}dv_2
++\int_qdv_{12}du_{12}^{n-1}dv_2 \\
+&=(-1)^{n+1}\int_{q^{-1}}dv_2du_{2}^{n-1}dv_{12} \\
+&=(-1)^{n+1}\int_{q^{-1}}\frac{\Li_n(y)-\Li_n(y^0)}{y-1/x^0} \\
+&=(-1)^n2\pi i(\Li_n(y^0)-\Li_n(1/x^0))
+\end{align*}
+
+The variation matrix is
+\[\omega=\begin{bmatrix}
+0&&&&&&&&&\\
+-dv_2&0&&&&&&&&\\
+-dv_{12}&&0&&&&&&&\\
+&-dv_1&-dw_1&0&&&&&&\\
+&&du_{12}&&0&&&&&\\
+&&&du_1&-dv_2&0&&&&\\
+&&&&du_{12}&&0&&&\\
+&&&&&du_1&-dv_2&0&&\\
+&&&&&&du_{12}&&0&\\
+&&&&&&&du_1&-dv_2&0
+\end{bmatrix}\]
+\[\Lambda=\left[\begin{smallmatrix}
+1\\
+\Li_1(y)&1\\
+\Li_1(xy)&&1\\
+\Li_{1,1}(x,y)&\Li_1(x)&\Li_1(y)-\Li_1(x^{-1})&1\\
+\Li_2(xy)&&\log(xy)&&1\\
+\Li_{2,1}(x,y)&\Li_2(x)&\log(xy)\Li_1(y)-\Li_2(y)+\Li_2(x^{-1})&\log x&\Li_1(y)&1\\
+\Li_3(xy)&&\log^2(xy)/2&&\log(xy)&&1\\
+\Li_{3,1}(x,y)&\Li_3(x)&\frac{1}{2}\log^2(xy)\Li_1(y)-\log(xy)\Li_2(y)+\Li_3(y)-\Li_3(x^{-1})&\log^2x/2&\log(xy)\Li_1(y)-\Li_2(y)&\log x&\Li_1(y)&1\\
+\Li_4(xy)&&\log^3(xy)/3!&&\log^2(xy)/2&&\log(xy)&&1\\
+\Li_{4,1}(x,y)&\Li_4(x)&\frac{1}{3!}\log^3(xy)\Li_1(y)-\frac{1}{2}\log^2(xy)\Li_2(y)+\log(xy)\Li_3(y)-\Li_4(y)+\Li_4(x^{-1})&\log^3x/3!&\frac{1}{2}\log^2(xy)\Li_1(y)-\log(xy)\Li_2(y)+\Li_3(y)&\log^2x/2&\log(xy)\Li_1(y)-\Li_2(y)&\log x&\Li_1(y)&1
+\end{smallmatrix}\right]\tau_{1,1}(2\pi i)\]
+The monodromy representation $\rho$ is as follows \\
+For monodromy around $x=0$
+\[\begin{bmatrix}
+1&&&&&&&&&\\
+&1&&&&&&&&\\
+&&1&&&&&&&\\
+&&-1&1&&&&&&\\
+&&1&&1&&&&&\\
+&&&1&&1&&&&\\
+&&\frac{1}{2}&&1&&1&&&\\
+&&&\frac{1}{2}&&1&&1&&\\
+&&\frac{1}{3!}&&\frac{1}{2}&&1&&1&\\
+&&&\frac{1}{3!}&&\frac{1}{2}&&1&&1
+\end{bmatrix}\]
+For monodromy around $y=0$
+\[\begin{bmatrix}
+1&&&&&&&&&\\
+&1&&&&&&&&\\
+&&1&&&&&&&\\
+&&&1&&&&&&\\
+&&1&&1&&&&&\\
+&&&&&1&&&&\\
+&&\frac{1}{2}&&1&&1&&&\\
+&&&&&&&1&&\\
+&&\frac{1}{3!}&&\frac{1}{2}&&1&&1&\\
+&&&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $x=1$
+\[\begin{bmatrix}
+1&&&&&&&&&\\
+&1&&&&&&&&\\
+&&1&&&&&&&\\
+&-1&1&1&&&&&&\\
+&&&&1&&&&&\\
+&&&&&1&&&&\\
+&&&&&&1&&&\\
+&&&&&&&1&&\\
+&&&&&&&&1&\\
+&&&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $y=1$
+\[\begin{bmatrix}
+1&&&&&&&&&\\
+-1&1&&&&&&&&\\
+&&1&&&&&&&\\
+&&-1&1&&&&&&\\
+&&&&1&&&&&\\
+&&&&-1&1&&&&\\
+&&&&&&1&&&\\
+&&&&&&-1&1&&\\
+&&&&&&&&1&\\
+&&&&&&&&-1&1
+\end{bmatrix}\]
+For monodromy around $xy=1$
+\[\begin{bmatrix}
+1&&&&&&&&&\\
+&1&&&&&&&&\\
+-1&&1&&&&&&&\\
+&&&1&&&&&&\\
+&&&&1&&&&&\\
+&&&&&1&&&&\\
+&&&&&&1&&&\\
+&&&&&&&1&&\\
+&&&&&&&&1&\\
+&&&&&&&&&1
+\end{bmatrix}\]
+
+$d\omega_{4,1}(x,y)+\omega_{2}(y)\wedge\omega_{3}(xy)+\omega_{2}(xy)\wedge\omega_3(y)=0$, we have $d\bm{\omega}-\bm{\omega}\wedge\bm{\omega}=0$ for
+\[\bm{\omega}=\begin{bmatrix}
+0\\
+\omega_{2}(xy)&0\\
+\omega_{3}(xy)&0&0\\
+\omega_{4,1}(x,y)&\omega_3(y)&-\omega_2(y)&0
+\end{bmatrix}\]
+
+And the variation matrix should be
+\[
+\begin{bmatrix}
+1\\
+\widehat{\mathcal L}_{2}(xy)&1\\
+\widehat{\mathcal L}_{3}(xy)&0&1\\
+\widehat{\mathcal L}_{4,1}(x,y)&\widehat{\mathcal L}_3(y)&-\widehat{\mathcal L}_2(y)&1\\
+\end{bmatrix}
+\]
+
+Here
+\[\widehat{\mathcal L}_{2}(x)=\Li_{2}(x)+\frac{1}{2}v_1u_1\]
+\[\widehat{\mathcal L}_{3}(x)=\Li_{3}(x)-\Li_2(x)u_1-\frac{1}{3}u_1^2v_1\]
+\begin{align*}
+\widehat{\mathcal L}_{4,1}(x,y)&=\Li_{4,1}(x,y)+\Li_4(xy)v_2-\Li_{3,1}(x,y)u_1+\frac{1}{2}Li_{2,1}(x,y)u_1^2-\frac{1}{6}u_1^3\Li_{1,1}(x,y) \\
+&-u_1v_2\Li_3(xy)-\frac{1}{2}u_2v_2\Li_3(xy)+\left(\frac{1}{2} u_1^2 v_2 + \frac{1}{6} u_2^2 v_2 + \frac{1}{2} u_1 u_2 v_2\right)\Li_{2}(xy) \\
+&+\frac{1}{30} u_1^4 v_{12} - \frac{1}{30} u_1^3 v_1 v_{12} + \frac{2}{15} u_1^3 v_2 v_{12} + 
+  \frac{1}{30} u_2^3 v_{12} v_2 + \frac{1}{30} u_1^3 v_1 v_2 + \frac{1}{5} u_1^2 u_2 v_2 v_{12} + 
+  \frac{2}{15} u_1 u_2^2 v_2 v_{12}
+\end{align*}
+
+The unipotent monodromy representation would be
+
+
+\end{document}

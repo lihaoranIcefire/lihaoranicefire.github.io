@@ -1,0 +1,255 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+A \textbf{polydisc}\index{Polydisc} $D(z,r)\subseteq\mathbb C^n$ is $D(z_1,r_1)\times\cdots\times D(z_n,r_n)$
+\end{definition}
+
+\begin{definition}[Wirtinger derivatives]
+\[\frac{\partial}{\partial z}=\frac{1}{2}\left(\dfrac{\partial }{\partial x}-i\dfrac{\partial }{\partial y}\right), \frac{\partial}{\partial \bar z}=\frac{1}{2}\left(\dfrac{\partial }{\partial x}+i\dfrac{\partial }{\partial y}\right)\]
+\end{definition}
+
+\begin{note}
+\[\dfrac{\partial}{\partial z}=\dfrac{\partial}{\partial x}\dfrac{\partial x}{\partial z}+\dfrac{\partial}{\partial y}\dfrac{\partial y}{\partial z}, \dfrac{\partial}{\partial \bar z}=\dfrac{\partial}{\partial x}\dfrac{\partial x}{\partial \bar z}+\dfrac{\partial}{\partial y}\dfrac{\partial y}{\partial \bar z}\]
+\[dz\wedge d\bar z=-2idx\wedge dy\]
+\end{note}
+
+\begin{definition}
+$f:\Omega\to\mathbb C$ is \textbf{holomorphic}\index{Holomorphic} at $z_0\in\Omega$ if $f'(z)$ exists around $z_0$. $f$ is \textbf{univalent}\index{Univalent} if $f$ is injective
+\end{definition}
+
+\begin{theorem}[Cauchy-Riemann equations]
+If we write $z=x+iy$, $f(z)=u(x,y)+iv(x,y)$, then the existence of $f'(z)$ implies that $\dfrac{\partial f}{\partial x}=\dfrac{1}{i}\dfrac{\partial f}{\partial y}$ which give the \textbf{Cauchy-Riemann equations}\index{Cauchy-Riemann equations}
+\[\begin{cases}
+\dfrac{\partial u}{\partial x}=\dfrac{\partial v}{\partial y} \\
+\dfrac{\partial v}{\partial x}=-\dfrac{\partial u}{\partial y}
+\end{cases}\]
+If $f$ satisfies Cauchy-Riemann equations around $z_0$, then $f$ is holomorphic at $z_0$
+\end{theorem}
+
+\begin{lemma}
+A univalent map is a biholomorphism to its image
+\end{lemma}
+
+\begin{theorem}[Goursat]
+If $f$ is holomorphic on $\Omega\subseteq\mathbb C$, $\overline T\subseteq\Omega$ is a triangle, then $\displaystyle\oint_T f(z)dz=0$
+\end{theorem}
+
+\begin{theorem}[Cauchy's integral theorem]
+If $f$ is holomorphic on $\Omega\subseteq\mathbb C$, $\gamma\subseteq\Omega$ is a piecewise $C^1$ curve, then $\displaystyle\oint_\gamma f(z)dz=0$
+\end{theorem}
+
+\begin{theorem}[Morera's theorem]
+$U\subseteq\mathbb C$ is open, if $\displaystyle\oint_Tf(z)dz=0$ for any triangle $T\subseteq U$, then $f$ is holomorphic on $D$
+\end{theorem}
+
+\begin{theorem}[Cauchy-Pompeiu formula]\label{Cauchy-Pompeiu formula}
+$f$ is a complex valued $C^1$ function on a disc $D\subseteq \mathbb C$, then
+\[f(\zeta)=\frac{1}{2\pi i}\int_{\partial D}\frac{f(z)dz}{z-\zeta}-\frac{1}{\pi}\iint_{D}\frac{\partial f(z)}{\partial\bar z}\frac{dx\wedge dy}{z-\zeta}\]
+In particular, if $f$ is holomorphic, then
+\[f(\zeta)=\frac{1}{2\pi i}\int_{\partial D}\frac{f(z)}{z-\zeta}dz\]
+\end{theorem}
+
+\begin{proof}
+Denote $D_\epsilon=D-B(0,\epsilon)$, consider 
+\[\eta=\dfrac{f(w)dw}{w-z}, d\eta=\frac{\partial f(w)}{\partial\bar w}\frac{d\bar w\wedge dw}{w-z}\]
+By Stokes' theorem
+\[\dfrac{1}{2\pi i}\int_{\partial D_\epsilon}\eta=\dfrac{1}{2\pi i}\int_{D_\epsilon}d\eta\]
+As $\epsilon\searrow 0$
+\[f(\zeta)=\frac{1}{2\pi i}\int_{\partial D}\frac{f(w)dw}{w-z}+\frac{1}{2\pi i}\iint_{D}\frac{\partial f(w)}{\partial\bar w}\frac{dw\wedge d\bar w}{w-z}\]
+\end{proof}
+
+\begin{lemma}[Osgood's lemma]\label{Osgood's lemma}
+$f$ is continuous on an open subset $\Omega\subseteq\mathbb C^n$ and holomorphic on each variable, then $f$ is holomorphic
+\end{lemma}
+
+\begin{proof}
+For each $a\in\Omega$, pick $P=D(a,r)\subseteq\Omega$, since $\dfrac{\partial f}{\partial \bar z_j}\equiv0$ on $\Omega$, fix $z_2,\cdots, z_n$, then
+\[f(w_1,z_2,\cdots,z_n)=\frac{1}{2\pi i}\int_{|z_1-a_1|=r_1}\frac{f(z_1,\cdots,z_n)}{z_1-w_1}dz_1\]
+For $w_1\in D(a_1,r_1)$, iterate and we get
+\[f(w_1,\cdots,w_n)=\frac{1}{(2\pi i)^n}\int_{|z_1-a_1|=r_1}\cdots\int_{|z_n-a_n|=r_n}\frac{f(z_1,\cdots,z_n)}{\prod(z_j-w_j)}dz_1\cdots dz_n\]
+For $w\in P$. Since $f$ is continuous, it is bounded on $\overline P$, $\displaystyle\dfrac{1}{z_j-w_j}=\sum_{m=0}^\infty\frac{(w_j-a_j)^m}{(z_j-a_j)^{m+1}}$ converges uniformly on compact subsets of $D(a_j,r_j)$. Hence $f(w)=\sum c_\alpha(w-a)^\alpha$, where
+\[c_\alpha=\frac{1}{(2\pi i)^n}\int_{|z_1-a_1|=r_1}\cdots\int_{|z_n-a_n|=r_n}\frac{f(z)}{\prod(z_j-a_j)^{\alpha_j+1}}dz_1\cdots dz_n\]
+\end{proof}
+
+\begin{corollary}[Cauchy inequality]
+
+\end{corollary}
+
+\begin{theorem}[Maximum principle]\label{Maximum principle}
+
+\end{theorem}
+
+\begin{theorem}
+$\{f_n\}$ are holomorphic on $\Omega\subseteq\mathbb C^n$, $f_n$ are uniformly convergent on each compact subset, then $f_n$ converges to a holomorphic function $f$, and $D^\alpha f_n\to D^\alpha f$ on each compact subset
+\end{theorem}
+
+\begin{theorem}[Montel's theorem]\index{Montel's theorem}\label{Montel's theorem}
+$\mathcal F=\{f_n\}$ are holomorphic on $\Omega\subseteq\mathbb C^n$ and locally uniformly bounded, i.e. for any $z_0\in\Omega$, there exists a neighborhood $U$ and $M$ such that $\displaystyle\sup_{z\in K}|f_n|\leq M$, then $\mathcal F$ is normal
+\end{theorem}
+
+\begin{lemma}[Schwarz lemma]\index{Schwarz lemma}\label{Schwarz lemma}
+$f$ is holomorphic on the unit disc $D\subseteq\mathbb C$, $f(0)=0$ and $|f|\leq1$ on $D$, then $|f(z)|\leq|z|$ and $|f'(0)|\leq1$, if $|f(z)|=|z|$ for some nonzero $z$ or $|f'(0)|=1$, then $f(z)=az$, $a=f'(0)$
+\end{lemma}
+
+\begin{proof}
+Define $g(z)=\dfrac{f(z)}{z}$, since $f(0)=0$, $0$ is a removable singularity, since $|f(z)|\leq1$, $|g(z)|\leq1$ on $\partial D$, by maximum principle \ref{Maximum principle}, $|g(z)|\leq1$ on $D$, thus $|f(z)|\leq|z|$ on $D$ and $|f'(0)|=|g(0)|\leq1$, if $|f(z)|=|z|$ for some nonzero $z$ or $|f'(0)|=1$, then $g$ attains maximum within $D$, then $g\equiv a$ for some $|a|=1$, thus $f(z)=az$
+\end{proof}
+
+\begin{corollary}
+$D\xrightarrow fD$ is a biholomorphic, then $f=e^{i\phi}\dfrac{z-a}{1-\bar az}$ for some $\phi$ and $a\in D$
+\end{corollary}
+
+\begin{proof}
+Denote $\psi_a(z)=\dfrac{z-a}{1-\bar az}$, $\psi_{-a}$ is the inverse of $\psi_a$ \par
+Assume $f(a)=0$, consider $g(z)=f\circ\psi_{-a}$, then $g(0)=0$, by Schwarz lemma \ref{Schwarz lemma}, $g=e^{i\phi}$, $f=g\circ\phi_a=e^{i\psi}\dfrac{z-a}{1-\bar az}$
+\end{proof}
+
+\begin{lemma}\label{Lemma for Riemann mapping theorem}
+Suppose $0\in U\subsetneqq D$ is a simply connected open set, there exists $U\xrightarrow fD$ univalent such that $f(0)=0$, $|f'(0)|>1$. Note that this is impossible if $U=D$ due to Schwarz lemma \ref{Schwarz lemma}
+\end{lemma}
+
+\begin{proof}
+Denote $\psi_a(z)=\dfrac{z-a}{1-\bar az}$, $\psi_a'(z)=\dfrac{1-|a|^2}{(1-\bar az)^2}$. Consider $f=\psi_{g(a)}\circ g\circ\psi_{-a}$ with some $\psi_{-a}(U)\xrightarrow gD$ univalent, then $f(0)=0$
+\[f'(0)=\frac{1-|g(a)|^2}{(1-|g(a)|^2)^2}g'(a)(1-|a|^2)=\frac{1-|a|^2}{1-|g(a)|^2}g'(a)\]
+Since $U$ is simply connected, so is $\psi_{-a}(U)$ given $-a\in D\setminus U$, we can take $g(z)=\sqrt z$ to be one branch, since $|a|<1$, we get
+\[|f'(0)|=\frac{1-|a|^2}{1-|a|}\frac{1}{2\sqrt{|a|}}=\frac{1+|a|}{2\sqrt{|a|}}>1\]
+\end{proof}
+
+\begin{lemma}\label{Lemma for finding zeros}
+$\varphi$ is holomorphic on $D$, $f$ is meromorphic on $D$ and $f\neq0$ on $\partial D$, $a_1,\cdots,a_m$ and $b_1,\cdots,b_n$ are the zeros and poles of order $k_1,\cdots,k_m$ and $l_1,\cdots,l_n$ of $f$ in $D$, then
+\[\displaystyle\frac{1}{2\pi i}\int_{\partial D}\varphi(z)\frac{f'(z)}{f(z)}dz=\sum_{i=1}^mk_i\varphi(a_i)-\sum_{i=1}^nl_i\varphi(b_i)\]
+\end{lemma}
+
+\begin{proof}
+$\displaystyle f(z)=g(z)\prod_{i=1}^m(z-z_i)^{q_i}$ with $g\neq0$ on $\overline D$, $z_i,q_i$ could be $a_i,k_i$ or $b_i,-l_i$ depending on whether it is a zero or a pole, hence
+\begin{align*}
+\frac{1}{2\pi i}\int_{\partial D}\varphi(z)\frac{f'(z)}{f(z)}dz&=\frac{1}{2\pi i}\int_{\partial D}\varphi(z)\frac{g'(z)\prod_{i=1}^m(z-z_i)+g(z)\sum_{i=1}^m\prod_{j\neq i}(z-z_j)}{g(z)\prod_{i=1}^m(z-z_i)}dz \\
+&=\frac{1}{2\pi i}\int_{\partial D}\left[\frac{\varphi(z)g'(z)}{g(z)}+\sum_{i=1}^m\frac{\varphi(z)}{z-z_i}\right]dz \\
+&=\sum_{i=1}^mk_i\varphi(a_i)-\sum_{i=1}^nl_i\varphi(b_i)
+\end{align*}
+\end{proof}
+
+\begin{theorem}[Rouch\'e's theorem]\label{Rouche's theorem}\index{Rouche's theorem}
+
+\end{theorem}
+
+\begin{theorem}[Hurwitz's theorem]\label{Hurwitz's theorem}\index{Hurwitz's theorem}
+$U\subseteq\mathbb C$ is open connected, holomorphic functions $\{f_n\}$ converges uniformly to $f$ on compact subsets of $U$ and $f\not\equiv0$, $f$ has order $m$ at $z_0$, for $r$ small enough, there exists $K$ such that for any $k\geq K$, $f_k$ has precisely $m$ zeros in $B(z_0,r)$, counting multiplicities, and these zeros converge to $z_0$ as $k\to\infty$
+\end{theorem}
+
+\begin{remark}
+$B(z_0,r)$ can't be arbitrarily large. For example, $f_n(z)=z-1+\dfrac{1}{n}$ converges uniformly to $f(z)=z-1$ on compact subsets, $f$ has no zeros in the unit disc $D$, but $f_n$ all have zeros in $D$
+\end{remark}
+
+\begin{proof}
+For $r$ small enough, $f$ doesn't vanish on $\partial B(z_0,r)$ on which $|f|$ attains minimum, then apply Rouch\'e's theorem \ref{Rouche's theorem}
+\end{proof}
+
+\begin{corollary}
+$U$ is open connected, univalent maps $\{f_n\}$ converges to $f$ on compact subsets, then $f$ is either univalent or constant
+\end{corollary}
+
+\begin{proof}
+If $f$ is not a constant and $f(z_0)=f(w_0)=\zeta$, then $f(z)-\xi$ has $z_0,w_0$ as zeros, by Hurwitz's theorem \ref{Hurwitz's theorem}, there exist $\{z_k\},\{w_k\}$ converging to $z_0,w_0$ such that $f_{n_k}(z_k)=f_{n_k}(w_k)=\xi$, but $f_n$'s are univalent, hence $z_k=w_k\Rightarrow z_0=w_0$, i.e. $f$ is univalent
+\end{proof}
+
+\begin{theorem}[Riemann mapping theorem]\index{Riemann mapping theorem}\label{Riemann mapping theorem}
+$U\subsetneqq\mathbb C$ is a nonempty simply connected open subset, $z_0\in U$,then there is a unique biholomorphism $f$ from $U$ to the unit disc such that $f(z_0)=0$, $f'(z_0)>0$
+\end{theorem}
+
+\begin{proof}[Proof of uniqueness]
+Suppose $U\xrightarrow{f_1,f_2} D$ are biholomorphisms such that $f_i(z_0)=0$, $f_i'(z_0)>0$, consider $g=f_2f_1^{-1}$, $g(0)=0$, $|g|\leq1$ on $D$ and $g'(0)=\dfrac{f_2'(z_0)}{f_1'(z_0)}>0$, by Schwarz lemma \ref{Schwarz lemma}, $g(z)=z$, i.e. $f_1=f_2$
+\end{proof}
+
+\begin{proof}[Proof of existence]
+Fix $a\notin U$, $z_0\in U$. Define
+\[\mathcal F=\left\{f\text{ univalent on }U\middle||f|\leq1,f(z_0)=0\right\}\]
+Since $U$ is simply connected, we can pick one branch $h(z)=\sqrt{z-a}$, then $h(U)\cap-h(U)=\varnothing$,  $\dfrac{h(z)-h(z_0)}{h(z)+h(z_0)}$ is univalent and bounded, scale to get some $f_0\in\mathcal F$ $\Rightarrow$ $\mathcal F$ is nonempty \par
+Let $\displaystyle A=\sup_{f\in\mathcal F}|f'(z_0)|>0$, $f'_n(z_0)\to A$ for some $\{f_n\}\subseteq\mathcal F$, by Montel's theorem \ref{Montel's theorem}, $f_{n_k}$ converges to $g$ uniformly on compact subsets, then $|g|\leq1$, $g(z_0)=0$ and $0<A=|g'(z_0)|<\infty$, according to Hurwitz's theorem \ref{Hurwitz's theorem}, $g$ is also univalent, i.e. $g\in\mathcal F$ attains maximal derivative at $z_0$ \par
+Suppose $0\in g(U)\subsetneqq D$, if not, by Lemma \ref{Lemma for Riemann mapping theorem}, there exists univalent map $g(U)\xrightarrow fD$ such that $f(0)=0$, $|f'(0)|>1$, then $f\circ g\in\mathcal F$, but $|(f\circ g)'(z_0)|=|f'(0)g'(z_0)|>|g'(z_0)|$ which is a contradiction
+\end{proof}
+
+\begin{remark}
+Suppose $f_1,f_2\in\mathcal F$ and $f_1$ is biholomorphic, then $g=f_2f^{-1}_1$ is a map $D\to D$, with $g(0)=0$, according to Schwarz lemma \ref{Schwarz lemma}, $\dfrac{|f'_2(z_0)|}{|f'_1(z_0)|}=|g'(0)|\leq1$, and if $|f_2'(z)|=|f'_1(z)|$, $g=e^{i\phi}$, $f_2$ is also biholomorphic
+\end{remark}
+
+\begin{example}
+$U=\mathbb C-\{z\geq0\}$, then $h(z)=\sqrt z$ maps $U$ to the upper half plane
+\end{example}
+
+\begin{theorem}[Runge's theorem]
+$K\subseteq \mathbb C$ is compact, then $\mathbb C\setminus K$ is the union of its connected components whereas the components are either bounded or not, denote
+\end{theorem}
+
+\begin{theorem}[Hartogs's extension theorem]\label{Hartogs's extension theorem}
+An isolated singularity is always a removable singularity when $n\geq2$
+\end{theorem}
+
+\begin{proof}
+It suffices to consider the case $P=\{|z_1|\leq1,|z_2|\leq1\}$ is a polydisc, $f$ is holomorphic on $\partial P$, then $f$ is holomorphic on $P$
+\end{proof}
+
+\begin{lemma}\label{Lemma for Remmert-Stein theorem}
+$\Omega\subseteq\mathbb C^n$ is connected, $\Omega\xrightarrow f\partial B^n$ is holomorphic, then $f\equiv\mathrm{const}$
+\end{lemma}
+
+\begin{proof}
+If $h$ is holomorphic, then $\dfrac{\partial^2}{\partial z\partial\bar z}|h|^2=|h'|^2$, hence
+\[0=\dfrac{\partial^2}{\partial z\partial\bar z}|f|^2=\sum_{i=1}^n\dfrac{\partial^2}{\partial z\partial\bar z}|f_i|^2=\sum_{i=1}^n|f_i'(z)|^2\Rightarrow f_i'(z)=0\Rightarrow f\equiv\mathrm{const}\]
+\end{proof}
+
+\begin{theorem}[Remmert-Stein]
+$U_1\subseteq \mathbb C^{n_1},U_2\subseteq \mathbb C^{n_2}$ are nonempty connected open subsets, $B=\{|z|<1\}\subseteq \mathbb C^n$, then there is no proper holomorphic map $U_1\times U_2\to B$
+\end{theorem}
+
+\begin{proof}
+Suppose $f:U_1\times U_2\to B$ is a proper holomorphic map. For any $(x,y)\in U_1\times\partial U_2$, there is a discrete sequence $\{y_\nu\}\subseteq U_2$ converging to $y$ as in Exercise \ref{U<R^n open, boundary point is the limit of some discrete sequence}, apply Lemma \ref{X,Y locally compact Hausdorff, f:X->Y proper, f send discrete sets to discrete sets} to $f(x,y):\{x\}\times U_2\to B$, $\{f(x,y_\nu)\}$ is discrete, thus there exists a subsequence $\{y_\mu\}\subseteq\{y_\nu\}$ such that $f(x,y_\mu)$ such that $f(x,y)=\lim f(x,y_\mu)\in\partial B$. Then $f(x,y):U_1\times\{y\}\to\partial B$ is a holomorphic, by Lemma \ref{Lemma for Remmert-Stein theorem}, $f(x,y)$ is constant on $U_1\times\{y\}$, hence $U_1\times\{y\}\subseteq f^{-1}(f(x,y))$ which is noncompact since it has noncompact image under projection to $U_1$. This contradicts the fact that $f$ is proper
+\end{proof}
+
+\begin{corollary}[Poincar\'e]
+The $2$ polydisc $P=\{|z_1|<1,|z_2|<1\}$ and the $2$ ball $B=\{|z_1|^2+|z_2|^2<1\}$ are not biholomorphic
+\end{corollary}
+
+\begin{theorem}[Weierstrass preparation theorem]
+$f$ is analytic near $0$, $f(0)=0$, $f(z)$ written as power series around $0$ has terms only involve $z_1$ which can always be achieved by a change of variables as in Exercise \ref{f analytic near 0, after change of variables, f has terms only involve one variable}, then $f=wh$, where $w(z)=z_1^k+g_{k-1}z^{k-1}+\cdots+g_0$ is a \textbf{Weierstrass polynomial}\index{Weierstrass polynomial}, i.e. $g_i(z)$ are analytic around $0$ and $g_i(0)=0$, $h(z)$ is analytic around $0$ and $h(0)\neq0$
+\end{theorem}
+
+\begin{theorem}[Weierstrass division theorem]
+Suppose $f,g$ are analytic near $0$, $g$ is a Weierstrass polynomial of degree $k$, then there exist unique $h,r$ such that $f=gh+r$, where $r$ is a polynomial of degree less than $k$
+\end{theorem}
+
+\begin{definition}
+A conformal mapping is a map preserves angles and orientation
+\end{definition}
+
+\begin{note}
+Antiholomorphic map preserves angles but changes orientation
+\end{note}
+
+\begin{definition}
+\textbf{M\"obius transformations}\index{M\"obius transformation} are $f(z)=\dfrac{az+b}{cz+d}$, $\begin{vmatrix}
+a&b\\
+c&d
+\end{vmatrix}\neq0$, \textbf{M\"obius group} acts regularly on $\mathbb CP^1$ and preserves cross ratio $(z_0,z_1;z_2,z_3)=\dfrac{(z_2-z_0)(z_3-z_1)}{(z_3-z_0)(z_2-z_1)}$
+\end{definition}
+
+\begin{lemma}[Schwarz reflection principle]\label{Schwarz reflection principle}
+If $f$ is holomorphic on $\{\mathrm{Im}z>0\}$ and continuous on $\{\mathrm{Im}z\geq0\}$ with real values on $\mathrm{Im}z=0$, then it can be extended to $\mathbb C$ with $f(\bar z)=\overline{f(z)}$ for $\mathrm{z}<0$
+\end{lemma}
+
+\begin{definition}
+$\Lambda\subseteq \mathbb C$ is a lattice. \textit{Weierstrass sigma function}\index{Weierstrass sigma function} associated to lattice $\Lambda$ is
+\[\sigma(z)=z\prod_{\omega\in\Lambda^*}\left(1-\frac{z}{\omega}\right)e^{\frac{z}{\omega}+\frac{1}{2}(\frac{z}{\omega})^2}\]
+\textit{Weierstrass zeta function}\index{Weierstrass zeta function} is the logarithmic derivative of $\sigma$
+\[\zeta(z)=\frac{\sigma'(z)}{\sigma(z)}=\frac{1}{z}+\sum_{\omega\in\Lambda^*}\frac{1}{z-w}+\frac{1}{w}+\frac{z}{w^2}\]
+\textit{Weierstrass eta function}\index{Weierstrass eta function} is
+\[\eta(w)=\zeta(z+w)-\zeta(z), w\in\Lambda\]
+This is independent of choice of $z$ \par
+\textit{Weierstrass elliptic function}\index{Weierstrass elliptic function} is
+\[\wp(z)=-\zeta'(z)=\frac{1}{z^2}+\sum_{\omega\in\Lambda^*}\left(\frac{1}{(z+\omega)^2}-\frac{1}{\omega^2}\right)\]
+\[\wp'(z)=-\sum_{\omega\in\Lambda}\frac{2}{(z+\omega)^3}\]
+\end{definition}
+
+\end{document}

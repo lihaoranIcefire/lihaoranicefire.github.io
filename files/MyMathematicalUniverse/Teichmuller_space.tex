@@ -1,0 +1,97 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+Let $S_{g,b,n,m}$ be the surface with genus $g$, $b$ boundaries, $n$ punctures inside and $m$ punctures on the boundaries. Then
+\[\chi(S_{g,b,n,m})=(1+b)-(2g+2b+n+m)+1=2-2g-b-n-m\]
+
+\begin{definition}
+Suppose $\Aut(X)$ has a natural topology, the mapping class group is $\Aut(X)/\Aut_0(X)$, where $\Aut_0(X)$ is the path connected component of the identity, hence we have exact sequence
+\[0\to\Aut_0(X)\to\Aut(X)\to\MCG(X)\to0\]
+If $X$ is a space, then a path connecting $f,g\in\Aut(X)$ is an isotopy
+\end{definition}
+
+\begin{example}
+$\MCG(S^2)=\mathbb Z/2\mathbb Z$
+\end{example}
+
+\begin{definition}
+Let $S$ be a compact surface with finitely many holes, $X$ be a surface with a complete, finite area hyperbolic metric. A \textit{hyperbolic structure} on $S$ is a diffeomorphism $\phi:S\to X$, $\phi$ is called a \textit{marking}, $(X,\phi)$ is a marked hyperbolic surface. $(X,\phi)$, $(Y,\psi)$ are equivalent if there is an isometry $i:X\to Y$ such that $i\circ\phi$ and $\psi$ are homotopic
+\begin{center}
+\begin{tikzcd}[column sep=1.3em]
+                  & S \arrow[ld, "\phi"'] \arrow[rd, "\psi"] &   \\
+X \arrow[rr, "i"] &                                          & Y
+\end{tikzcd}
+\end{center}
+The Teichmuller space of $S$ is
+\[T(S)=\{(X,\phi)\}/\sim\]
+\end{definition}
+
+\begin{definition}[Change of marking]
+$f:S\to S$ is a homeomorphism
+\begin{center}
+\begin{tikzcd}[column sep=1.5em]
+                                          & S \arrow[ld, "\phi"'] \arrow[rd, "\psi"] \arrow["f", loop, distance=2em, in=55, out=125] &   \\
+X \arrow[rr, "\psi\circ f\circ\phi^{-1}"'] &                                                                                          & Y
+\end{tikzcd}
+\end{center}
+When $f=1_S$, $\psi\circ\phi^{-1}$ is the \textit{change of marking}
+The mapping class group left acts on $T(S)$ by $h\cdot(X,f)=(X,fh^{-1})$, then $T(S)$ mod the action is just $S$
+\end{definition}
+
+\begin{example}
+By Uniformization theorem \ref{Uniformization theorem}, $T(\mathbb S^2)$ is a point corresponds to the Riemann sphere, $T(\mathbb R^2)$ is two points corresponds the complex plane and the unit disc. $T(A)=[0,1)$, where $A$ is the open annulus, and $\lambda\in[0,1)$ corresponds to $\{\lambda<|z|<\lambda^{-1}\}$ according to Exercise \ref{Complex structures on an open annulus}
+\end{example}
+
+By Gauss-Bonnet theorem, it is necessary that a closed hyperbolic surface $X$ has area $\text{Area}(X)=-\int_XKdS=-2\pi\chi(X)$ since the Gaussian curvature $K$ is $-1$. Similarly, by Gauss-Bonnet theorem, it is reasonable to consider flat structures on the torus $T^2$, by modulo homothety, we may just assume it has unit area. Thus let's define $T(T^2)$ as the isotopy classes of unit-area flat structures on $T^2$, i.e. markings $T^2\to\mathbb T^2$. Similarly, $T(S^2)$ should be defined to be the unique induced metric on the unit sphere $\mathbb S^2$
+
+A marking on a lattice $\Lambda$ in $\mathbb R^2$ is an ordered pair of generators, two marked lattices are equivalent if they transitive under $\Isom(\mathbb R^2)$. Marked lattices in $\mathbb R^2$ are in bijection with the upper half plane $\mathbb H^2$ as follows: $\mathbb Z+\mathbb Z\tau\leftrightarrow\tau$. note that $\mathbb Z\lambda+\mathbb Z\mu\sim\mathbb Z+\mathbb Z\frac{\mu}{\lambda}$ by homothety, $\mathbb Z+\mathbb Z\tau\sim\mathbb Z+\mathbb Z\bar\tau$ by reflection
+
+\begin{proposition}
+$T(T^2)$ is in bijection $\mathbb H^2$, this induces a hyperbolic metric on $T(T^2)$ so that $T(T^2)\cong\mathbb H^2$
+\end{proposition}
+
+\begin{proof}
+It suffices to show that $T(T^2)$ is in bijection with equivalence classes of marked lattices in $\mathbb R^2$. $\mathbb R^2$ is the metric universal cover of $\mathbb T^2$ \\
+Given a marked lattice $\mathbb Z+\mathbb Z\tau$, $\tau\in\mathbb H^2$, using homothety, we get an equivalent lattice $\mathbb Z\lambda+\mathbb Z\mu$ with unit area, we can simply take the marking to be the map induced by the linear map $\mathbb R^2\to\mathbb R^2$, taking $\mathbb Z+\mathbb Z i$ to $\mathbb Z\lambda+\mathbb Z\mu$ \\
+For any marking $\phi:T^2\to\mathbb T^2$, we have the following diagram
+\begin{center}
+\begin{tikzcd}
+\mathbb R^2 \arrow[d, "\pi"'] \arrow[r, "\tilde\phi", dashed] & \mathbb R^2 \arrow[d, "\pi"] &  &  &                                                \\
+T^2 \arrow[r, "\phi"']                                        & \mathbb T^2                  &  &  &                                                \\
+\end{tikzcd}
+\end{center}
+Hence $\tilde\phi\in\Isom(\mathbb R^2)$, the image of the standard lattice gives us the desired marked lattice
+\end{proof}
+
+Since $\mathbb H^2$ is the universal cover of $X$, for any marking $\phi:S_g\to X$, we have
+\begin{center}
+\begin{tikzcd}
+\mathbb H^2 \arrow[d, "\pi"'] \arrow[r, "\tilde\phi", dashed] & \mathbb H^2 \arrow[d, "\pi"] \\
+S_g \arrow[r, "\phi"']                                        & X                           
+\end{tikzcd}
+\begin{tikzcd}
+\mathbb H^2 \arrow[d, "\pi"'] & \mathbb H^2 \arrow[d, "\pi"'] \arrow[r, "\tilde\phi", dashed] \arrow[l, "\tilde\psi"'] & \mathbb H^2 \arrow[d, "\pi"] \arrow[ll, "\tilde i", bend right=49] \\
+Y                             & S_g \arrow[r, "\phi"'] \arrow[l, "\psi"]                                               & X \arrow[ll, "i"', bend left=49]                                  
+\end{tikzcd}
+\end{center}
+$\tilde\phi\in\Isom(\mathbb H^2)\cong\PGL(2,\mathbb R)$
+
+\begin{proposition}
+Let $DF(\pi_1(S_g),\PSL(2,\mathbb R))$ be the subset of discrete and faithful representations in $\Hom(\pi_1(S_g),\PSL(2,\mathbb R))$, there is a natural bijection
+\[T(S_g)\leftrightarrow DF(\pi_1(S_g),\PSL(2,\mathbb R))/\PGL(2,\mathbb R)\]
+\end{proposition}
+
+\begin{proof}
+Consider map $T(S_g)\to\Hom(\pi_1(S_g),\Isom(\mathbb H^2))$ by $\pi_1(S_g)\xrightarrow{\phi_*}\pi_1(X)\xrightarrow\cong\Aut(\mathbb H^2/X)\hookrightarrow\Aut(\mathbb H^2)\cong\Isom(\mathbb H^2)$, if $(X,\phi)\sim(Y,\psi)$
+\end{proof}
+
+\begin{definition}
+Use the discrete topology on $T(S_g)$, and Lie group topology on $\PSL(2,\mathbb R)$, and then use compact-open topology on $\Hom(\pi_1(S_g),\PSL(2,\mathbb R))$ which can be embedded in $\PSL(2,\mathbb R)^{2g}$ (this is well defined regardless of the choice the generator), called the algebraic topology on $T(S_g)$
+\end{definition}
+
+\begin{proposition}
+Let $c$ be an isotopy class of simple closed curves, then the map $T(S_g)\to\mathbb R$, $\mathcal X\to\ell_{\mathcal X}(c)$ is continuous
+\end{proposition}
+
+\end{document}

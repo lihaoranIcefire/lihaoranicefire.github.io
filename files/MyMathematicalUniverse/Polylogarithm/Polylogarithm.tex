@@ -1,0 +1,64 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+The \textit{Polylogarithms}\index{Polylogarithm} are
+\[\displaystyle\Li_n(z)=\sum_{k=1}^\infty\dfrac{z^k}{k^n}\]
+Note that
+\[\Li_{n+1}(z)=\displaystyle\int_0^z\frac{\Li_n(t)}{t}dt,\quad\Li_1(z)=-\ln(1-z)\]
+Hence
+\[\Li_n(z)=\int_0^z\left(\frac{dt}{t}\right)^{n-1}\frac{dt}{1-t}=\int_0^1\left(\frac{dt}{t}\right)^{n-1}\frac{dt}{z^{-1}-t}\]
+\textit{Dilogarithm}\index{Dilogarithm} $\displaystyle\Li_2(z)=-\int_{0}^z\frac{\ln(1-u)}{u}du$ is the analytic continuation on $\mathbb C\setminus\{0,1\}$, avoiding the the cut $[1,\infty]$
+\end{definition}
+
+\begin{lemma}
+$\Li_k(z)$ satisfies differential equation
+\[\left[(1-z)\frac{d}{dz}\right]\left(z\frac{d}{dz}\right)^{k-1}y=1\]
+Other solutions are $\dfrac{\ln^jz}{j!}$, $1\leq j\leq k-1$
+\end{lemma}
+
+To compute the monodromy around $x=0$, take $q(\epsilon)$ to be the loop $x=\epsilon e^{it}$, we get $0$. \\
+To compute the monodromy around $x=1$, take $q(\epsilon)$ to be the composition of $x=(1-t)\epsilon+t(1-\epsilon)$, $x=1-\epsilon e^{it}$ and $x=(1-t)(1-\epsilon)+t\epsilon$, we get $-\dfrac{2\pi i}{(n-1)!}\log^{n-1} x$
+
+The variation matrix is
+\[\Lambda=\begin{bmatrix}
+1&\\
+\Li_1(x)&1&\\
+\Li_2(x)&\log x&1\\
+\vdots&\vdots&\ddots&\ddots\\
+\Li_{n-1}(x)&\frac{\log^{n-2}x}{(n-2)!}&\cdots&\log x&1& \\
+\Li_n(x)&\frac{\log^{n-1}x}{(n-1)!}&\cdots&\frac{\log^2x}{2!}&\log x&1
+\end{bmatrix}\tau_n(2\pi i)\]
+\[\omega=\begin{bmatrix}
+0\\
+-dv&0\\
+0&du&0\\
+\vdots&\vdots&\ddots&\ddots\\
+0&0&\cdots&du&0\\
+0&0&\cdots&0&du&0 \\
+\end{bmatrix}\]
+The monodromy representation $\rho$ is as follows \\
+For monodromy around $x=0$
+\[\begin{bmatrix}
+1 \\
+&1 \\
+&1&1\\
+&\vdots&\vdots&\ddots\\
+&\frac{1}{n!}&\frac{1}{(n-1)!}&\cdots&1
+\end{bmatrix}\]
+For monodromy around $x=1$
+\[\begin{bmatrix}
+1 \\
+-1&1 \\
+&&\ddots\\
+&&&1
+\end{bmatrix}\]
+
+$\widehat{\mathbb C}=\{(u,v)\in\mathbb C^2|e^u+e^v=1\}$, $u=\log x,v=\log(1-x)$
+
+$\widehat{\mathcal L}_1:\widehat{\mathbb C}\to\mathbb C/(2\pi i)\mathbb Z$ is just $\Li_1$
+
+$\widehat{\mathcal L}_2:\widehat{\mathbb C}\to\mathbb C/(2\pi i)^2\mathbb Z$ is $\Li_2(x)-\frac{1}{2}\log x\Li_1(x)$, $[M_1,M_0]\widehat{\mathcal L}_2=(2\pi i)^2$, $d\widehat{\mathcal L}_2=\frac{1}{2}(udv-vdu)$
+
+\end{document}

@@ -1,0 +1,26 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+$\mu$ is a finite measure on $X$ if $\mu(X)<\infty$
+\end{definition}
+
+\begin{definition}
+$\mu$ is inner regular if $\mu(A)=\displaystyle\sup_{K\subseteq A\text{ compact}}\mu(K)$. $\mu$ is outer regular if $\mu(A)=\displaystyle\inf_{U\supseteq A\text{ open}}\mu(U)$
+\end{definition}
+
+\begin{theorem}[Riesz–Markov–Kakutani representation theorem]
+$X$ is a locally compact Hausdorff space, for each linear functional $\phi:C_c(X)\to\mathbb R$, there exists a unique regular Borel measure $\mu$ such that
+\[\int_Xfd\mu=\phi(f)\]
+\end{theorem}
+
+\begin{note}
+The converse that a regular Borel measure defines a linear functional is obvious. $\phi$ is nonnegative iff $\mu$ is nonnegative. The norm of $\phi$ is the total variation of $\mu$
+\end{note}
+
+\begin{definition}
+Suppose $X_t$, $Y_t$ are random processes with $E(|Y_t|)<\infty$. $Y_t$ is called a \textit{martingale} with respect to $X_t$ if $E(Y_t|\{X_\tau,\tau\leq s\})=Y_\tau$
+\end{definition}
+
+\end{document}

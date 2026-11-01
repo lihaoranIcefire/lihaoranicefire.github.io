@@ -1,0 +1,202 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\tableofcontents
+\newpage
+
+\section{Laplace's equation}
+
+
+
+\section{Heat equation}
+
+
+\begin{definition}
+The fundamental solution to solution to \textbf{heat equation}\index{Heat equation} $u_t-\Delta u=0$ is
+\[E(x,t)=\begin{cases}
+\dfrac{1}{(4\pi t)^{\frac{n}{2}}}e^{-\frac{|x|^2}{4t}} &t>0 \\
+0&t\leq0
+\end{cases}\]
+\end{definition}
+
+\begin{theorem}
+$U\subseteq\mathbb R^n$ is open and bounded, $f\in C^1_c(U\times(0,T])$, then
+\[u(x,t)=\int_{\mathbb R^{n+1}}E(x-y,t-s)f(s,y)dsdy\]
+Satisfies
+\[\left(\frac{\partial}{\partial t}-\Delta\right)u(x,t)=f(x,t)\]
+Where $u$ is $C^1$ in $t$ and $C^2$ in $x$
+\end{theorem}
+
+\begin{proof}
+$E(x,t)$ is supported in $t\geq0$ and $\displaystyle\int_{\mathbb R^n}|\nabla_xE(x,t)|dx\leq\frac{C}{\sqrt{t}}$ if $t>0$, so $\nabla_xE(x,t)$ is integrable near $(0,0)$
+\begin{align*}
+\nabla_x\int_{\mathbb R^{n+1}}E(y,s)f(x-y,t-s)dsdy&=\int_{\mathbb R^{n+1}}E(y,s)\nabla_xf(x-y,t-s)dsdy \\
+&=\lim_{\varepsilon\to0}\int_\varepsilon^\infty\int_{\mathbb R^n}E(y,s)\nabla_xf(x-y,t-s)dsdy \\
+&=\lim_{\varepsilon\to0}\int_\varepsilon^\infty\int_{\mathbb R^n}(\nabla E)(y,s)f(x-y,t-s)dsdy \\
+&=\lim_{\varepsilon\to0}\int_{\mathbb R^{n+1}}(\nabla E)(y,s)f(x-y,t-s)dsdy
+\end{align*}
+And
+\begin{align*}
+\Delta\int_{\mathbb R^{n+1}}E(y,s)f(x-y,t-s)dsdy&=\int_{\mathbb R^{n+1}}(\nabla E)(y,s)\cdot(\nabla f)(x-y,t-s)dsdy \\
+&=\lim_{\varepsilon\to0}\int_\varepsilon^\infty(\nabla E)(y,s)\cdot(\nabla f)(x-y,t-s)dsdy
+\end{align*}
+And
+\begin{align*}
+\left(\frac{\partial}{\partial t}-\Delta\right)\int_{\mathbb R^{n+1}}E(y,s)f(x-y,t-s)dsdy&=-\lim_{\varepsilon\to0}\int_\varepsilon^\infty\int_{\mathbb R^{n}}(\nabla E)(y,s)\cdot(\nabla f)(x-y,t-s)dsdy \\
+&\quad+\lim_{\varepsilon\to0}\int_\varepsilon^\infty\int_{\mathbb R^{n}} E(y,s)\frac{\partial f}{\partial x}(x-y,t-s)dsdy \\
+&=\lim_{\varepsilon\to0}\int_\varepsilon^\infty\int_{\mathbb R^{n}}\left(\frac{\partial}{\partial s}-\Delta_y\right)E(y,s)f(x-y,t-s)dsdy \\
+&\quad+\lim_{\varepsilon\to0}\int_{\mathbb R^{n}}E(y,\varepsilon)f(x-y,t-\varepsilon)dsdy \\
+&=f(x,t)
+\end{align*}
+Next, let $u\in C^2\left(U\times (0,T]\right)$ and $u_t-\Delta u=0$, $\chi\in C^\infty$, $\chi(x,t)=1$ if $d((x,t),\Gamma_U)\geq2$, $\chi(x,t)=0$ if $d((x,t),\Gamma_U)\leq\varepsilon$ and $(x,t)\in U\times(0,T]$, apply the previous argument to $\displaystyle f(x,t)=\left(\frac{\partial}{\partial t}-\Delta\right)(\chi(x,t)u(x,t))=\left(\left(\frac{\partial}{\partial t}-\Delta\right)\chi(x,t)\right)u-2\nabla\chi\cdot\nabla u\in C_c^1(U\times(0,T])$, we get
+\[\left(\frac{\partial}{\partial t}-\Delta\right)\left(\chi(x,t)u(x,t)-\int_{-\infty}^t\int_{\mathbb R^n}E(x-y,t-s)f(y,s)\right)=0\]
+And
+\[u(x,t)\chi(x,t)-\int_{-\infty}^tE(x-y,t-s)f(y,s)dsdy=0\]
+if $t=0$, so if $0\leq t\leq T$
+\[\chi(x,t)u(x,t)=\int_{-\infty}^t\int_{\mathbb R^n}E(x-y,t-s)\left(\frac{\partial}{\partial t}-\Delta\right)(\chi(y,s)u(y,s))dsdy\]
+\end{proof}
+
+
+
+\section{Wave equation}
+
+\begin{definition}
+The fundamental solution to \textbf{wave equation}\index{Wave equation} $\Box u=\left(\dfrac{\partial^2}{\partial t^2}-\Delta\right)u=0$ is
+\[E(x,t)=\begin{cases}
+\frac{1}{2\pi^{\frac{n-1}{2}}}\chi_+^{\frac{1-n}{2}}(t^2-|x|^2) &t>0 \\
+0 &t<0
+\end{cases}\]
+\end{definition}
+
+\begin{theorem}
+$f\in C^2(\mathbb R^3)$, $\displaystyle u(x,t)=\frac{1}{4\pi t}\int_{\partial B(x,t)}f(y)dS_y=\frac{t}{4\pi}\int_{S^2}f(x+tw)dS_w$, then $u\in C^2\left(\mathbb R^3\times[0,\infty)\right)$, $u(x,0)=0$, $\displaystyle\left.\frac{\partial}{\partial t}\right|_{t=0}u(x,t)=f(x)$ and $\Box u=0$ for $t>0$
+\end{theorem}
+
+\begin{proof}
+\begin{align*}
+\frac{\partial}{\partial t}u(x,t)&=\frac{1}{4\pi}\int_{S^2}f(x+tw)dS_w+\frac{t}{4\pi}\int_{S^2}(w\cdot\nabla)f(x+tw)dS_w \\
+&=\frac{1}{4\pi}\int_{S^2}f(x+tw)dS_w+\frac{1}{4\pi t}\int_{\partial B(x,t)}n\cdot\nabla f(y)dS_y \\
+&=\frac{1}{4\pi}\int_{S^2}f(x+tw)dS_w+\frac{1}{4\pi t}\int_{B(x,t)}\Delta f(y)dy
+\end{align*}
+Thus
+\begin{align*}
+\frac{\partial^2}{\partial t^2}u(x,t)&=\frac{1}{4\pi}\int_{S^2}(w\cdot\nabla)f(x+tw)dS_w-\frac{1}{4\pi t^2}\int _{B(x,t)}\Delta f(y)dy \\
+&\quad+\frac{1}{4\pi t}\frac{d}{dt}\int_0^t\int_{S^2}\lambda^2\Delta f(x+\lambda w)dS_wd\lambda \\
+&=\frac{1}{4\pi t^2}\int_{B(x,t)}\Delta f(y)dy-\frac{1}{4\pi t^2}\int _{B(x,t)}\Delta f(y)dy \\
+&\quad+\frac{t}{4\pi }\int_{S^2}\Delta f(x+\lambda w)dS_w \\
+&=\frac{1}{4\pi t}\int_{\partial B(x,t)}\Delta f(y)dS_y \\
+&=\Delta u(x,t)
+\end{align*}
+\end{proof}
+
+\begin{theorem}
+$f\in C^2(\mathbb R^2)$, then $\displaystyle u(x,t)=\frac{1}{2\pi}\int_{|y|<t}\frac{1}{\sqrt{t^2-|y|^2}}f(x-y)dy$ solves $\Box u=0$ for $t>0$, $u(x,0)=0$, $u_t(x,0)=f$
+\end{theorem}
+
+\begin{proof}
+Consider $f:\mathbb R^3\to\mathbb R$, $f(x_1,x_2,x_3)=f(x_1,x_2)$ is independent of $x_3$, then $\displaystyle u(x,t)=\frac{1}{4\pi t}\int_{\partial B(x,t)}f(y)dy=\frac{1}{4\pi t}\int_{\partial B(0,t)}f(x-y)dS_y$
+\[y_3=\pm\sqrt{t^2-y_1^2-y_2^2}=\gamma(y), ds=\sqrt{1+|\nabla\gamma(y)|^2}dy_1dy_2=\frac{t}{t^2-y_1^2-y_2^2}, \text{upper + lower hemisphere}\]
+$\displaystyle=\frac{2}{4\pi t}\int_{|(y_1,y_2)|<t}f(x-y)\frac{tdy_1dy_2}{\sqrt{t^2-|(y_1,y_2)|^2}}=\frac{1}{2\pi}\int_{|y|<t}\frac{1}{\sqrt{t^2-|y|^2}}f(x-y)dy$
+\end{proof}
+
+\begin{theorem}
+$f\in C^\infty(\mathbb R^n\times[0,\infty))$, $\displaystyle u(x,t)=\int_0^tE(\cdot,t-s)*f(\cdot,s)ds$, then $\Box u=f$, $u(x,0)=u_t(x,0)=0$
+\end{theorem}
+
+\begin{proof}
+Define $u(x,t,s)=E(\cdot,t-s)*f(\cdot,s)\in C^\infty$ for $t>s$
+\begin{align*}
+\frac{\partial}{\partial t}u(x,t)&=u(x,t,t)+\int_0^t\frac{\partial}{\partial t}u(x,t,s)ds \\
+&=\int_0^t\frac{\partial}{\partial t}u(x,t,s)ds
+\end{align*}
+\begin{align*}
+\frac{\partial^2}{\partial t^2}u(x,t)&=\int_0^t\frac{\partial^2}{\partial t^2}u(x,t,s)dx+\left.\frac{\partial}{\partial t}\right|_{t=s}u(x,t,s) \\
+&=f(x,t)+\int_0^t\frac{\partial^2}{\partial t^2}u(x,t,s)dx
+\end{align*}
+Thus $\displaystyle\left(\frac{\partial^2}{\partial t^2}-\Delta\right)u(x,t)=f(x,t)+\int_0^t\left(\frac{\partial^2}{\partial t^2}-\Delta\right)u(x,t,s)dx$, the second term is zero for $s<t$ \par
+By the same argument, $\displaystyle\Box\int_{-\infty}^tE(\cdot,t-s)*f(\cdot,s)ds=f(\cdot,t)$, thus $\Delta E=\delta_{(x,t)}$ is the fundamental solution
+\end{proof}
+
+\begin{lemma}\label{1 dim wave equation reflection}
+The solution to $\Box u=0$ in $t>0,x>0$ with $u(0,t)$ for all $t>0$, $u(x,0)=0$, $u_t(x,0)=f(x)$, $f\in C^1([0,\infty))$, $f(0)=0$ is
+\[u(x,t)=\frac{1}{2}\int_{|t-x|}^{t+x}f(\lambda)d\lambda\]
+\end{lemma}
+
+\begin{proof}
+Define $\tilde f:\mathbb R\to\mathbb R$, $\tilde f(x)=\begin{cases}
+f(x)&x\geq0 \\
+-f(-x) &x<0
+\end{cases}$ which solves $\Box\tilde u=0$ for $t>0,x\in\mathbb R$, $\tilde u(x,0)=0$, $\tilde u_t(x,0)=\tilde f$, hence
+\[\tilde u(x,t)=\frac{1}{2}\int_{x-t}^{x+t}\tilde f(\lambda)d\lambda=\frac{1}{2}\int_{|x-t|}^{x+t}f(\lambda)d\lambda\]
+\end{proof}
+
+\begin{lemma}\label{Laplacian of a spherical symmetric function}
+$f(x)=f(|x|)$ is spherical symmetric in $\mathbb R^n$, then $\displaystyle(\Delta f)(x)=\left(\frac{\partial^2}{\partial r^2}+\frac{n-1}{r}\frac{\partial}{\partial r}\right)f$
+\end{lemma}
+
+\begin{proof}
+$\Delta u$ is characterized by
+\[\int_{\mathbb R^n}\nabla u\cdot\nabla vdx=-\int_{\mathbb R^n}v\Delta u, \forall v\in C^\infty_c(\mathbb R^n)\]
+If $u(x)=u(|x|)$, $v(x)=v(|x|)$
+\begin{align*}
+\int_{\mathbb R^n}\nabla u\cdot\nabla vdx&=\int_{S^{n-1}}\int_0^\infty\frac{\partial u}{\partial r}\frac{\partial v}{\partial r}drdS_w \\
+&=-\int_{S^{n-1}}\int_0^\infty\frac{1}{r^{n-1}}\frac{\partial}{\partial r}\left(r^{n-1}\frac{\partial u}{\partial r}\right)v(r)r^{n-1}drdS_w \\
+&=-\int_{\mathbb R^n}\frac{1}{r^{n-}}\frac{\partial}{\partial r}\left(r^{n-1}\frac{\partial u}{\partial r}\right)v(r)dx \\
+&=-\int_{\mathbb R^n}\left(\frac{n-1}{r}\frac{\partial }{\partial r}+\frac{\partial^2}{\partial r^2}\right)uv(r)dx
+\end{align*}
+Note that $\displaystyle\frac{1}{r^{n-1}}\frac{\partial}{\partial r}\left(r^{n-1}\frac{\partial u}{\partial r}\right)=\frac{n-1}{r}\frac{\partial u}{\partial r}+\frac{\partial^2u}{\partial r^2}$
+\end{proof}
+
+\begin{theorem}
+The solution to $\Box u=0$ in $\mathbb R^{3+1}$ with $u(x,0)=0$, $u_t(x,0)=f(x)=f(|x|)$, $f\in C^\infty(\mathbb R^3)$ is
+\[u(x,t)=\frac{1}{2|x|}\int_{t-|x|}^{t+|x|}\lambda f(\lambda)d\lambda\]
+\end{theorem}
+
+\begin{proof}
+By Lemma \ref{Laplacian of a spherical symmetric function}, when $n=3$, $\left(\dfrac{\partial^2}{\partial r^2}+\dfrac{2}{r}\dfrac{\partial}{\partial r}\right)u=\dfrac{1}{\partial r}\dfrac{\partial^2}{\partial r^2}(ru)$, thus if $\Box u=0$ in $\mathbb R^{3+1}$, $u(x,t)=u(|x|,t)$, then $\displaystyle\left(\frac{\partial^2}{\partial t^2}-\frac{\partial^2}{\partial r^2}\right)(ru(r,t))=0$ and $ru(r,t)=0$ if $r=0$, $\left.\dfrac{\partial}{\partial t}\right|_{t=0}(ru(r,t))=rf(r)$, by Lemma \ref{1 dim wave equation reflection}, $\displaystyle ru(r,t)=\frac{1}{2}\int_{|t-r|}^{t+r}\lambda f(\lambda)d\lambda$. We can check $u\in C^1$
+\end{proof}
+
+\begin{theorem}[Energy estimate version 1]
+$\Box u=0$ for $t>0$, then the energy $\displaystyle\frac{1}{2}\int_{\mathbb R^n}|u_t|^2+|\nabla u|^2dx$ is a constant
+\end{theorem}
+
+\begin{theorem}[Energy estimate version 2]
+$\Box u=0$ in $U_T=U\times(0,T]$, $u=0$ on $\Gamma_U$, $u_t(x,0)=0$, implicitly, $u_t=0$ on $\partial U\times[0,T]$, then $\displaystyle\frac{1}{2}\int_{\mathbb U}|u_t|^2+|\nabla u|^2dx$ is a constant
+\end{theorem}
+
+\begin{theorem}[Energy estimate version 3]
+$C=\left\{(x,t)\in\mathbb R^{n+1}\middle||x-x_0|\leq|t-t_0|\right\}$ is the cone, $D_t=\left\{x\in\mathbb R^n\middle||x-x_0|\leq|t-t_0|\right\}$ is the section at time $t$, considet the case $t<t_0$, then $\displaystyle\frac{1}{2}\int_{\mathbb D_t}|u_t|^2+|\nabla u|^2dx$ is decreasing on $0\leq t\leq t_0$
+\end{theorem}
+
+
+
+\section{Euler-Lagrange equation}
+
+
+
+
+
+\section{Energy momentum tensor}
+
+
+\begin{definition}
+$\nabla$ is the gradient, write $\nabla^T\nabla=\nabla\cdot\nabla=\Delta$ is the laplacian, $\nabla\cdot1=\mathrm{div}$ is the divergence, $\nabla\nabla^T=D^2$ is the Hessian
+\end{definition}
+
+\begin{definition}
+$L(z,q):\mathbb R\times \mathbb R^n\to\mathbb R$ is $C^\infty$, $u$ satisfies Euler-Langrange equation, then
+\begin{align*}
+\nabla_xL(u,\nabla u)&=\frac{\partial L}{\partial z}\nabla u+(\nabla\nabla^Tu)(\nabla_qL) \\
+&=(\nabla_x\cdot\nabla_qL)(\nabla u)+(\nabla\nabla^Tu)(\nabla_qL) \\
+&=(\nabla^Tu\nabla_qL)\nabla_x
+\end{align*}
+\textbf{Energy-momentum tensor}\index{Energy-momentum tensor} $T_{\alpha\beta}=\dfrac{\partial u}{\partial x^\alpha}\dfrac{\partial L}{\partial q_\beta}-\delta_{\alpha\beta}L$, $T=\nabla^Tu\nabla_qL-L1$, then $T\nabla_x=(\nabla^T\nabla_qL)\nabla_x-\nabla_xL=0$
+\end{definition}
+
+\begin{example}
+$u_{tt}-\Delta u+u^3=0$, $L(u,\nabla_{x,t} u)=\dfrac{1}{2}(u_t^2-|\nabla_xu|^2)-\dfrac{1}{4}u^4$, $T_{00}=u_t^2-\left[\dfrac{1}{2}(u_t^2-|\nabla u|^2)-\dfrac{1}{4}u^4\right]=\dfrac{1}{2}(u_t^2+|\nabla u|^2)+\dfrac{1}{4}u^4$, $T_{0i}=-u_t\dfrac{\partial u}{\partial x^i}$, thus $0=(T_{00},\cdots,T_{0n})\nabla_x=\mathrm{div}(T_{00},\cdots,T_{0n})$
+\end{example}
+
+
+\end{document}

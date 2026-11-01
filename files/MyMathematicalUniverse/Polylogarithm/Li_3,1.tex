@@ -1,0 +1,169 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{align*}
+\Li_{3,1}(x,y)&=\int\frac{dy}{1-y}\frac{dx}{1-x}\left(\frac{dx}{x}\right)^2+\frac{d(xy)}{1-xy}\left(\frac{dy}{1-y}-\frac{dx}{x(1-x)}\right)\left(\frac{dx}{x}\right)^2 \\
+&+\frac{d(xy)}{1-xy}\frac{d(xy)}{xy}\frac{dy}{1-y}\frac{dx}{x}+\frac{d(xy)}{1-xy}\left(\frac{d(xy)}{xy}\right)^2\frac{dy}{1-y} \\
+&=\int dv_2dv_1(du_1)^2+dv_{12}dw_1(du_1)^2 +dv_{12}du_{12}dv_2du_1+dv_{12}(du_{12})^2dv_2
+\end{align*}
+Here we write $w_{1}=u_1+v_2-v_1=\log\frac{x(1-y)}{1-x}$
+
+To compute the monodromy around $x=0$, take $q(\epsilon)$ to be the loop $(x=\epsilon e^{it},y=\epsilon)$, we get $0$. \\
+To compute the monodromy around $y=0$, take $q(\epsilon)$ to be the loop $(x=\epsilon,y=\epsilon e^{it})$, we get $0$. \\
+To compute the monodromy around $x=1$, take $q(\epsilon)$ to be the composition of $(x=(1-t)\epsilon+t(1-\epsilon),y=\epsilon)$, $(x=1-\epsilon e^{it},y=\epsilon)$ and $(x=(1-t)(1-\epsilon)+t\epsilon,y=\epsilon)$, we get $0$. \\
+To compute the monodromy around $y=1$, take $q(\epsilon)$ to be the composition of $(x=\epsilon,y=(1-t)\epsilon+t(1-\epsilon))$, $(x=\epsilon,y=1-\epsilon e^{it})$ and $(x=\epsilon,y=(1-t)(1-\epsilon)+t\epsilon)$, we get $-2\pi i\Li_3(x)$. \\
+To compute the monodromy around $xy=1$, take $q$ to be the loop $(x=x^0,y\text{ such that }\int_qd\log(1-xy)=2\pi i)$, we get $-2\pi i\Li_1(\frac{1-xy}{1-x})$
+
+The variation matrix is
+\[\Lambda=\left[\begin{smallmatrix}
+1\\
+\Li_1(y)&1\\
+\Li_1(xy)&&1\\
+\Li_{1,1}(x,y)&\Li_1(x)&\Li_1(y)-\Li_1(x^{-1})&1\\
+\Li_2(xy)&&\log(xy)&&1\\
+\Li_{2,1}(x,y)&\Li_2(x)&\log(xy)\Li_1(y)-\Li_2(y)+\Li_2(x^{-1})&\log x&\Li_1(y)&1\\
+\Li_3(xy)&&\log^2(xy)/2&&\log(xy)&&1\\
+\Li_{3,1}(x,y)&\Li_3(x)&\frac{1}{2}\log^2(xy)\Li_1(y)-\log(xy)\Li_2(y)+\Li_3(y)-\Li_3(x^{-1})&\log^2x/2&\log(xy)\Li_1(y)-\Li_2(y)&\log x&\Li_1(y)&1
+\end{smallmatrix}\right]\tau_{3,1}(2\pi i)\]
+\[\left[\begin{smallmatrix}
+1\\
+-I(0;y^{-1};1)&1\\
+-I(0;(xy)^{-1};1)&0&1\\
+I(0;(xy)^{-1},y^{-1};1)&-I(0;(xy)^{-1};y^{-1})&-I((xy)^{-1};y^{-1};1)&1\\
+-I(0;(xy)^{-1},0;1)&0&-I((xy)^{-1};0;y^{-1})&0&1\\
+I(0;(xy)^{-1},0,y^{-1};1)&-I(0;(xy)^{-1},0;y^{-1})&-I((xy)^{-1};0,y^{-1};1)&I((xy)^{-1};0;y^{-1})&-I(0;y^{-1};1)&1\\
+-I(0;(xy)^{-1},0,0;1)&0&I((xy)^{-1};0,0;1)&0&I((xy)^{-1};0;0)&0&1\\
+I(0;(xy)^{-1},0,0,y^{-1};1)&-I(0;(xy)^{-1},0,0;y^{-1})&-I((xy)^{-1};0,0,y^{-1};1)&I((xy)^{-1};0,0;y^{-1})&-I((xy)^{-1};0;0)I(0;y^{-1};1)-I(0;0,y^{-1};1)&I((xy)^{-1};0;0)+I(0;0;y^{-1})&-I(0;y^{-1};1)&1
+\end{smallmatrix}\right]\]
+\[\omega=\begin{bmatrix}
+0&&&&&&&\\
+-dv_2&0&&&&&&\\
+-dv_{12}&0&0&&&&&\\
+&-dv_1&-dw_1&0&&&&\\
+&&du_{12}&0&0&&&\\
+&&&du_1&-dv_2&0&&\\
+&&&&du_{12}&0&0&\\
+&&&&&du_1&-dv_2&0
+\end{bmatrix}\]
+The monodromy representation $\rho$ is as follows \\
+For monodromy around $x=0$
+\[\begin{bmatrix}
+1&&&&&&&\\
+&1&&&&&&\\
+&&1&&&&&\\
+&&-1&1&&&&\\
+&&1&&1&&&\\
+&&&1&&1&&\\
+&&\frac{1}{2}&&&&1&\\
+&&&&&1&&1
+\end{bmatrix}\]
+For monodromy around $y=0$
+\[\begin{bmatrix}
+1&&&&&&&\\
+&1&&&&&&\\
+&&1&&&&&\\
+&&&1&&&&\\
+&&&&1&&&\\
+&&&&&1&&\\
+&&&&&&1&\\
+&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $x=1$
+\[\begin{bmatrix}
+1&&&&&&&\\
+&1&&&&&&\\
+&&1&&&&&\\
+&&&1&&&&\\
+&&&&1&&&\\
+&&&&&1&&\\
+&&&&&&1&\\
+&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $y=1$
+\[\begin{bmatrix}
+1&&&&&&&\\
+&1&&&&&&\\
+&&1&&&&&\\
+&&&1&&&&\\
+&&&&1&&&\\
+&&&&&1&&\\
+&&&&&&1&\\
+&&&&&&&1
+\end{bmatrix}\]
+For monodromy around $xy=1$
+\[\begin{bmatrix}
+1&&&&&&&\\
+&1&&&&&&\\
+&&1&&&&&\\
+&&&1&&&&\\
+&&&&1&&&\\
+&&&&&1&&\\
+&&&&&&1&\\
+&&&&&&&1
+\end{bmatrix}\]
+
+$dw_{3,1}-w_2(y)\wedge w_2(xy)=0$. So $\xi=w_{3,1}-\frac{1}{2}(L_2(y)\wedge w_2(xy)-w_2(y)\wedge L_2(xy))$ should be closed. So we want $\widehat L_{3,1}$ such that $\widehat dL_{3,1}=\xi$
+
+$d\omega_{3,1}(x,y)+\omega_2(y)\wedge\omega_2(xy)=0$, we have $d\bm{\omega}-\bm{\omega}\wedge\bm{\omega}=0$ for
+\[\bm{\omega}=\begin{bmatrix}
+0\\
+\omega_2(xy)&0\\
+\omega_{3,1}(x,y)&-\omega_2(y)&0
+\end{bmatrix}\]
+
+And the variation matrix should be
+\[
+\begin{bmatrix}
+1\\
+\widehat{\mathcal L}_2(xy)&1\\
+\widehat{\mathcal L}_{3,1}(x,y)&-\widehat{\mathcal L}_2(y)&1\\
+\end{bmatrix}
+\]
+
+Here
+\[\widehat{\mathcal L}_2(x)=\Li_2(x)-\frac{1}{2}\Li_1(x)\log x\]
+\begin{align*}
+\widehat{\mathcal L}_{3,1}(x,y)&=\Li_{3,1}(x,y)+\Li_3(xy)v_2-\Li_{2,1}(x,y)u_1+\frac{1}{2}\Li_{1,1}(x,y)u_1^2-\frac{1}{2}\Li_2(xy)v_2(2u_1+v_1)\\
+&+\frac{1}{4}(-\frac{1}{2}v_1u_1^2v_2+\frac{1}{2}v_1u_1^2v_{12}-\frac{1}{2}u_1^3v_{12}-\frac{3}{2}u_1^2v_2v_{12}-\frac{3}{2}u_1v_2u_2v_{12}-\frac{1}{2}v_2u_2^2v_{12})
+\end{align*}
+
+The unipotent monodromy representation would be
+
+Monodromy along the commutator of $x=0,xy=1$
+\[
+\begin{bmatrix}
+1\\
+-1&1\\
+\frac{1}{2}&&1
+\end{bmatrix}
+\]
+
+Monodromy along the commutator of $y=0,y=1$
+\[
+\begin{bmatrix}
+1\\
+&1\\
+&-1&1
+\end{bmatrix}
+\]
+
+Monodromy along the commutator of $y=0,xy=1$
+\[
+\begin{bmatrix}
+1\\
+-1&1\\
+&&1
+\end{bmatrix}
+\]
+
+Monodromy along all other commutators
+\[
+\begin{bmatrix}
+1\\
+&1\\
+&&1
+\end{bmatrix}
+\]
+
+\end{document}

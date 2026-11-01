@@ -1,0 +1,338 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+The \textit{multiple polylogarithms}\index{Multiple polylogarithm} are
+\[\Li_{\mathbf n}(\mathbf z)=\sum_{\mathbf k}\frac{\mathbf z^{\mathbf k}}{\mathbf k^{\mathbf n}}=\int_0^1\left(\frac{dt}{t}\right)^{n_1-1}\frac{dt}{a_1-t}\cdots\left(\frac{dt}{t}\right)^{n_d-1}\frac{dt}{a_d-t}\]
+Here $\mathbf k$ runs over $k_1>\cdots>k_d\geq1$, $a_j=a_j(\mathbf z)=(z_1\cdots z_j)^{-1}$, $a_0=1$, $a_{n+1}=0$
+\end{definition}
+
+\begin{note}
+For $\mathbf k$ runs over $(k_1,\cdots,k_d)\in\mathbb Z_{\geq1}^d$
+\[\sum_{\mathbf k}\frac{\mathbf z^{\mathbf k}}{\mathbf k^{\mathbf n}}=\left(\sum_{k_1}\frac{z_1^{k_1}}{k_1^{n_1}}\right)\cdots\left(\sum_{k_d}\frac{z_d^{k_d}}{k_d^{n_d}}\right)=\Li_{n_1}(z_1)\cdots\Li_{n_d}(z_d)\]
+Can be written in terms of multiple polylogarithms
+\end{note}
+
+\begin{exercise}[Derivatives of polylogarithms]
+If $m_i>1$, then
+\begin{align*}
+\dfrac{\partial}{\partial z_i}\Li_{\mathbf m', m_i,\mathbf m''}(\mathbf z',z_i,\mathbf z'')=\dfrac{1}{z_i}\Li_{\mathbf m',m_i-1,\mathbf m''}(\mathbf z',z_i,\mathbf z'')
+\end{align*}
+\begin{align*}
+\dfrac{\partial}{\partial z_1}\Li_{1,\mathbf m'}(z_1,z_2,\mathbf z')=\frac{1}{1-z_1}\Li_{\mathbf m'}(z_1z_2,\mathbf z')
+\end{align*}
+\begin{align*}
+\dfrac{\partial}{\partial z_d}\Li_{\mathbf m',1}(\mathbf z',z_{d-1},z_d)=\frac{1}{1-z_d}\Li_{\mathbf m'}(\mathbf z',z_{d-1})-\frac{1}{z_d(1-z_d)}\Li_{\mathbf m'}(\mathbf z',z_{d-1}z_d)
+\end{align*}
+If $1<i<d$, then
+\begin{align*}
+\dfrac{\partial}{\partial z_i}\Li_{\mathbf m',1,\mathbf m''}(\mathbf z',z_{i-1},z_i,z_{i+1},\mathbf z'')&=\frac{1}{1-z_i}\Li_{\mathbf m',\mathbf m''}(\mathbf z',z_{i-1},z_iz_{i+1},\mathbf z'') \\
+&-\frac{1}{z_i(1-z_i)}\Li_{\mathbf m',\mathbf m''}(\mathbf z',z_{i-1}z_i,z_{i+1},\mathbf z'')
+\end{align*}
+\end{exercise}
+
+\begin{lemma}\label{Total differential on L_n}
+Write $\mathfrak S_n=\{0,1\}^n$, $\mathbf0=(0,\cdots,0)$, $\mathbf1=(1,\cdots,1)$, $\mathbf u_s=(0,\cdots,\underset{s\text{-th}}{\underset{\uparrow}{1}},\cdots,0)$, define \textit{multiple logarithm} $\mathcal L_n=\Li_{\mathbf1}$, $\mathcal L_0=1$. Denote $\mathbf x_j=(x_1,\cdots,x_jx_{j+1},x_{j+2},\cdots,x_n)$, $\mathbf x_n=(x_1,\cdots,x_{n-1})$, we have
+\begin{align*}
+d_j\mathcal L_n(\mathbf x)&=\mathcal L_{n-1}(\mathbf x_{j-1})\frac{dx_j}{x_j(x_j-1)}-\mathcal L_{n-1}(\mathbf x_j)\frac{dx_j}{x_j-1}
+\end{align*}For $2\leq j\leq n$, and
+\begin{align*}
+d_1\mathcal L_n(\mathbf x)&=-\mathcal L_{n-1}(\mathbf x_1)\frac{dx_1}{x_1-1}
+\end{align*}
+Therefore
+\begin{align*}
+d\mathcal L_n(\mathbf x)&=\sum_{j=1}^nd_j\mathcal L_n(\mathbf x) \\
+&=\sum_{j=1}^{n-1}\left(\mathcal L_{n-1}(\mathbf x_j)\frac{dx_j}{1-x_j}+\mathcal L_{n-1}(\mathbf x_{j})\frac{dx_{j+1}}{x_{j+1}(x_{j+1}-1)}\right)+\mathcal L_{n-1}(\mathbf x_n)\frac{dx_n}{x_n-1} \\
+&=\sum_{j=1}^{n-1}\mathcal L_{n-1}(\mathbf x_j)\left(-d\ln(1-x_j)+d\ln\left(\frac{x_{j+1}-1}{x_{j+1}}\right)\right)+\mathcal L_{n-1}(\mathbf x_n)\frac{dx_n}{x_n-1} \\
+&=\sum_{j=1}^{n}\mathcal L_{n-1}(\mathbf x_j)d\ln\left(\frac{1-x_{j+1}^{-1}}{1-x_j}\right)
+\end{align*}
+Here $x_{n+1}=\infty$, $\mathcal L_0=1$
+\end{lemma}
+
+Suppose $\mathbf i\in\mathfrak S_n$, $|\mathbf i|=k$ and $i_{\tau_1}=\cdots=i_{\tau_k}=1$ for some $1\leq\tau_1\leq\cdots\leq\tau_k\leq n$, set
+\[\mathbf x(\mathbf i)=\mathbf y,\quad y_m=\prod_{j=\tau_{m-1}+1}^{\tau_m}x_j=\frac{a_{\tau_{m-1}}}{a_{\tau_{m}}}\]
+\[w_j(\mathbf x)=d\ln\left(\frac{1-x_{j+1}^{-1}}{1-x_j}\right)\]
+With $\tau_0=0$, $w_0(\mathbf x)=1$. A partial order $\preceq$ on $\mathfrak S_n$ is given by $\mathbf i\preceq \mathbf j$ if $i_k\leq j_k$ \par
+Define
+\[X_n=\left\{\prod_{j\leq k}(1-x_j\cdots x_k)=0\right\},\quad S_n=\mathbb C^n\setminus X_n\]
+\[X_n'=\left\{\prod_{i}x_i\prod_{j\leq k}(1-x_j\cdots x_k)=0\right\},\quad S_n'=\mathbb C^n\setminus X_n'\]
+\[D_n=\bigcap_{j}\left\{\left|x_j-\frac{1}{2}\right|<\frac{1}{2}\right\}\]
+
+\begin{theorem}
+Multiple logarithm $\mathcal L_n(\mathbf x)$ is a multi-valued holomorphic function on $S_n$
+\[\mathcal L_n(\mathbf x)=\sum_{0\neq\mathbf j_1\prec\cdots\prec\mathbf j_n}\int_0^{\mathbf x}w_{\mathbf j_{n}-\mathbf j_{n-1}}(\mathbf x(\mathbf j_{n}))\cdots w_{\mathbf j_{2}-\mathbf j_{1}}(\mathbf x(\mathbf j_{2}))w_{1}(\mathbf x(\mathbf j_{1}))\]
+Here $\mathbf j-\mathbf i=\begin{cases}
+s' &j_t=i_t+\delta_{st} \\
+0 &\text{otherwise}
+\end{cases}$ for $\mathbf i\prec\mathbf j$, $j_s$ is the $s'$-th nonzero element in $\mathbf j$, and the integration is taken over $\alpha:I\to\mathbb C^n$
+\end{theorem}
+
+\begin{proof}
+Use induction and Lemma \ref{Total differential on L_n}
+\begin{align*}
+\mathcal L_n(\mathbf x)&=\int_{\mathbf0}^{\mathbf x}d\mathcal L_n(\mathbf x) \\
+&=\int_{\mathbf0}^{\mathbf x}\sum_{k=1}^{n-1}\mathcal L_{n-1}(\mathbf x_k)d\ln\left(\frac{1-x_{k+1}^{-1}}{1-x_k}\right)+\mathcal L_{n-1}(\mathbf x_n)\frac{dx_n}{1-x_n} \\
+&=\int_{\mathbf0}^{\mathbf x}\sum_{j=1}^{n}w_{\mathbf 1-\mathbf f_k}(\mathbf x)\sum_{0\neq\mathbf p_1\prec\cdots\prec\mathbf p_{n-1}}w_{\mathbf p_{n-1}-\mathbf p_{n-2}}(\mathbf x_k(\mathbf p_{n-1}))\cdots w_{\mathbf p_{2}-\mathbf p_{1}}(\mathbf x_k(\mathbf p_{2}))w_{1}(\mathbf x_k(\mathbf p_{1})) \\
+&=\int_{\mathbf0}^{\mathbf x}\sum_{j=1}^{n}w_{\mathbf 1-\mathbf f_k}(\mathbf x)\sum_{0\neq\mathbf q_1\prec\cdots\prec\mathbf q_{n-1}}w_{\mathbf q_{n-1}-\mathbf q_{n-2}}(\mathbf x(\mathbf q_{n-1}))\cdots w_{\mathbf q_{2}-\mathbf q_{1}}(\mathbf x(\mathbf q_{2}))w_{1}(\mathbf x(\mathbf q_{1})) \\
+&=\sum_{0\neq\mathbf j_1\prec\cdots\prec\mathbf j_n}\int_0^{\mathbf x}w_{\mathbf j_{n}-\mathbf j_{n-1}}(\mathbf x(\mathbf j_{n}))\cdots w_{\mathbf j_{2}-\mathbf j_{1}}(\mathbf x(\mathbf j_{2}))w_{1}(\mathbf x(\mathbf j_{1}))
+\end{align*}
+Here $\mathbf f_k=(1,\cdots,\underset{k\text{-th}}{\underset\uparrow0},\cdots,1)$, $\mathbf q_i$ is $\mathbf p_i$ with $0$ inserted in as the $k$-th entry. Note that $S_n$ is given so that $w_i(\mathbf x(\mathbf j))$ are defined
+\end{proof}
+
+\begin{example}
+When $n=1$
+\begin{align*}
+\mathcal L_1(x_1)&=\int_0^{x_1}w_1(\mathbf x(1)) \\
+&=\int_0^{x_1}d\ln\left(\frac{1}{1-x_1}\right) \\
+&=\int_0^{x_1}\frac{dx_1}{1-x_1}
+\end{align*}
+When $n=2$
+\begin{align*}
+\mathcal L_{2}(\mathbf x)&=\int_{\mathbf 0}^{\mathbf x}w_{(1,1)-(1,0)}(\mathbf x(\mathbf 1))w_1(\mathbf x(1,0))+w_{(1,1)-(0,1)}(\mathbf x(\mathbf 1))w_1(\mathbf x(0,1)) \\
+&=\int_{\mathbf 0}^{\mathbf x}w_{2}(\mathbf x)w_1(x_1)+w_{1}(\mathbf x)w_1(x_1x_2) \\
+&=\int_{\mathbf 0}^{\mathbf x}d\ln\left(\frac{1}{1-x_2}\right)d\ln\left(\frac{1}{1-x_1}\right)+d\ln\left(\frac{1-x_2^{-1}}{1-x_1}\right)d\ln\left(\frac{1}{1-x_1x_2}\right) \\
+&=\int_{\mathbf 0}^{\mathbf x}\frac{dx_2}{1-x_2}\frac{dx_1}{1-x_1}+\left(\frac{dx_2}{x_2(x_2-1)}+\frac{dx_1}{1-x_1}\right)\frac{d(x_1x_2)}{1-x_1x_2} \\
+\end{align*}
+When $n=3$
+\begin{align*}
+\mathcal L_{3}(\mathbf x)&=\int_{\mathbf0}^{\mathbf x}w_{(1,1,1)-(1,1,0)}(\mathbf x(\mathbf 1))w_{(1,1,0)-(1,0,0)}(\mathbf x(1,1,0))w_1(\mathbf x(1,0,0))+ \\
+&\mkern55mu w_{(1,1,1)-(1,1,0)}(\mathbf x(\mathbf 1))w_{(1,1,0)-(0,1,0)}(\mathbf x(1,1,0))w_1(\mathbf x(0,1,0))+ \\
+&\mkern55mu w_{(1,1,1)-(1,0,1)}(\mathbf x(\mathbf 1))w_{(1,0,1)-(1,0,0)}(\mathbf x(1,0,1))w_1(\mathbf x(1,0,0))+ \\
+&\mkern55mu w_{(1,1,1)-(1,0,1)}(\mathbf x(\mathbf 1))w_{(1,0,1)-(0,0,1)}(\mathbf x(1,0,1))w_1(\mathbf x(0,0,1))+ \\
+&\mkern55mu w_{(1,1,1)-(0,1,1)}(\mathbf x(\mathbf 1))w_{(0,1,1)-(0,1,0)}(\mathbf x(0,1,1))w_1(\mathbf x(0,1,0))+ \\
+&\mkern55mu w_{(1,1,1)-(0,1,1)}(\mathbf x(\mathbf 1))w_{(0,1,1)-(0,0,1)}(\mathbf x(0,1,1))w_1(\mathbf x(0,0,1)) \\
+&=\int_{\mathbf0}^{\mathbf x}w_{3}(\mathbf x)w_{2}(x_1,x_2)w_1(x_1)+w_{3}(\mathbf x)w_{1}(x_1,x_2)w_1(x_1x_2)+ \\
+&\mkern55mu w_{2}(\mathbf x)w_{2}(x_1,x_2x_3)w_1(x_1)+w_{2}(\mathbf x)w_{1}(x_1,x_2x_3)w_1(x_1x_2x_3)+ \\
+&\mkern55mu w_{1}(\mathbf x)w_{2}(x_1x_2,x_3)w_1(x_1x_2)+w_{1}(\mathbf x)w_{1}(x_1x_2,x_3)w_1(x_1x_2x_3) \\
+&=\int_{\mathbf0}^{\mathbf x}\frac{dx_3}{1-x_3}\frac{dx_2}{1-x_2}\frac{dx_1}{1-x_1}+\frac{dx_3}{1-x_3}\left(\frac{dx_2}{x_2(x_2-1)}+\frac{dx_1}{1-x_1}\right)\frac{d(x_1x_2)}{1-x_1x_2}+ \\
+&\mkern55mu \left(\frac{dx_3}{x_3(x_3-1)}+\frac{dx_2}{1-x_2}\right)\frac{d(x_2x_3)}{1-x_2x_3}\frac{dx_1}{1-x_1}+ \\
+&\mkern55mu \left(\frac{dx_3}{x_3(x_3-1)}+\frac{dx_2}{1-x_2}\right)\left(\frac{d(x_2x_3)}{x_2x_3(x_2x_3-1)}+\frac{dx_1}{1-x_1}\right)\frac{d(x_1x_2x_3)}{1-x_1x_2x_3}+ \\
+&\mkern55mu \left(\frac{dx_2}{x_2(x_2-1)}+\frac{dx_1}{1-x_1}\right)\frac{dx_3}{1-x_3}\frac{d(x_1x_2)}{1-x_1x_2}+ \\
+&\mkern55mu \left(\frac{dx_2}{x_2(x_2-1)}+\frac{dx_1}{1-x_1}\right)\left(\frac{dx_3}{x_3(x_3-1)}+\frac{d(x_1x_2)}{1-x_1x_2}\right)\frac{d(x_1x_2x_3)}{1-x_1x_2x_3} \\
+\end{align*}
+\end{example}
+
+\begin{definition}
+$\mathbf i,\mathbf j\in\mathfrak S_n$, $|\mathbf i|=k$, $|\mathbf j|=l$, the $\mathbf i$-th \textit{retraction} map $\rho_{\mathbf i}:\mathfrak S_n\to\mathfrak S_k$ is defined by
+\begin{itemize}
+\item If $\mathbf i\not\succeq\mathbf j$, $\rho_{\mathbf i}(\mathbf j)=\mathbf 0$
+\item If $\mathbf i\succeq\mathbf j$, assume $\tau_1,\cdots,\tau_k$ and $t_1,\cdots,t_l$ are the nonzero entries in $\mathbf i$ and $\mathbf j$, suppose $\tau_{\alpha_r}=t_r$, then $\alpha_1,\cdots,\alpha_l$ are the nonzero entries of $\rho_{\mathbf i}(\mathbf j)$
+\end{itemize}
+Write $\theta_s=\theta_s(\mathbf x)=\dfrac{dt}{t-a_s}$, the $2^n\times2^n$\textit{variation matrix} $\mathcal M_{\mathbf 1}(\mathbf x)=(2\pi i)^lE_{\mathbf i,\mathbf j}(\mathbf x)$ associated with $\mathcal L_n(\mathbf x)$ is defined by
+\begin{align*}
+E_{\mathbf i,\mathbf j}=\gamma^k_{\rho_{\mathbf i}(\mathbf j)}(\mathbf y)&=(-1)^{k-l}\prod_{r=0}^l\int_{a_{\alpha_{r+1}}(\mathbf y)}^{a_{\alpha_r}(\mathbf y)}\theta_{\alpha_r+1}(\mathbf y)\cdots\theta_{\alpha_{r+1}-1}(\mathbf y) \\
+&=(-1)^{k-l}\prod_{r=0}^l\int_{a_{t_{r+1}}}^{a_{t_r}}\theta_{\tau_{\alpha_r+1}}(\mathbf x)\cdots\theta_{\tau_{\alpha_{r+1}-1}}(\mathbf x) \\
+&=(-1)^{k-l}\prod_{r=0}^l\int_{p_r}\theta_{\tau_{\alpha_r+1}}(\mathbf x)\cdots\theta_{\tau_{\alpha_{r+1}-1}}(\mathbf x)
+\end{align*}
+$\tau_{k+1}=t_{l+1}=n+1$, $\alpha_{l+1}=k+1$. $p_r$ are independent from $\mathbf i$
+\textcolor{green}{These thetas are very weird}
+\end{definition}
+
+\begin{proposition}
+\begin{align*}
+E_{\mathbf i,\mathbf j}&=\prod_{r=0}^l\mathcal L_{\alpha_{r+1}-\alpha_r-1}\left(\frac{a_{t_r}(\mathbf x)-a_{t_{r+1}}(\mathbf x)}{a_{\tau_{\alpha_r+1}}(\mathbf x)-a_{t_{r+1}}(\mathbf x)},\cdots,\frac{a_{\tau_{\alpha_{r+1}-2}}(\mathbf x)-a_{t_{r+1}}(\mathbf x)}{a_{\tau_{\alpha_{r+1}-1}}(\mathbf x)-a_{t_{r+1}}(\mathbf x)}\right) \\
+&=\mathcal L_{k-\alpha_l}(x_{1+t_l}\cdots x_{\tau_{\alpha_l+1}},\cdots,x_{1+\tau_{k-1}}\cdots x_{\tau_k})\cdot \\
+&\mkern20mu 
+\prod_{r=0}^{l-1}\mathcal L_{\alpha_{r+1}-\alpha_r-1}\left(
+\frac{	1-x_{1+t_r}\cdots x_{t_{r+1}}	}{	1-x_{1+\tau_{\alpha_r+1}}\cdots x_{t_{r+1}}	}
+,\cdots,
+\frac{	1-x_{1+\tau_{\alpha_{r+1}-2}}\cdots x_{t_{r+1}}	}{	1-x_{1+\tau_{\alpha_{r+1}-1}}\cdots x_{t_{r+1}}	}
+\right)
+\end{align*}
+\end{proposition}
+
+\begin{proof}
+
+\end{proof}
+
+\begin{example}
+\begin{align*}
+E_{\mathbf1,\mathbf j}(\mathbf x)=\gamma^n_{\mathbf j}(\mathbf x)&=\prod_{r=0}^l\mathcal L_{t_{r+1}-t_r-1}\left(
+\frac{	a_{t_r}-a_{t_{r+1}}	}{	a_{t_r+1}-a_{t_{r+1}}	}	,\cdots,	\frac{	a_{t_{r+1}-2}-a_{t_{r+1}} }{	a_{t_{r+1}-1}-a_{t_{r+1}}	}
+\right) \\
+&=\prod_{r=0}^l\mathcal L_{t_{r+1}-t_r-1}\left(
+\frac{1-x_{1+t_r}\cdots x_{t_{r+1}}}{1-x_{2+t_r}\cdots x_{t_{r+1}}}		,\cdots,	\frac{1-x_{t_{r+1}-1}x_{t_{r+1}}}{1-x_{t_{r+1}}}
+\right) \\
+&=\mathcal L_{k-\alpha_l}(x_{1+t_l}\cdots x_{t_l+1},\cdots,x_n)\cdot \\
+&\mkern20mu \prod_{r=0}^{l-1}\mathcal L_{t_{r+1}-t_r-1}\left(
+\frac{1-x_{1+t_r}\cdots x_{t_{r+1}}}{1-x_{2+t_r}\cdots x_{t_{r+1}}}		,\cdots,	\frac{1-x_{t_{r+1}-1}x_{t_{r+1}}}{1-x_{t_{r+1}}}
+\right)
+\end{align*}
+In particular we have
+\[E_{\mathbf1,\mathbf0}(\mathbf x)=\gamma^n_{\mathbf 0}(\mathbf x)=\mathcal L_n(\mathbf x),\quad E_{\mathbf1,\mathbf1}(\mathbf x)=\gamma^n_{\mathbf 1}(\mathbf x)=\prod_{r=0}^n\mathcal L_{0}=1\]
+\end{example}
+
+$E=E(\mathbf x)$ has columns
+\[C_{\mathbf j}=\sum_{\mathbf i\succeq\mathbf j}\gamma^{|\mathbf i|}_{\rho_{\mathbf i}(\mathbf j)}(\mathbf x(\mathbf i))e_{\mathbf i}\]
+$e_{\mathbf i}$ is the standard unit column vector, using the complete order $\mathbf <$ on $\mathfrak S_n$: if $|\mathbf i|<|\mathbf j|$, then $\mathbf i<\mathbf j$, if $|\mathbf i|=|\mathbf j|$, then compare the lexicographic order from left to right with $\color{red}{1<0}$. By definition, the $\mathbf i$-th row of $\mathcal M_{\mathbf 1}$ is
+\[R_{\mathbf i}=\sum_{\mathbf i\succeq\mathbf j}(2\pi i)^{|\mathbf j|}\gamma^{|\mathbf i|}_{\rho_{\mathbf i}(\mathbf j)}(\mathbf x(\mathbf i))e_{\mathbf j}^T\]
+And the $\mathbf j$-th column of $\mathcal M_{\mathbf1}$ is $(2\pi i)^{|\mathbf j|}C_{\mathbf j}$
+Note that $\gamma^{|\mathbf i|}_{\rho_{\mathbf i}(\mathbf i)}(\mathbf x(\mathbf i))=1$, and the first entry of $R_{\mathbf i}$ is $\mathcal L_{|\mathbf i|}(\mathbf x(\mathbf i))$
+
+\begin{example}
+The variation matrix associated with double logarithm is
+\begin{align*}
+\mathcal M_{1,1}&=\left[\begin{smallmatrix}
+\gamma^0_{\rho_{(0,0)}(0,0)}  &  (2\pi i)\gamma^0_{\rho_{(0,0)}(1,0)}  &  (2\pi i)\gamma^0_{\rho_{(0,0)}(0,1)}  &  (2\pi i)^2\gamma^0_{\rho_{(0,0)}(1,1)} \\
+\gamma^1_{\rho_{(1,0)}(0,0)}(x_1)  &  (2\pi i)\gamma^1_{\rho_{(1,0)}(1,0)}(x_1)  &  (2\pi i)\gamma^1_{\rho_{(1,0)}(0,1)}(x_1)  &  (2\pi i)^2\gamma^1_{\rho_{(1,0)}(1,1)}(x_1) \\
+\gamma^1_{\rho_{(0,1)}(0,0)}(x_1x_2)  &  (2\pi i)\gamma^1_{\rho_{(0,1)}(1,0)}(x_1x_2)  &  (2\pi i)\gamma^1_{\rho_{(0,1)}(0,1)}(x_1x_2)  &  (2\pi i)^2\gamma^1_{\rho_{(0,1)}(1,1)}(x_1x_2) \\
+\gamma^2_{\rho_{(1,1)}(0,0)}(x_1,x_2)  &  (2\pi i)\gamma^2_{\rho_{(1,1)}(1,0)}(x_1,x_2)  &  (2\pi i)\gamma^2_{\rho_{(1,1)}(0,1)}(x_1,x_2)  &  (2\pi i)^2\gamma^2_{\rho_{(1,1)}(1,1)}(x_1,x_2)
+\end{smallmatrix}\right] \\
+&=\begin{bmatrix}
+1&&& \\
+\mathcal L_1(x_1)&2\pi i&& \\
+\mathcal L_1(x_1x_2)&&2\pi i& \\
+\mathcal L_2(x_1,x_2)&(2\pi i)\mathcal L_1(x_2)&(2\pi i)\mathcal L_1\left(\frac{1-x_1x_2}{1-x_2}\right)&(2\pi i)^2
+\end{bmatrix}
+\end{align*}
+\end{example}
+
+\begin{lemma}\label{Variation matrix of multiple logarithm is lower triangular ans principal submatrix is a scalar matrix}
+The variation matrix is lower triangular. The principal submatrix of $\mathcal M_{\mathbf 1}$ with $|\mathbf i|=|\mathbf j|=k$ is $(2\pi i)^k$ times the $\binom{n}{k}\times\binom{n}{k}$ identity matrix
+\end{lemma}
+
+\begin{proof}
+By definition
+\end{proof}
+
+\begin{proposition}\label{Variation matrix is the fundamental matrix}
+$\mathcal M_{\mathbf1}(\mathbf x)$ is the fundamental matrix of linear differential equations
+\[\begin{cases}
+dX_{\mathbf i}&=\displaystyle\sum_{|\mathbf k|=|\mathbf i|-1,\mathbf k\prec\mathbf i}d\rho^{|\mathbf i|}_{\mathbf i}(\mathbf k)(\mathbf x(\mathbf i))X_{\mathbf k} \\
+dX_{\mathbf0}&=\mathbf0
+\end{cases}\]
+\end{proposition}
+
+\begin{theorem}
+
+\end{theorem}
+
+\begin{corollary}
+The monodromy representation $\rho_{\mathbf x}:\pi_1(S_n,\mathbf x)\to\GL_{2^n}(\mathbb Z)$ is unipotent
+\end{corollary}
+
+\begin{definition}
+Let $\mathcal D_n=X_n'\cup(\mathbb{CP}^n\setminus\mathbb{C}^n)$ and
+\[\bm{\omega}=(c_{\mathbf{i,j}})\in H^0(\mathbb{CP}^n,\Omega_{\mathbb{CP}^n}^1(\log(\mathcal D_n)))\otimes M_{2^n}(\mathbb C)\]
+Here
+\[c_{\mathbf{i,j}}=\begin{cases}
+d\gamma^{|\mathbf i|}_{\rho_{\mathbf i}(\mathbf j)}(\mathbf x(\mathbf i))&|\mathbf j|=|\mathbf i|-1, \mathbf j\prec\mathbf i \\
+\mathbf 0&\text{otherwise}
+\end{cases}\]
+All one forms in $\bm\omega$ has logarithmic singularity.
+By Proposition \ref{Variation matrix is the fundamental matrix}, $d\mathcal M_{\mathbf1}=\bm\omega\mathcal M_{\mathbf1}$, thus
+\[\mathbf 0=d^2\mathcal M_{\mathbf1}=d\bm\omega\wedge\mathcal M_{\mathbf 1}-\bm\omega \wedge d\mathcal M_{\mathbf 1}=d\bm\omega\wedge\mathcal M_{\mathbf 1}-\bm\omega \wedge \bm\omega\mathcal M_{\mathbf 1}\]
+Since $\mathcal M_{\mathbf1}(\mathbf x)$ is invertible and $\bm\omega$ is by definition closed, i.e. $d\bm\omega=0$, hence $\bm\omega\wedge\bm\omega=0$, which implies $\bm\omega$ is integrable. Define a meromorphic connection on trivial bundle $\mathbb {CP}^n\times\mathbb C^{2^n}\to\mathbb{CP}^n$
+\[\nabla f=df-\bm\omega f\]
+Here $f:S_n\to\mathbb C^{2^n}$ is a section
+\end{definition}
+
+\begin{example}
+If $n=2$
+\[\bm\omega=\begin{bmatrix}
+&&& \\
+-d\ln(1-x_1)&&& \\
+-d\ln(1-x_1x_2)&&& \\
+&-d\ln(1-x_2)&-d\ln\left(\frac{x_2(x_1-1)}{1-x_2}\right)&
+\end{bmatrix}\]
+\end{example}
+
+\begin{definition}
+Let $V_{\mathbf 1}(\mathbf x)$ be the locally constant sheaf of $\mathbb Q$ vector space generated by the column vectors in $\mathcal M_{\mathbf 1}(\mathbf x)$, define a weight filtration $W_\bullet$ by letting $W_{2k+1}=W_{2k}$ and $W_{-2k}$ is generated by $(2\pi i)^{|\mathbf j|}C_{\mathbf j}(\mathbf x)$, $|\mathbf j|\geq k$, and $W_{-2k}=0$ for $k>n$, note that $W_{-2k}=V_{\mathbf 1}(\mathbf x)$ for $k\geq n$. Define filtration $\mathcal F^\bullet$ by $\mathcal F^{-k}V_{\mathbf 1}(\mathbb C)=\langle e_{\mathbf i},|\mathbf i|\leq k\rangle_{\mathbb C}$, $\mathcal F^{-k}=0$ for $k<0$, note that $\mathcal F^{-k}=V_{\mathbf 1}(\mathbb C)$ for $k\geq n$. By induction on $n$ and Lemma \ref{Variation matrix of multiple logarithm is lower triangular ans principal submatrix is a scalar matrix}
+\[\mathcal F^{-p}\cap W_{-2k}(\mathbb C)=\begin{cases}
+0&p\leq k-1 \\
+\langle(2\pi i)^{|\mathbf j|}e_{\mathbf j},k\leq|\mathbf j|\leq p\rangle&k\leq p\leq n \\
+\langle(2\pi i)^{|\mathbf j|}e_{\mathbf j},k\leq|\mathbf j|\leq n\rangle&p>n
+\end{cases}\]
+Which implies that
+\[\mathcal F^{-p}(\gr_{-2k}^WV_{\mathbf1})(\mathbb C)=\begin{cases}
+0&p\leq k-1 \\
+W_{-2k}V_{\mathbf1}(\mathbb C)/W_{-2k-1}V_{\mathbf1}(\mathbb C)=\gr_{-2k}^WV_{\mathbf1}(\mathbb C)&k\leq p
+\end{cases}\]
+$\gr_{-2k}^WV_{\mathbf1}(\mathbb C)$ is isomorphic to a direct sum of $\binom{n}{k}$ copies of Tate structure $\mathbb Z(k)$
+\end{definition}
+
+Let $\mathcal D\subseteq\mathbb{CP}^n$ be a subvariety, $T_{\mathcal D}$ be the restriction of $\mathcal M_{\mathbf1}$ on $\mathcal D$, $N_{\mathcal D}=\log T_{\mathcal D}/(2\pi i)$, note that $N_{\mathcal D}$ is well defined since $T_{\mathcal D}$ is unipotent
+
+\begin{definition}
+$X$ is a complex manifold of dimension $d$, $X\xhookrightarrow j\tilde X$ is an embedding, $D=\tilde X-X$ is a divisor with normal crossings, let $\mathbb V$ is a unipotent local system of complex vector spaces over $X$, $\mathcal V$ is a corresponding vector bundle. By Theorem \ref{Deligne's theorem on unipotent VMHS}, there is a canonical extension of $\mathcal V$ to $\tilde{\mathcal V}$ over $\tilde X$
+\end{definition}
+
+\begin{definition}
+Variation matrix $\mathcal M_{\mathbf n}$
+\end{definition}
+
+\begin{example}
+$(1,0,x^{-1},x^{-1}y^{-1},0)=(1,0,a_1,a_2,0)=(b_0,b_1,b_2,b_3,b_4)$, we have
+\begin{align*}
+&\boxed{1}|0|a_1|a_2|\boxed0, \quad\mathbf m=(0,0) \\
+&\boxed{1}|0|\boxed{a_1}|a_2|\boxed0, \quad\mathbf m=(1,0) \\
+&\boxed{1}|0|a_1|\boxed{a_2}|\boxed0, \quad\mathbf m=(1,0) \\
+&\boxed{1}|\boxed0|\boxed{a_1}|a_2|\boxed0, \quad\mathbf m=(2,0) \\
+&\boxed{1}|0|\boxed{a_1}|\boxed{a_2}|\boxed0, \quad\mathbf m=(1,1) \\
+&\boxed{1}|\boxed0|a_1|\boxed{a_2}|\boxed0, \quad\mathbf m=(2,0) \\
+&\boxed{1}|\boxed0|\boxed{a_1}|\boxed{a_2}|\boxed0, \quad\mathbf m=(2,1)
+\end{align*}
+Therefore (columns tells how many pieces in multiplication, rows tells which can be chosen in the iterated integral)
+\begin{align*}
+\mathcal M_{2,1}=\begin{bmatrix}
+1	&	&	&	&	&	& \\
+\Li_1(x)	&1	&	&	&	&	& \\
+\Li_1(xy)    &0	&1	&	&	&	& \\
+\Li_2(x)    &\log(x)	&0	&1	&	&	& \\
+\Li_{1,1}(x,y)    &\Li_1(y)	&\Li_1(x)-\Li_1(y^{-1})	&0	&1	&	& \\
+\Li_2(xy)    &	0&\log(xy)	&0	&0	&1	& \\
+\Li_{2,1}(x,y)    & \Li_1(y)\log(x)	&	g(x,y)&\Li_1(y)	&\log(x)	&-\Li_1(y^{-1})	&1
+\end{bmatrix}
+\end{align*}
+Here
+\begin{align*}
+g(x,y)&=\int_{x^{-1}y^{-1}}^1\frac{dt}{t}\frac{dt}{x^{-1}-t} \\
+&=\int_{x^{-1}y^{-1}}^1\frac{dt}{t}\int_{x^{-1}y^{-1}}^t\frac{d\tau}{x^{-1}-\tau} \\
+&=\int_{x^{-1}y^{-1}}^1\frac{dt}{t}\left(\Li_1(xt)-\Li_1(y^{-1})\right) \\
+&=\int_{x^{-1}y^{-1}}^1\frac{dt}{t}\Li_1(xt)-\Li_1(y^{-1})\int_{x^{-1}y^{-1}}^1\frac{dt}{t} \\
+&=\int_{y^{-1}}^x\frac{dt}{t}\Li_1(t)-\Li_1(y^{-1})\log(xy) \\
+&=\Li_2(x)-\Li_2(y^{-1})-\Li_1(y^{-1})\log(xy)
+\end{align*}
+\end{example}
+
+\begin{note}
+Note that $\Li_1(x)-\Li_1(y^{-1})=\Li_1\left(\frac{1-xy}{1-y}\right)$
+\end{note}
+
+\begin{example}
+$(1,x^{-1},0,x^{-1}y^{-1},0)=(1,a_1,0,a_2,0)=(b_0,b_1,b_2,b_3,b_4)$, we have
+\begin{align*}
+&\boxed{1}|a_1|0|a_2|\boxed0, \quad\mathbf m=(0,0) \\
+&\boxed{1}|\boxed{a_1}|0|a_2|\boxed0, \quad\mathbf m=(1,0) \\
+&\boxed{1}|a_1|0|\boxed{a_2}|\boxed0, \quad\mathbf m=(1,0) \\
+&\boxed{1}|\boxed{a_1}|0|\boxed{a_2}|\boxed0, \quad\mathbf m=(1,1) \\
+&\boxed{1}|a_1|\boxed0|\boxed{a_2}|\boxed0, \quad\mathbf m=(2,0) \\
+&\boxed{1}|\boxed{a_1}|\boxed0|\boxed{a_2}|\boxed0, \quad\mathbf m=(1,2)
+\end{align*}
+\begin{align*}
+\mathcal M_{1,2}=\begin{bmatrix}
+1	&	&	&	&	& \\
+\Li_1(x)	&1	&	&	&	& \\
+\Li_1(xy)    &0	&1	&	&	&	\\
+\Li_{1,1}(x,y)    &\Li_1(y)	&\Li_1(x)-\Li_1(y^{-1})	&1	&	& \\
+\Li_2(xy)    &0	&\log(xy)	&0	&1	& \\
+\Li_{1,2}(x,y)    &	\Li_2(y)&g(x,y)	&\log(y)	&\Li_1(x)	&1 \\
+\end{bmatrix}
+\end{align*}
+Here
+\begin{align*}
+g(x,y)&=\int_{x^{-1}y^{-1}}^1\frac{dt}{x^{-1}-t}\frac{dt}{t} \\
+&=\int_{x^{-1}y^{-1}}^1\frac{dt}{x^{-1}-t}\int_{x^{-1}y^{-1}}^t\frac{d\tau}{\tau} \\
+&=\int_{x^{-1}y^{-1}}^1\frac{dt}{x^{-1}-t}\left(\log(t)+\log(xy)\right) \\
+&=\int_{x^{-1}y^{-1}}^1\frac{dt}{x^{-1}-t}\log(t)+\log(xy)\int_{x^{-1}y^{-1}}^1\frac{dt}{x^{-1}-t} \\
+&=\int_{y^{-1}}^x\frac{dt}{1-t}(\log(t)-\log(x))+\log(xy)\int_{y^{-1}}^x\frac{dt}{1-t} \\
+&=\int_{y^{-1}}^x\frac{dt}{1-t}\log(t)+\log(y)\Li_1\left(\frac{1-xy}{1-y}\right) \\
+&=\log(y)\Li_1\left(\frac{1-xy}{1-y}\right)+\int_{y^{-1}}^x\log(t)d\Li_1(t) \\
+&=\log(y)\Li_1\left(\frac{1-xy}{1-y}\right)+\left.\log(t)\Li_1(t)\right|_{y^{-1}}^x-\int_{y^{-1}}^x\frac{dt}{t}\Li_1(t) \\
+&=\log(y)\Li_1\left(\frac{1-xy}{1-y}\right)+\log(x)\Li_1(x)+\log(y)\Li_1(y^{-1})-\Li_2(x)+\Li_2(y^{-1}) \\
+\end{align*}
+\end{example}
+
+\end{document}

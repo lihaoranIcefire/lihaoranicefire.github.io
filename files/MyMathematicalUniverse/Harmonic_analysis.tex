@@ -1,0 +1,192 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+Group $G$ is a \textit{topological group} if the multiplication and inverse maps are continuous
+\end{definition}
+
+\begin{definition}
+$k$ is a topological field, $V$ is a \textit{topological vector space}\index{Topological vector space} over a $k$ if
+\begin{itemize}
+\item $V$ is a topological abelian group
+\item Scalar multiplication $k\times V\to V$ is continuous
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+$k$ is a field. A \textit{semi-norm} $\|\cdot\|$ on a
+\begin{itemize}
+\item Abelian group $A$ is $A\xrightarrow{\|\cdot\|}k_{\geq0}$ such that $\|-a\|=\|a\|$, $\|a+b\|\leq\|a\|+\|b\|$
+\item Rng $R$ is $R\xrightarrow{\|\cdot\|}k_{\geq0}$ such that $\|rs\|\leq\|r\|\|s\|$ \par
+\item Vector space $V$ is is $V\xrightarrow{\|\cdot\|}k_{\geq0}$ such that $\|kv\|=|k|\|v\|$
+\end{itemize}
+$\|\cdot\|$ is a \textit{norm} if $\|x\|=0\iff x$ is trivial
+\end{definition}
+
+\begin{remark}
+A norm $\|\cdot\|$ induces a metric $d(x,y)=\|x-y\|$
+\end{remark}
+
+\begin{definition}
+A topological vector space $V$ is
+\begin{itemize}
+\item \textit{locally convex} if 0 has a neighborhood basis consists of convex subsets. Such neighborhood basis exists iff it is induced by a family of seminorms $p_i$ as $\{p_i<c\}$
+\item \textit{Banach} if it is normed and complete with respect to the metric induced by that norm
+\item \textit{Fr\'echet} space is a locally convex and completely metrizable
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+$Y$ is a topological vector space, $T$ is a set, $\mathcal G\subseteq \mathcal P(T)$ is a directed set by inclusion, $\mathcal N$ is a local base around $0\in Y$. The \textit{topology of uniform convergence}\index{Topology of uniform convergence} on sets in $\mathcal G$ or $\mathcal G$ \textit{topology}\index{$\mathcal G$ topology} is the unique translation invariant topology given by basis
+\[U(G,N)=\left\{f\in Y^T\middle|G\in\mathcal G, N\in\mathcal N,f(G)\subseteq N\right\}\]
+\end{definition}
+
+\begin{example}
+$\mathcal G$ is the set of compact subspaces, $Y$ is a metric space
+\end{example}
+
+\begin{definition}\index{Equicontinuity}
+Let $X,Y$ be a topological spaces, a family of continuous functions $A\subseteq Y^X$ is \textit{equicontinuous} at $x\in X$, if for any open neighborhood $V$ of $y=f(x)$, there is an open neighborhood $U$ of $x$ such that $f(U)\subseteq V,\forall f\in A$
+\end{definition}
+
+\begin{definition}
+A topological space $X$ is called separable if $X$ has a countable dense subset
+\end{definition}
+
+\begin{theorem}[Arzela-Ascoli theorem]\label{Arzela-Ascoli theorem}
+Let $X$ be a topological space and $Y$ be a complete metric space, $A\subseteq Y^X$ be a family of equicontinuous functions(meaning pointwise equicontinuous). If $X$ is compact, and $A_x:=\{f(x)|f\in A\}\subseteq Y$ is relatively compact for any $x\in A$, then $A$ is relatively compact in $Y^X$. If $X$ is separable with $S$ being a countable dense subset, and $A_x$ is relatively compact for any $x\in S$, then any sequence $\{f_n\}$ has a subsequence $\left\{f_{n_k}\right\}$ converges uniformly on any compact subset of $X$
+\end{theorem}
+
+\begin{definition}
+A topological space $X$ is a \textit{Baire space}\index{Baire space} if for any countable open dense subsets $\{U_i\}$, $\displaystyle\bigcap_{i=1}^\infty U_i$ is also dense
+\end{definition}
+
+\begin{theorem}[Baire's category theorem]\label{Baire's category theorem}
+Every complete metric space $X$ is a Baire space
+\end{theorem}
+
+\begin{proof}
+Let $\{U_i\}$ be a countable open dense subsets, suppose $\displaystyle\bigcap_{i=1}^\infty U_i$ is not dense, then the complement of its closure is open nonempty, suppose $B(x,r)$ is in the complement of the closure, since $U_1$ is dense, $U_1\cap B(x,r)\neq\emptyset$, then there exists $\overline{B(x_1,r_1)}\subseteq U_1\cap B(x,r)$, similarly, we can find $\overline{B(x_n,r_n)}\subseteq U_n\cap B(x_{n-1},r_{n-1})$, and we can also assume $r_i\to0$, thus $x_i\to y\in X$ since $X$ is complete, but $y\in B(x,r)\displaystyle\bigcap\bigcap_{i=1}^\infty U_i=\emptyset$ which is a contradiction
+\end{proof}
+
+\begin{definition}[Test function spaces]
+Suppose $U\subseteq\mathbb R^n$ is an open subset, a \textit{test function space} $\mathscr D$ could be
+\begin{enumerate}
+\item $\mathscr D=C_c^\infty(U)$, $\phi_i\to\phi$ in $\mathscr D$ if there exists compact $K\subseteq U$ such that $\bigcup_i\supp\phi_i\subseteq K$ and $\partial^\alpha\phi_i\to\partial^\alpha\phi$ uniformly. Or a neighborhood basis given by $W$ such that $W\cap \mathscr D_K$ is open
+\item 
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}
+$\mathscr D=C^\infty_c(U)$ is sequential compact
+\end{theorem}
+
+\begin{theorem}
+$\mathscr D=C^\infty_c(U)$ is not metrizable
+\end{theorem}
+
+\begin{proof}
+Let $\mathscr D_K=\{f\in\mathscr D|\supp f\subseteq K\}$ for $K\subseteq U$ compact, they are Frechet with seminorms $\sup_{K}|\partial^\alpha f|$, they are closed subspaces of $\mathscr D$. It is easy to see that the interior of $\mathscr D$ in $\mathscr D$ is empty, so it is nowhere dense, By Baire's category theorem~\ref{Baire's category theorem} and $\mathscr D$ is sequential compact, $\mathscr D=\mathscr D_K$ is not metrizable
+\end{proof}
+
+\begin{definition}
+Suppose $\mathscr D$ is a test function space. Distributions are defined to be the continuous functionals
+\end{definition}
+
+\begin{definition}
+A \textit{Banach algebra}\index{Banach algebra} is an associative algebra $A$ which is a complete normed rng such that $\|rs\|\leq\|r\|\|s\|$. $A$ is \textit{unital} if $A$ is a ring with identity element having norm $1$
+\end{definition}
+
+\begin{definition}
+A \textit{*-algebra}\index{*-algebra} is a Banach algebra over $\mathbb C$ such that there is an antilinear involution $*:A\to A$, such that $(xy)^*=y^*x^*$. $A$ is a $C^*$\textit{-algebra}\index{$C^*$-algebra} if $\|x^*x\|=\|x^*\|\|x\|$
+\end{definition}
+
+\begin{example}
+$X$ is locally compact, $C_0(X)$ are the continuous functions vanishes at infinity, then $C_0(X)$ is a Banach algebra with the supremum norm, $C_0(X)$ is unital if $X$ is compact with $1$ being the identity. $C_0(X)$ is a $C^*$-algebra with complex conjugation as the involution
+\end{example}
+
+\begin{definition}
+$A$ is a unital Banach algebra over $\mathbb R,\mathbb C$, $e^x=\displaystyle\sum_{k=0}^\infty\dfrac{x^k}{k!}$ defines the \textit{exponential}
+\[\|e^x\|=\left\|\sum_{k=0}^\infty\frac{x^k}{k!}\right\|\leq\sum_{k=0}^\infty\left\|\frac{x^k}{k!}\right\|\leq\sum_{k=0}^\infty\frac{\|x\|^k}{k!}=e^{\|x\|}\]
+The \textit{logarithm} $\log x=\displaystyle\sum_{k=1}^\infty\dfrac{(-1)^{x+1}(x-1)^k}{k}$ is defined on $\|x-1\|<1$
+\end{definition}
+
+\begin{lemma}
+$e^x$ and $\log x$ are inverses to each other locally
+\end{lemma}
+
+\begin{proposition}
+Let $A$ be a $k$-Banach algebra, $V$ is a Banach $A$-module
+\begin{enumerate}
+\item $v'(t)=av(t)$ with $v(0)=x$ has the unique solution $v(t)=e^{ta}x$
+\item A linear map $D:A\to A$ is a derivation iff $e^{tD}$ are automorphisms for all $t\in k$
+\item For any $a\in A$, $t\in k$, $a$-invariant subspaces are precisely $e^{ta}$-invariant subspaces
+\item Consider the representation $A^\times\to\GL(V)$, $(af)(x):=f(a^{-1}x)$. This induces another representation $A\to\mathfrak{gl}(V)$ via $(af)(x)=\left.\frac{d}{dt}\right|_{t=0}f(e^{-ta}x)$
+
+Suppose $V=k[x_1,\cdots,x_n]$, $A=\mathfrak{gl}_n(k)$, $A^\times=\GL_n(k)$
+
+consider $v(t)=e^{tA}\cdot f:=f(e^{-tA}x)$, then $v'(t)=\left.\dfrac{d}{dt}\right|_{t=0}f(e^{-tA}x)=:D_Af$, where $D_A$ is a linear differential operator $V_m\to V_m$ by Lemma \ref{AV<=V <=> e^tAV<=V}, then we should have $f(e^{-tA}x)=v(t)=e^{tD_A}f$, therefore we would get $D_A=-A^T$, and it will be easy to check that $D_{[A,B]}=[D_A,D_B]$
+\item If $[X,[X,Y]]=0$, then $e^Xe^Y=e^{X+Y+\frac{1}{2}[X,Y]}$
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+\begin{enumerate}
+\item 
+\item 
+\item If $aV\subseteq V$, then $e^{ta}V=\displaystyle\sum_{k=0}^\infty t^k\dfrac{a^k}{k!}V\subseteq V$. If $e^{ta}V\subseteq V,\forall t$, since $V$ is closed, $\left.\dfrac{d}{dt}\right|_{t=0}e^{ta}V=aV\subseteq V$
+\item If we denote $g=(g_{ij})\in GL(n,\mathbb C)$, $f(x)=\displaystyle\sum_{i_1,\cdots,i_n}C_{i_1,\cdots,i_n}x_1^{i_1}\cdots x_n^{i_n}$, then $f(g^{-1}x)=\displaystyle\sum_{i_1,\cdots,i_n}C_{i_1,\cdots,i_n}(g_{11}x_1+\cdots+g_{1n}x_n)^{i_1}\cdots (g_{n1}x_1+\cdots+g_{nn}x_n)^{i_n}$ is still a homogeneous polynomial in $n$ variables of degree $m$ \par
+Denote $A=(a_{ij})$, \begin{align*}
+\left.\dfrac{d}{dt}\right|_{t=0}f(e^{-tA}x)&=\displaystyle\nabla f(x)\cdot\left.\dfrac{d}{dt}\right|_{t=0}e^{-tA}x \\
+&=-\nabla f(x)\cdot Ax \\
+&=-\sum_{i,j}a_{ij}x_j\dfrac{\partial f}{\partial x_i} \\
+&=\left(-\sum_{i,j}a_{ij}x_j\dfrac{\partial }{\partial x_i}\right) f \\
+&=(-\nabla^TAx)f \\
+&=D_A f
+\end{align*}
+In particular, $\displaystyle D_Ax_i=-\sum_{j=1}^na_{ij}x_j$, thus $D_A$ has matrix $-A^T$ with respect to $x_1,\cdots,x_n$, basis of $V_1$
+\item Let $A(t)=e^{tX}e^{tY}e^{-\frac{t^2}{2}[X,Y]}$, $B(t)=e^{t(X+Y)}$, then $A(0)=B(0)$, $B'(t)=B(t)(X+Y)$ and
+\[A'(t)=e^{tX}Xe^{tY}e^{-\frac{t^2}{2}[X,Y]}+e^{tX}e^{tY}Ye^{-\frac{t^2}{2}[X,Y]}-e^{tX}e^{tY}t[X,Y]e^{-\frac{t^2}{2}[X,Y]}\]
+Since $[X,[X,Y]]=0$, $[Y,[X,Y]]=-[Y,[Y,X]]=0$
+\[e^{-tY}Xe^{tY}=Ad_{e^{-tY}}(X)=e^{ad_{-tY}}(X)=X+t[X,Y]\]
+\[A'(t)=e^{tX}e^{tY}(X+Y)e^{-\frac{t^2}{2}[X,Y]}=e^{tX}e^{tY}e^{-\frac{t^2}{2}[X,Y]}(X+Y)=A(t)(X+Y)\]
+Thus $A(t),B(t)$ satisfies the same ODE and initial condition, $A(t)=B(t)\Rightarrow e^Xe^Y=A(1)=B(1)=e^{X+Y+\frac{1}{2}[X,Y]}$
+\end{enumerate}
+\end{proof}
+
+\begin{theorem}[Lie product formula]\label{Lie product formula}
+$\displaystyle e^{A+B}=\lim_{n\to\infty}\left(e^\frac{A}{n}e^\frac{B}{n}\right)^n$
+\end{theorem}
+
+\begin{theorem}[Lie commutator formula]\label{Lie commutator formula}
+$\displaystyle e^{[A,B]}=\lim_{n\to\infty}\left[e^{\frac{A}{n}},e^{\frac{B}{n}}\right]^{n^2}$, the left and right $[,]$ are Lie bracket and commutator
+\end{theorem}
+
+\begin{theorem}[Backer-Campbell-Hausdorff formula]
+$e^Xe^Y=e^Z$ around $0$, where $\displaystyle Z=X+\int_0^1\psi(e^{ad_X}e^{tad_Y})dt(Y)$ and
+\begin{align*}
+\psi(x)&=\frac{x\log x}{x-1}\xequal{y=1-x}=\sum_{n=1}^\infty\frac{y^{n-1}}{n}-\sum_{n=1}^\infty\frac{y^n}{n}=1+\sum_{n=1}^\infty\left(\frac{y^n}{n+1}-\frac{y^n}{n}\right)=1-\sum_{n=1}^\infty\frac{(1-x)^n}{n(n+1)}
+\end{align*}
+The first few terms are
+\[e^Xe^Y=e^{X+Y+\frac{1}{2}[X,Y]+\frac{1}{12}[X,[X,Y]]+\frac{1}{12}[Y,[Y,X]]+\cdots}\]
+\end{theorem}
+
+\begin{proof}
+Note that $\displaystyle\lim_{m\to\infty}\sum_{k=0}^{m-1}\frac{1}{m}e^{-\frac{kx}{m}}=\int_0^1e^{-tx}dt=\frac{1-e^{-x}}{x}$, we have
+\begin{align*}
+\left.\dfrac{d}{dt}\right|_{t=0}e^{X+tY}&=\left.\dfrac{d}{dt}\right|_{t=0}\left(e^\frac{X}{m}e^\frac{tY}{m}\right)^m =\lim_{m\to\infty}\left.\dfrac{d}{dt}\right|_{t=0}\left(e^\frac{X}{m}e^\frac{tY}{m}\right)^m=\lim_{m\to\infty}\sum_{k=0}^{m-1}e^\frac{kX}{m}\textstyle\frac{Y}{m}e^\frac{(m-k)X}{m} \\
+&=\lim_{m\to\infty}\sum_{k=0}^{m-1}\frac{1}{m}e^\frac{kX}{m}Ye^{-\frac{kX}{m}}e^X=\left(\lim_{m\to\infty}\sum_{k=0}^{m-1}\frac{1}{m}e^{\frac{kad_X}{m}}\right)(Y)e^X=\dfrac{e^{ad_X}-1}{ad_X}(Y)e^X
+\end{align*}
+Let $e^{Z(t)}=e^Xe^{tY}$, $\dfrac{d}{dt}e^{Z(t)}=\dfrac{d}{dt}(e^Xe^{tY})=e^Xe^{tY}Y=e^{Z(t)}Y$, but $\displaystyle\dfrac{d}{dt}e^{Z(t)}=\left.\dfrac{d}{ds}\right|_{s=t}e^{Z(s)}=\left.\dfrac{d}{ds}\right|_{s=t}e^{Z(t)+Z'(t)(s-t)}=\frac{e^{ad_{Z(t)}}-1}{ad_{Z(t)}}(Z'(t))e^{Z(t)}$, hence $\dfrac{e^{ad_{Z(t)}}-1}{ad_{Z(t)}}(Z'(t))=e^{Z(t)}Ye^{-Z(t)}=Ad_{e^{Z(t)}}(Y)=e^{ad_{Z(t)}}(Y)$, $Z'(t)=\dfrac{ad_{Z(t)}e^{ad_{Z(t)}}}{e^{ad_{Z(t)}}-1}(Y)$, since $e^{ad_{Z(t)}}=Ad_{e^{Z(t)}}=Ad_{e^Xe^{tY}}=e^{ad_X}e^{tad_Y}$
+\begin{align*}
+Z&=Z(1)=Z(0)+\int_0^1\dfrac{ad_{Z(t)}e^{ad_{Z(t)}}}{1-e^{-ad_{Z(t)}}}(Y)dt=X+\int_0^1\dfrac{e^{ad_X}e^{tad_Y}\log(e^{ad_X}e^{tad_Y})}{e^{ad_X}e^{tad_Y}-1}(Y)dt
+\end{align*}
+\end{proof}
+
+\begin{theorem}[Stone-Weierstrass]
+$X$ is compact Hausdorff, $A\subseteq C(X,\mathbb R)$ is a unital subalgebra. $A$ is dense in $C(X,\mathbb R)$ with the topology of uniform convergence iff $A$ separates points \par
+$S\subseteq C(X,\mathbb C)$ is a unital *-algebra that separating points, then $S$ is dense in $C(X,\mathbb C)$
+\end{theorem}
+
+\end{document}

@@ -1,0 +1,152 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{theorem}
+$\Lambda$ is the fundamental solution of the system of linear differential equations
+\[d\Lambda=\omega\Lambda\]
+\end{theorem}
+
+\begin{example}
+For
+\begin{align*}
+\Li_{1,1}(x,y)&=\int_{(0,0)}^{(x,y)}dv_1dv_2+dv_{12}d(u_1-v_1+v_2) \\
+&=\int_{(0,0)}^{(x,y)}dv_1dv_2+dv_{12}du_1-dv_{12}dv_1+dv_{12}dv_2
+\end{align*}
+$(0,0)<(0,1)<(1,0)<(1,1)$ in $\mathfrak S(1,1)$
+\[\Lambda=\begin{bmatrix}
+1&&&\\
+\Li_1(y)&1&&\\
+\Li_1(xy)&&1&\\
+\Li_{1,1}(x,y)&\Li_1(x)&\Li_1\left(\frac{1-xy}{1-x}\right)&1
+\end{bmatrix}\tau_{1,1}(2\pi i)\]
+\[\omega=\begin{bmatrix}
+0&&&\\
+-dv_2&0&&\\
+-dv_{12}&0&0&\\
+0&-dv_1&d(-u_1+v_1-v_2)&0
+\end{bmatrix}\]
+\end{example}
+
+\begin{example}
+For
+\begin{align*}
+\Li_{2,1}(x,y)&=\int_{(0,0)}^{(x,y)}(dv_1dv_2+dv_{12}d(u_1-v_1+v_2))du_1+dv_{12}d(u_1+u_2)dv_2 \\
+&=\int_{(0,0)}^{(x,y)}dv_1dv_2du_1+dv_{12}du_1du_1-dv_{12}dv_1du_1 \\
+&+dv_{12}dv_2du_1+dv_{12}du_1dv_2+dv_{12}u_2dv_2
+\end{align*}
+$(0,0)<(0,1)<(1,0)<(1,1)<(2,0)<(2,1)$ in $\mathfrak S(2,1)$
+\[\Lambda=\begin{bmatrix}
+1&&&&&&\\
+\Li_{1}(y)&1&&&&\\
+\Li_{1}(xy)&&1&&&\\
+\Li_{1,1}(x,y)&\Li_1(x)&\log\frac{1-x}{(1-y)x}&1&&\\
+\Li_{2}(xy)&&\log(xy)&&1&\\
+\Li_{2,1}(x,y)&\Li_2(x)&g(x,y)&\log x&\Li_1(y)&1
+\end{bmatrix}\tau_{2,1}(2\pi i)\]
+Where $dg=\log\dfrac{1-x}{(1-y)x}\dfrac{dx}{x}+\log(xy)\dfrac{dy}{1-y}$
+\[\omega=\begin{bmatrix}
+0&&&&&\\
+-dv_2&0&&&&\\
+-dv_{12}&0&0&&\\
+0&-dv_1&d(-u_1+v_1-v_2)&0&&\\
+0&0&d(u_1+u_2)&0&0&\\
+0&0&0&du_1&-dv_2&0
+\end{bmatrix}\]
+\end{example}
+
+\begin{example}
+For
+\begin{align*}
+\Li_{1,1,1}(x,y,z)&=\int_{(0,0,0)}^{(x,y,z)} \\
+&=\int_{(0,0,0)}^{(x,y,z)}
+\end{align*}
+$(0,0,0)<(0,0,1)<(0,1,0)<(1,0,0)<(0,1,1)<(1,0,1)<(1,1,0)<(1,1,1)$ in $\mathfrak S(1,1,1)$
+\[\Lambda=\left[\begin{smallmatrix}
+1&&&&&&&\\
+\Li_{1}(z)&1&&&&&&\\
+\Li_{1}(yz)&&1&&&&&\\
+\Li_{1}(xyz)&&&1&&&&\\
+\Li_{1,1}(y,z)&\Li_1(y)&\log\frac{1-y}{(1-z)y}&&1&&&\\
+\Li_{1,1}(xy,z)&\Li_1(xy)&&\log\frac{1-xy}{(1-z)xy}&&1&&\\
+\Li_{1,1}(x,yz)&&\Li_1(x)&\log\frac{1-x}{(1-yz)x}&&&1&\\
+\Li_{1,1,1}(x,y,z)&g(x,y)&\Li_1(x)\log\frac{1-y}{(1-z)y}&h(x,y)&\Li_1(x)&\log\frac{1-y}{(1-x)x}&\log\frac{1-z}{(1-y)y}&1
+\end{smallmatrix}\right]\tau_{1,1,1}(2\pi i)\]
+Where
+\[\omega=\left[\begin{smallmatrix}
+0\\
+-dv_3&0\\
+-dv_{23}&0&0\\
+-dv_{13}&0&0&0\\
+0&-dv_2&d(v_2-u_2-v_3)&0&0\\
+0&-dv_{12}&0&d(v_{12}-u_1-u_2-v_3)&0&0\\
+0&0&-dv_1&d(v_1-u_1-v_{23})&0&0&0\\
+0&0&0&0&-dv_1&d(v_1-u_1-v_2)&d(v_2-u_2-v_3)&0
+\end{smallmatrix}\right]\]
+\end{example}
+
+\begin{example}
+For
+\begin{align*}
+\Li_{1,2}(x,y)&=dv_{12}d(u_1+u_2)d(u_1-v_2)+(dv_1dv_2+dv_{12}d(u_1-v_1+v_2))du_2 \\
+&=dv_{12}du_1du_1-dv_{12}du_1dv_2+dv_{12}du_2du_1-dv_{12}du_2dv_2 \\
+&+dv_1dv_2du_2+dv_{12}du_1du_2-dv_{12}dv_1du_2+dv_{12}dv_2du_2
+\end{align*}
+$(0,0)<(0,1)<(1,0)<(1,1)<(0,2)<(1,2)$ in $\mathfrak S(1,2)$
+\[\Lambda=\begin{bmatrix}
+1&&&&&&&\\
+\Li_{1}(y)&1&&&&&\\
+\Li_{1}(xy)&0&1&&&&\\
+\Li_{1,1}(x,y)&\Li_1(x)&\log\frac{1-x}{(1-y)x}&1&&&\\
+\Li_2(y)&\log y&&&1&&&\\
+\Li_{2}(xy)&0&\log(xy)&&&1&&\\
+\Li_{1,2}(x,y)&\Li_1(x)\log y&g(x,y)&\log y&\Li_1(x)&-\Li_1(x^{-1})&1
+\end{bmatrix}\tau_{1,2}(2\pi i)\]
+Where $g(x,y)=-I((xy)^{-1};y^{-1},0;1)$
+\[\omega=\begin{bmatrix}
+0&&&&&&\\
+-dv_2&0&&&&&\\
+-dv_{12}&0&0&&&\\
+0&-dv_1&d(-u_1+v_1-v_2)&0&&&\\
+0&du_2&0&0&0&&\\
+0&0&d(u_1+u_2)&0&0&0&\\
+0&0&0&du_2&-dv_1&d(v_1-u_1)&0
+\end{bmatrix}\]
+\end{example}
+
+\begin{example}
+For
+\begin{align*}
+\Li_{2,2}(x,y)&=(dv_{12}du(u_1+u_2)d(u_1-v_2)+(dv_1dv_2+dv_{12}d(u_1-v_1+v_2))du_2)du_1 \\
+&+((dv_1dv_2+dv_{12}d(u_1-v_1+v_2))du_1+dv_{12}d(u_1+u_2)dv_2)du_2 \\
+&=dv_{12}du_1du_1du_1-dv_{12}du_1dv_2du_1+dv_{12}du_2du_1du_1-dv_{12}du_2dv_2du_1 \\
+&+dv_1dv_2du_2du_1+dv_{12}du_1du_2du_1-dv_{12}dv_1du_2du_1+dv_{12}dv_2du_2du_1 \\
+&+dv_1dv_2du_1du_2+dv_{12}du_1du_1du_2-dv_{12}dv_1du_1du_2 \\
+&+dv_{12}dv_2du_1du_2+dv_{12}du_1dv_2du_2+dv_{12}u_2dv_2du_2
+\end{align*}
+$(0,0)<(0,1)<(1,0)<(1,1)<(0,2)<(2,0)<(1,2)<(2,1)<(2,2)$ in $\mathfrak S(2,2)$
+\[\Lambda=\left[\begin{smallmatrix}
+1&&&&&&&&\\
+\Li_{1}(y)&1&&&&&&&\\
+\Li_{1}(xy)&&1&&&&&&\\
+\Li_{1,1}(x,y)&\Li_1(x)&\log\frac{1-x}{(1-y)x}&1&&&&&\\
+\Li_{2}(y)&\log y&&&1&&&&\\
+\Li_{2}(xy)&&\log(xy)&&&1&&&\\
+\Li_{1,2}(x,y)&\Li_1(x)\log y&g(x,y)&\log y&\Li_1(x)&\log\frac{1-x}{x}&1&&\\
+\Li_{2,1}(x,y)&\Li_2(x)&h(x,y)&\log x&&\Li_1(y)&&1&\\
+\Li_{2,2}(x,y)&\Li_2(x)\log y&i(x,y)&\log x\log y&\Li_2(x)&\Li_2(y)-\Li_2(x)-\frac{1}{2}\log^2x&\log x&\log y&1
+\end{smallmatrix}\right]\tau_{2,2}(2\pi i)\]
+\[\omega=\begin{bmatrix}
+0&&&&&&&&\\
+-dv_2&0&&&&&&&\\
+-dv_{12}&0&0&&&&&\\
+0&-dv_1&d(-u_1+v_1-v_2)&0&&&&&\\
+0&du_2&0&0&0&&&&\\
+0&0&d(u_1+u_2)&0&0&0&&&\\
+0&0&0&du_2&-dv_1&d(v_1-u_1)&0&&\\
+0&0&0&du_1&0&-dv_2&0&0&\\
+0&0&0&0&0&0&du_1&du_2&0
+\end{bmatrix}\]
+\end{example}
+
+\end{document}

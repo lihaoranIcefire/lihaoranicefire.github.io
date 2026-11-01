@@ -1,0 +1,58 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+
+Take $\Li_{2,1}(x,y)$ for an example, we have differential equation
+\[dV=\omega V\]
+
+Here $\omega$ is an integrable connection since $d\omega-\omega\wedge\omega=0$. Let $\Omega$ be such that $d\Omega=\omega$
+
+Then the lifted variation matrix should be $\widehat V=e^{-\Omega}V$, and we should have $d\widehat V=\widehat \omega\widehat V$, but we have
+\[d\widehat V=d(e^{-\Omega}V)=d(e^{-\Omega})e^\Omega e^{-\Omega}V+e^{-\Omega}\omega e^\Omega e^{-\Omega}V=(d(e^{-\Omega})e^\Omega+e^{-\Omega}\omega e^\Omega)\widehat V\]
+Thus $\widehat\omega=(de^{-\Omega})e^\Omega+e^{-\Omega}\omega e^\Omega$ gives the lifted connection form which is again integrable since
+\begin{align*}
+d\widehat\omega-\widehat\omega\wedge\widehat\omega&=\left(-(de^{-\Omega})\wedge(de^\Omega)+(de^{-\Omega})\wedge\omega e^\Omega+e^{-\Omega}d\omega e^{\Omega}-e^{-\Omega}\omega\wedge(de^\Omega)\right)- \\
+&\left((de^{-\Omega})e^\Omega\wedge(de^{-\Omega})e^\Omega+(de^{-\Omega})\wedge\omega e^\Omega+e^{-\Omega}\omega e^\Omega\wedge d(e^{-\Omega})e^\Omega+e^{-\Omega}\omega\wedge\omega e^{\Omega}\right) \\
+&=-(de^{-\Omega})\wedge(de^\Omega)-e^{-\Omega}\omega\wedge(de^\Omega)-(de^{-\Omega})e^\Omega\wedge(de^{-\Omega})e^\Omega-e^{-\Omega}\omega e^\Omega\wedge (de^{-\Omega})e^\Omega \\
+&+e^{-\Omega}(d\omega-\omega\wedge\omega)e^{\Omega} \\
+&=-\left(de^{-\Omega}+e^{-\Omega}\omega\right)\wedge\left(de^{\Omega}+e^{\Omega}(de^{-\Omega})e^{\Omega}\right) \\
+&=-\left(de^{-\Omega}+e^{-\Omega}\omega\right)\wedge\left(de^{\Omega}-(de^{\Omega})e^{-\Omega}e^{\Omega}\right) \\
+&=0
+\end{align*}
+
+But $\displaystyle de^{-\Omega}=e^{-\Omega}\frac{e^{\ad_\Omega}-1}{\ad_\Omega}\omega$, thus $\displaystyle\widehat\omega=e^{-\Omega}\frac{e^{\ad_\Omega}+\ad_\Omega-1}{\ad_\Omega}\omega e^{\Omega}$
+
+Conversely, $V=e^\Omega\widehat V$, $dV=((de^\Omega)e^{-\Omega}+e^{\Omega}\widehat\omega e^{-\Omega})V=\omega V$
+
+Note that 
+\[\sum_{i=0}^k(-1)^i\binom{n+1}{i}=1+\sum_{i=1}^k(-1)^i\left(\binom{n}{i}+\binom{n}{i-1}\right)=(-1)^k\binom{n}{k}\]
+
+\begin{align*}
+&\sum_{\substack{p+q+r=n-1\\p,q,r\geq0}}\frac{(-1)^{p+q+1}}{(p+q+1)!r!}\Omega^p\omega\Omega^{q+r}+\sum_{\substack{k+l=n-1\\k,l\geq0}}\frac{(-1)^k}{k!l!}\Omega^k\omega\Omega^l \\
+&=\sum_{k+l=n-1}\Omega^k\omega\Omega^l\left(\frac{(-1)^k}{k!l!}+\sum_{q+r=l}\frac{(-1)^{k+q+1}}{(k+q+1)!r!}\right) \\
+&=\sum_{k+l=n-1}\Omega^k\omega\Omega^l\left(\frac{(-1)^k}{k!l!}+\frac{(-1)^{n}}{n!}\sum_{r=0}^l(-1)^{r}\binom{n}{r}\right) \\
+&=\sum_{k+l=n-1}\Omega^k\omega\Omega^l\left(\frac{(-1)^k}{k!l!}+\frac{(-1)^{n}}{n!}(-1)^l\binom{n-1}{l}\right) \\
+&=\frac{n-1}{n!}\sum_{k+l=n-1}(-1)^{k+1}\binom{n-1}{k}\Omega^k\omega\Omega^l
+\end{align*}
+
+Note that we also observe
+\begin{align*}
+&\left[\sum_{\substack{k+l=n-1\\k,l\geq0}}(-1)^{k+1}\binom{n-1}{k}\Omega^k\omega\Omega^l,\Omega\right]\\
+&=\sum_{\substack{k+l=n-1\\k,l\geq0}}(-1)^{k+1}\binom{n-1}{k}(\Omega^k\omega\Omega^{l+1}-\Omega^{k+1}\omega\Omega^l)\\
+&=\sum_{\substack{k+l=n\\k\geq0,l\geq1}}(-1)^{k+1}\binom{n-1}{k}\Omega^k\omega\Omega^{l}-\sum_{\substack{k+l=n\\l\geq0,k\geq1}}(-1)^{k}\binom{n-1}{k-1}\Omega^{k}\omega\Omega^l\\
+&=\sum_{\substack{k+l=n\\k\geq0,l\geq1}}(-1)^{k+1}\binom{n-1}{k}\Omega^k\omega\Omega^{l}+\sum_{\substack{k+l=n\\l\geq0,k\geq1}}(-1)^{k+1}\binom{n-1}{k-1}\Omega^{k}\omega\Omega^l\\
+&=\sum_{\substack{k+l=n\\k,l\geq0}}(-1)^{k+1}\binom{n}{k}\Omega^k\omega\Omega^l
+\end{align*}
+
+A formula of Richard Hain says
+\begin{align*}
+V&=\int I+\omega+\omega\omega+\omega\omega\omega+\cdots
+\end{align*}
+So $\text{SymbolMap}(V)=I+\Omega+\Omega\otimes\Omega+\Omega\otimes\Omega\otimes\Omega+\cdots$, and $\text{SymbolToForms}(\text{SymbolMap}(V))=\widehat\omega$ which is symmetrized since
+\begin{align*}
+\text{Symmetrization}\left(\sum_{k=0}^n(-1)^{k+1}\binom{n}{k}\Omega^k\omega\Omega^l\right)&=\sum_{k=0}^n(-1)^{k+1}\binom{n}{k}\Omega^k\omega\Omega^l-\left(\frac{1}{n+1}\sum_{k=0}^n(-1)^{k+1}\binom{n}{k}\right)d(\Omega^{n+1}) \\
+&=\sum_{k=0}^n(-1)^{k+1}\binom{n}{k}\Omega^k\omega\Omega^l
+\end{align*}
+
+\end{document}

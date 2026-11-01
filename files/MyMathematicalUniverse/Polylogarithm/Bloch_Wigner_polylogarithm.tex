@@ -1,0 +1,15 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+The \textit{Bloch-Wigner polylogarithm}\index{Bloch-Wigner polylogarithm} is defined as
+\[\mathcal L_n(z)=\Re_n\left(\sum_{r=0}^{n-1}\frac{2^rB_r}{r!}\Li_{n-r}(z)\log^r|z|\right)\]
+Here $\Re_n$ is $\operatorname{Re}$ if $n$ is odd and $\operatorname{Im}$ if $n$ is even. $B_n$ are Bernoulli numbers. For instance, $\mathcal L_1(z)=\log|1-z|$, $\mathcal L_2(z)=\operatorname{Im}(\Li_2(z))+\operatorname{Im}(\log(1-z))\log|z|$
+\end{definition}
+
+\begin{lemma}
+$\mathcal L_n(z)+(-1)^n\mathcal L_n(z^{-1})=0$. $\mathcal L_3(z)+\mathcal L_3\left(\frac{1}{1-z}\right)+\mathcal L_3(1-z^{-1})=\zeta(3)$. $\mathcal L_2(z)-\mathcal L_2\left(\frac{1}{1-z}\right)=0$
+\end{lemma}
+
+\end{document}

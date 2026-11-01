@@ -1,0 +1,501 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\tableofcontents
+\newpage
+
+\section{Commutative ring}
+
+\begin{proposition}
+$I,J\subseteq A$ are ideals, $P\subset A$ is a prime ideal, then
+\begin{enumerate}
+\item $IJ\subseteq P\Rightarrow I\subseteq P$ or $J\subseteq P$
+\item $I\subseteq \sqrt J\Rightarrow\sqrt I\subseteq\sqrt J$
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+
+\end{proof}
+
+\begin{definition}
+$S\subseteq R$ is \textit{multiplictive closed}, the localization $S^{-1}R$ of $R$ with respect to $S$ is $R\times S/\sim$, $(r,s)\sim(r',s')$ iff there exists $t\in S$ such that $t(rs'-sr)=0$. $S^{-1}R$ has the universal property that for any $f:R\to T$ such that maps $S$ to units, then there exists a unique $g:S^{-1}R\to T$ such that $gi=f$
+\begin{center}
+\begin{tikzcd}
+R \arrow[rd, "f"'] \arrow[r, "i"] & S^{-1}R \arrow[d, "\exists_1g" description, dashed] \\
+                                  & T                                                  
+\end{tikzcd}
+\end{center}
+\end{definition}
+
+\begin{definition}
+Given a ring $R$ and a proper ideal $I$, we can define an \textit{associated graded ring}\index{Associated graded ring} $\displaystyle gr_IR:=\bigoplus_{n=0}^\infty I^n/I^{n+1}$, if $M$ is a left $R$-module, we can define \textit{associated graded module}\index{Associated graded module} $\displaystyle gr_IM:=\bigoplus_{n=0}^\infty I^nM/I^{n+1}M$
+\end{definition}
+
+\begin{definition}
+$R$ is a \textit{local ring}\index{Local ring} if it has a unique maximal ideal $m$. The \textit{residue field}\index{Residue field} is $k=R/m$
+\end{definition}
+
+\begin{definition}
+$R$ is a \textit{semilocal ring}\index{Semilocal ring} if it has only finitely many maximal ideal
+\end{definition}
+
+\begin{proposition}
+Let $R$ be a UFD, $f$ a prime element, then $ht(f)=1$
+\end{proposition}
+
+\begin{proof}
+Suppose there exists prime ideal $P$ such that $0\subsetneq P\subsetneq (f)$, then we can find a prime element in $g\in P$, thus we have $0\subsetneq(g)\subseteq P\subsetneq (f)$, but then $g=fh$ for some $h$, but since $f$ is prime, thus $(f)=(g)$ which is a contradiction, such a prime element exists since we can pick any element $0\neq q=q_1\cdots q_m\in P$ where $q_i$'s are prime, but then at least one of them has to be in $P$
+\end{proof}
+
+\begin{theorem}
+Let $A\subseteq B$ be finitely generated $k$-algebras, and $A,B$ are both domains, $0\neq b\in B\Rightarrow\exists0\neq a\in A$ such that for any $k$-algebra homomorphism $\alpha:A\to k$ with $\alpha(a)\neq0$ can be extended to $k$-algebra homomorphism $\beta:B\to k$ with $\beta(b)\neq0$
+\end{theorem}
+
+\begin{definition}
+Suppose $R$ is a commutative ring with identity, a prime element\index{Prime element} $p\in R$ is an element which is nonzero nor a unit and $p|fg\Rightarrow p|f$ or $p|g$
+\end{definition}
+
+\begin{definition}
+A \textit{graded ring}\index{Graded ring} $R$ is a ring such that $R=\displaystyle\bigoplus_{i} R_i$ is a direct sum of abelian groups and $R_iR_j\subseteq R_{i+j}$ \par
+An ideal is called a \textit{homogeneous ideal}\index{Homogeneous ideal} if it consists of only homogeneous elements \par
+\end{definition}
+
+\begin{theorem}[Chinese remainder theorem]\label{Chinese remainder theorem}\index{Chinese remainder theorem}
+Let $R$ be a commutative ring, and $I_1,\cdots, I_n\leq R$ be pairwise coprime ideals, then $R\cong R/I_1\times\cdots R/I_n, r\mapsto (r\mod I_1,\cdots,r\mod I_n)$
+\end{theorem}
+
+\begin{definition}
+An \textit{integral domain}\index{Integral domain} is a commutative ring $R$ such that $(0)$ is a prime ideal. Equivalently, $rs\in R\Rightarrow$ $r\in R$ or $s\in R$
+\end{definition}
+
+\begin{definition}
+Suppose $R$ is a domain, $K$ is the field of fractions, a \textit{fractional ideal}\index{Fractional ideal} is an $R$ submodule $I\leq K$ such that $rI\subseteq R$ for some nonzero $r\in R$. $I$ is invertible if $IJ=R$ for some other fractional ideal $J$
+\end{definition}
+
+\begin{definition}
+A \textit{Dedekind domain}\index{Dedekind domain} is an integral domain such that every proper ideal is a product of prime ideal
+\end{definition}
+
+\begin{definition}
+A \textit{discrete valuation ring(DVR)}\index{Discrete valuation ring(DVR)} is a PID with a unique nonzero prime ideal
+\end{definition}
+
+\begin{definition}
+A local ring homomorphism $\phi:R\to S$ between local rings is such that $\phi(m_R)\subseteq m_S$
+\end{definition}
+
+\begin{definition}
+$R$ is a commutative ring. An $R$-\textit{linear category}\index{$R$-linear category} $\mathscr C$ is a category enriched over $R$-modules, i.e. $\Hom(A,B)$ are $R$-modules, $\Hom(B,C)\otimes_R\Hom(A,B)\to\Hom(A,C)$ is $R$-bilinear
+\end{definition}
+
+\begin{definition}
+A unital associative $R$-algebra $A$ is a monoid in the monoidal category of $R$-modules, coalgebras are comonoids
+\end{definition}
+
+\begin{definition}
+Commutative ring $R$ is a preadditive category with a single object $\bullet$. An $R$-\textit{algebra}\index{$R$ algebra} is an additive functor $\phi\in R^\mathrm{RMod}$, write $\phi(\bullet)=S$, $\phi(r)s=rs$. A ring $A$ is an $R$ \textit{algebra}\index{$R$ algebra} is a ring homomorphism $R\xrightarrow{\phi}A$, $ra=\phi(r)a$
+\end{definition}
+
+\begin{definition}
+A \textit{coalgebra}\index{Coalgebra} is the categorical dual to a unital associative algebra
+\end{definition}
+
+\begin{definition}
+$A$ is \textit{finite} or $\phi$ is \textit{finite}\index{Finite ring homomorphism} if $A$ is a finitely generated $R$ module \par
+$\phi$ is of \textit{finite type}\index{Finite type ring homomorphism} if $A$ is \textit{finitely generated} $R$ algebra
+\end{definition}
+
+\begin{definition}
+For $p\in \Spec A$, $q\in \Spec B$, $A\subseteq B$, $p$ \textit{lies under} $q$ or $q$ \textit{lies over} $p$ if $q\cap A=p$
+$A\subseteq B$ satisfies \textit{lying over property} if every $p\in \Spec A$ lies under some $q\in \Spec B$ \par
+$A\subseteq B$ satisfies the \textit{incomparability property} if different prime ideals $q,q'$ both lie over $p$ are incomparable, i.e. they don't contain each other \par
+$A\subseteq B$ satisfies \textit{going up property} if for any chain of prime ideals $p_1\subseteq\cdots\subseteq p_n$, $q_1\subseteq\cdots\subseteq q_m$ with $q_i$ lies over $p_i$ and $m<n$ can be extended to a chain of prime ideals $q_1\subseteq\cdots\subseteq q_n$ with $q_i$ lies over $p_i$ \par
+$A\subseteq B$ satisfies \textit{going down property} if for any chain of prime ideals $p_1\supseteq\cdots\supseteq p_n$, $q_1\supseteq\cdots\supseteq q_m$ with $q_i$ lies over $p_i$ and $m<n$ can be extended to a chain of prime ideals $q_1\supseteq\cdots\supseteq q_n$ with $q_i$ lies over $p_i$
+\end{definition}
+
+\begin{definition}
+$R\subseteq S$ are commutative rings, $a\in S$ is \textit{integral}\index{Integral element} over $R$ if it is a root of some monic polynomial in $R[x]$. The \textit{integral closure} of $R$ in $S$ are the integral elements of $S$
+\end{definition}
+
+\begin{theorem}\label{Going up and Going down theorems}
+$B$ is integral over $A$, then $A\subseteq B$ satisfies going up property and incomparability property
+\end{theorem}
+
+\begin{lemma}[Noether's normalization lemma]\label{Noether's normalization lemma}
+$A$ is a finitely generated $k$ algebra, then there exists algebraically independent elements $x_1,\cdots,x_d\in A$ such that $A$ is a finite $k[x_1,\cdots,x_d]$ algebra
+\end{lemma}
+
+\begin{definition}
+The \textit{height} of prime ideal $p$ is $\operatorname{ht} p=\displaystyle\sup_dp_0\subsetneqq\cdots\subsetneqq p_d=p$. The \textit{Krull dimension}\index{Krull dimension} of a ring $R$ is $\displaystyle\dim R=\sup_d p_0\subsetneqq\cdots\subsetneqq p_d=\sup_p\operatorname{ht} p$, $p_i$ are prime ideals
+\end{definition}
+
+\begin{theorem}[Krull's height theorem]
+$R$ is Noetherian, $I$ is an ideal which can be generated by $n$ elements, then the minimal prime over $I$ is of height at most $n$
+\end{theorem}
+
+\begin{definition}
+A local ring $R$ is \textit{regular} if $\dim R=\dim_km/m^2$
+\end{definition}
+
+\begin{proposition}
+$A$ is a integral domain, finitely generated over some subfield $k$, then $\dim A=\mathrm{trdeg}(\mathrm{Frac}A/k)$
+\end{proposition}
+
+\begin{definition}
+A \textit{finitely presented algebra}\index{Finitely presented algebra} over $R$ is of the form $R[x_1,\cdots,x_n]/I$, $I$ is a finitely generated ideal
+\end{definition}
+
+\begin{definition}
+$R$ is a commutative ring. Elements in $W(R)=1+tR[[t]]$ can be factored
+\[\sum_{n=0}^\infty A_nt^n=\prod_{n=1}^\infty(1-X_nt^n)=f_X(t)\]
+\[A_n=\sum_{I}(-1)^{|I|}\prod_{i\in I}X_i\]
+$I$ runs over subsets of $\{1,\cdots,n\}$ that add up to $n$. $X=(X_1,X_2,\cdots)$ are \textit{Witt vectors}\index{Witt vector}. \textit{Witt polynomials}\index{Witt polynomials}(ghost components) are
+\[W_n=X^{(n)}=\sum_{d|n}dX_d^{\frac{n}{d}}\]
+The \textit{Witt ring}\index{Witt ring} is the ring of Witt vectors with addtion and multiplication defined by
+\[(X+Y)^{(n)}=X^{(n)}+Y^{(n)},(XY)^{(n)}=X^{(n)}Y^{(n)}\]
+$1-t$ is the multiplicative identity. Notice
+\begin{align*}
+-t\frac{d}{dt}\log f_X(t)&=\sum_{d\geq1}\frac{dX_dt^d}{1-X_dt^d} \\
+&=\sum_{d\geq1}dX_dt^d\sum_{i\geq0}X_d^it^{di} \\
+&=\sum_{d\geq1}\sum_{i\geq1}dX_d^it^{di} \\
+&=\sum_{n\geq1}X^{(n)}t^n
+\end{align*}
+$Z=X+Y\iff f_Z(t)=f_X(t)f_Y(t)$ since
+\begin{align*}
+\sum_{n\geq1}Z^{(n)}t^n&=-t\frac{d}{dt}\log f_Z(t) \\
+&=-t\frac{d}{dt}\log f_X(t)-t\frac{d}{dt}\log f_X(t) \\
+&=\sum_{n\geq1}X^{(n)}t^n+\sum_{n\geq1}Y^{(n)}t^n
+\end{align*}
+Since $A_j$ are polynomials in $X_i$'s, $B_j$ are polynomials in $Y_i$'s, we can show that by induction
+\[Z_n=C_j-\sum_{I\neq\{n\}}(-1)^{|I|}\prod_{i\in I}Z_i=\sum_{k+l=j}A_kB_l-\sum_{I\neq\{n\}}(-1)^{|I|}\prod_{i\in I}Z_i\]
+are polynomials in $X_i,Y_i$'s \\
+If $Z=XY$, then . In particular, consider $Y=(r,0,\cdots)$, $f_Z(t)=f_X(rt)$ 
+\end{definition}
+
+\begin{definition}
+A commutative ring $R$ is a $\lambda$ \textit{ring}\index{$\lambda$ ring} if it has $\lambda$ operations $\lambda^k$ satisfying
+\begin{itemize}
+\item $\lambda^0(x)=1$
+\item $\lambda^1(x)=x$
+\item $\lambda^k(x+y)=\sum_{i=0}^k\lambda^i(x)\lambda^{k-i}(y)$
+\end{itemize}
+The last of which is equivalent to a group homomorphism
+\begin{align*}
+\lambda_t:R&\to W(R)=1+tR[[t]] \\
+x&\mapsto\sum \lambda^k(x)t^k
+\end{align*}An $\lambda$ ideal is an ideal $I\leq R$ such that $\lambda^k(I)\subseteq I$ for any $k$. A \textit{special} $\lambda$ \textit{ring}\index{Special $\lambda$ ring} is a $\lambda$ ring such that
+\begin{align*}
+\lambda^k(1)&=0, k>2 \\
+\lambda^k(xy)&=P_k(\lambda^1(x),\cdots,\lambda^k(x),\lambda^1(y),\cdots,\lambda^k(y)) \\
+\lambda^n(\lambda^k(x))&=P_{n,k}(\lambda^1(x),\cdots,\lambda^{nk}(x))
+\end{align*}
+$P_n,P_{n,k}$ are defined through
+\[
+\sum P_{n,k}(s_1(X),\cdots,s_{nk}(X))t^n=\prod_{1\leq X_{i_1}\leq\cdots\leq X_{i_n}\leq nk}(1+tX_{i_1}\cdots X_{i_n})
+\]
+\[
+\sum P_{n}(s_1(X),\cdots,s_n(X),s_1(Y),\cdots,s_n(Y))t^n=\prod_{i,j=1}^n(1+tX_iX_j)
+\]
+$s_i$'s are elementary symmetric polynomials
+\end{definition}
+
+\begin{example}
+A binomial ring is a $\mathbb Q$ algebra $R$ with $\lambda_t(x)=(1+t)^x$, $\lambda^k(x)=\binom{x}{k}=\frac{x(x-1)\cdots(x-k+1)}{k!}$
+\end{example}
+
+\begin{example}
+$R$ is a semiring. $K_0(R)$ is a $\lambda$ ring with $\lambda^k(P)=\bigwedge^kP$
+\end{example}
+
+\begin{definition}
+$R\xrightarrow\varepsilon\mathbb Z$ is the augmentation. The Adams operation $\psi$ is defined by
+\[\psi_t(x)=\sum\psi^k(x)t^k=\varepsilon(x)-t\frac{d}{dt}\log\lambda_{-t}(x)\]
+\end{definition}
+
+\begin{example}
+Vector bundles and representation are $\lambda$ semirings with augmentation $\dim$
+\end{example}
+
+\begin{proposition}
+If $R$ satisfies splitting principle, then $\psi^k$'s are endomorphisms of $R$ and $\psi^j\psi^k=\psi^{jk}$
+\end{proposition}
+
+\begin{definition}
+Let $s=\dfrac{t}{1-t}$, then $t=\dfrac{s}{1+s}$, $R[[t]]=R[[s]]$. The $\gamma$ operation is defined by
+\[\gamma_t(x)=\sum\gamma^k(x)t^k=\sum\lambda^k(x)s^k=\lambda_s(x)\]
+\end{definition}
+
+\begin{example}
+$\gamma^k(x)=\lambda^k(x+k-1)=\binom{x+k-1}{k}=(-1)^k\binom{-x}{k}$
+\end{example}
+
+\begin{definition}
+The $\gamma$ dimension $\dim_{\gamma}x$ is the greatest integer $k$ such that $\gamma^k(x-\varepsilon(x))\neq0$, $\dim_\gamma R=\sup_x\dim_\gamma x$. The $\gamma$ filtration is
+\[R=F^0_\gamma R\supseteq F^1_\gamma R\supseteq\cdots\]
+Here $F^1_\gamma R=\ker\varepsilon$, $F^k_\gamma R$ is the ideal generated by products $\gamma^{i_1}(x)\cdots\gamma^{i_m}(x)$ whereas $\sum i_j\geq k$, $x_j\in F^1_\gamma R$
+\end{definition}
+
+\begin{definition}
+A \textit{discrete valuation} on a field $F$ is $v:F\to\mathbb Z\cup\{\infty\}$ satisfying
+\begin{enumerate}
+\item $v(x)=\infty\iff x=0$
+\item $v(x+y)\geq\min(v(x),v(y))$, equality holds iff $v(x)\neq v(y)$
+\item $v(xy)=v(x)+v(y)$
+\end{enumerate}
+A valuation is when replacing $\mathbb Z$ by some totally ordered abelian group(called the value group). $v$ is trivial if $v(F^\times)=0$
+\end{definition}
+
+\begin{definition}
+A \textit{discrete valuation ring} is an integral domain $R$ with a discretely valued fraction field $F=\Frac(R)$ such that $R=\{x\in F|v(x)\geq0\}$. In this case $m=\{x\in F|v(x)>0\}$ is the unique prime ideal in $R$, and $m=(\pi)$, we call $\pi$ the \textit{uniformizer}, and for $x\in F$, $v(x)$ is the maximal power of $\pi$ in $a$.
+\end{definition}
+
+\begin{definition}
+Pick some $0<c<1$, we can define norm $|\cdot|:F\to\mathbb R_{\geq0}$ as $|x|=c^{v(x)}$, this defines a metric topology(\textcolor{blue}{which can be shown to be independent of the choice of $c$})
+\end{definition}
+
+\begin{example}
+$\mathbb Z_{(p)}\subseteq \mathbb Q$ with the $p$-adic valuation, $c=p^{-1}$
+\end{example}
+
+\begin{definition}
+By completing the metric topology, we obtain a complete discretely valued field $\widehat F$ with extended norm $|\cdot|$, and the closure of $R$ in $F$ is denoted by $\widehat R$ which can be proven is $\widehat R=\varprojlim R/m^n$
+\end{definition}
+
+\begin{example}
+$k[t]_{(t)}\subseteq k(t)$ with $t$-adic valuation, $\widehat{k(t)}=k((t))$ is the field of formal Laurent series, $\widehat{k[t]_{(t)}}=k[[t]]$ is the ring of formal power series
+\end{example}
+
+\begin{definition}
+$V\subseteq\mathbb A^n$ is an algebraic set, $f\in k[V]$
+\[D(f)=\{(x_1,\cdots,x_n)\in V|f(x_1,\cdots,x_n)\neq0\}=V(f)^c\]
+form a basis for the Zariski topology on $V$ \par
+$D(f)$ can also be thought of as an algebraic set
+\[\left\{(x_1,\cdots,x_n,z)\middle|zf(x_1,\cdots,x_n)=0\right\}\]
+The coordinate ring can be written as $k[V][\frac{1}{f}]=k[V]_f$, where $z$ is just replaced by $\frac{1}{f}$
+\end{definition}
+
+\begin{theorem}
+$\displaystyle \sqrt{I}=\bigcap_{P\supseteq I \text{ prime}}P$
+\end{theorem}
+
+\begin{theorem}[Hilbert Nullstellensatz weak form]\label{Hilbert Nullstellensatz weak form}
+$k$ is algebraically closed, $m<k[x_1,\cdots,x_n]$ is a maximal ideal, then $k[x]/m\cong k$
+\end{theorem}
+
+\begin{theorem}[Hilbert Nullstellensatz strong form]
+$k$ is algebraically closed, $I(V(J))=\sqrt J$
+\end{theorem}
+
+\begin{proof}
+Since $\displaystyle \sqrt{J}=\bigcap_{P\supseteq J \text{ prime}}P$, suppose $f\notin P$ for some $P\supseteq J$, consider $\varphi:k[x]\to k[x]/P\to A_{\overline f}\to A_{\overline f}/m$ which is a field, hence $\ker\varphi$ is a maximal ideal, by Theorem \ref{Hilbert Nullstellensatz weak form}, $B/m\cong k[x]/\ker\varphi\cong k$, then $(\varphi(x_1),\cdots,\varphi(x_n))\in V(P)\subseteq V(J)$ but $f(\varphi(x_1),\cdots,\varphi(x_n))=\varphi(f)\neq0\Rightarrow f\notin I(V(J))$
+\end{proof}
+
+\begin{proposition}
+Morphism $V\xrightarrow{\varphi} W$ induce a ring homomorphism $k[W]\xrightarrow{\varphi^*} k[V],f\mapsto f\circ\varphi$, and if $f(p)=q$, then $(\varphi^*)^{-1}(m_{q})=m_p$, thus conversely, if $\alpha:k[W]\to k[V]$ is a ring homomorphism, then $\alpha^{-1}:Spmk[V]\to Spm[W]$ is a morphism which can be identified with $\varphi:V\to W$, and $\varphi^*=\alpha$
+\end{proposition}
+
+\begin{proposition}
+A finite morphism $V\xrightarrow{\varphi} W$ between affine varieties is quasifinite
+\end{proposition}
+
+\begin{proof}
+$\varphi(p)=q\Leftrightarrow(\varphi^*)^{-1}(m_p)=q$, $m_p\supseteq\varphi^*(\varphi^*)^{-1}(m_p)=\varphi^*(m_q)$
+\[\varphi^{-1}(q)\leftrightarrow\left\{\text{maximal ideals of }B=\frac{k[W]}{\langle\varphi^*(m_q)\rangle}\right\}\]
+Since $k[W]$ is a finite $k[V]$ algerba, so $B$ is finite dimensional over $\dfrac{k[V]}{m_p}\cong k$
+By Chinese Remainder theorem \ref{Chinese remainder theorem}, $B\to B/m_1\times\cdots\times B/m_s$ is surjective, $\dim B\geq s$, since $\dim B<\infty$, hence $s<\infty$, thus $B$ has only finitely many maximal ideals
+\end{proof}
+
+\begin{proposition}\label{W->V dominant => k[V]->k[W] injective}
+$W\xrightarrow{\varphi}V$ is dominant iff $k[V]\xrightarrow{\varphi} k[W]$ is injective
+\end{proposition}
+
+\begin{proof}
+$f\in\ker\varphi^*\Leftrightarrow f\circ\varphi=0$, $\mathrm{im}\varphi$ dense $\Rightarrow f=0$. Conversely, $\overline{\mathrm{im}\varphi}\subsetneqq V\Rightarrow 0\neq f\in I(\overline{\mathrm{im}\varphi})$
+\end{proof}
+
+\begin{proposition}
+If $W\xrightarrow{\varphi}V$ is dominant and finite, then $\varphi$ is surjective
+\end{proposition}
+
+\begin{proof}
+By Proposition \ref{W->V dominant => k[V]->k[W] injective}, $k[W]$ is integral over $k[V]$, by Theorem \ref{Going up and Going down theorems}, for any $m_q<k[V]$, there exists maximal ideal $n<k[W]$ such that $n\cap k[V]=m_q$
+\end{proof}
+
+\begin{proposition}
+Assume $A$ is a $k$-algebra, $f,g\in A$, then
+\begin{enumerate}
+\item $\Spec A$ is irreducible $\iff$ $\sqrt{0}$ is prime
+\item $f$ is nilpotent $\iff D(f)=\varnothing$
+\item $D(f)\cap D(g)=D(fg)$
+\item $D(f)=\Spec A\iff f$ is a unit
+\item $\bigcup_{i\in I}D(f_i)=V(\{f_i\}_{i\in I})^c$
+\end{enumerate}
+\end{proposition}
+
+\begin{lemma}\label{16:28-04/27/2022}
+There is a bijection
+\[
+\{\text{Idempotents in }A\}\to\{\text{Open and closed subsets of }\Spec A\},\quad e\mapsto D(e)
+\]
+\end{lemma}
+
+\begin{proposition}
+\begin{enumerate}
+\item Localization is exact
+\item Localization and quotient commutes. i.e. $S^{-1}(A/I)=S^{-1}A/S^{-1}I$
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Injectivity: Suppose $e_1\neq e_2$ are both idempotents, denote $e_i'=1-e_i$, then
+\[
+0\neq e_1-e_2=e_1(e_2+e_2')-(e_1+e_1')e_2=e_1e_2'-e_1'e_2
+\]
+so one of $e_1e_2',e_1'e_2$ has to be a nonzero idempotent and not a nilpotent, so $\exists p\in\Spec A$ such that one of $e_1e_2',e_1'e_2$ is not in $p$, this implies that $e_1,e_2$ cannot both be in or not in $p$. \\
+Surjectivity: Suppose $U\subseteq\Spec A$ is both open and closed, then both $U$ and $U^c$ are quasi-compact and can be written as $\bigcup_{i=1}^nD(f_i)=V(I)^c,\bigcup_{j=1}^mD(g_j)=V(J)^c$ respectively, denote $I=(f_1,\cdots,f_n),J=(g_1,\cdots,g_m)$, since $\varnothing=D(f_i)\cap D(g_j)=D(f_ig_j)$, $f_ig_j$ is a nilpotent and $(IJ)^N=0$ for some $N$. On the other hand, $\Spec A=\bigcup_{i=1}^nD(f_i)\cup\bigcup_{j=1}^mD(g_j)=V(I+J)^c$, so $I+J=A$, raise to the $2N$-th power we get $I^N+J^N=A$, therefore $\exists f\in I^N,g\in J^N$ such that $1=f+g$ and $0=fg=f(1-f)$ which implies that both $f,g$ are idempotents. We have
+\[
+p\in D(f)\iff f\notin p\iff I^N\not\subseteq p\iff J^N\subseteq p\iff J\subseteq p\iff p\in V(J)
+\]
+Hence $D(f)=V(J)$. Here $I^N\not\subseteq p\Rightarrow J^N\subseteq p$ because $0=I^NJ^N\subseteq p$. $J^N\subseteq p\Rightarrow I^N\not\subseteq p$ because $I^N+J^N=A$. $I^N\not\subseteq p\Rightarrow f\notin p$ because otherwise $f\in p\Rightarrow g=1-f\notin p\Rightarrow J^N\not\subseteq p$ which is impossible
+\end{proof}
+
+\begin{definition}
+Topological space $X$ is an H-\textit{space}\index{H-space} if there is a continuous map $\mu:X\times X\to X$ and an identity element $e$ such that $\mu(x,e)=\mu(e,x)=e$
+\end{definition}
+
+\begin{definition}
+A \textit{Hopf algebra}\index{Hopf algebra} $H$ is a bialgebra with an \textit{antipode} $S:H\to H$ such that the following diagram commutes
+\begin{center}
+\begin{tikzcd}
+H\otimes H \arrow[rr, "S\otimes1"]                               &                     & H\otimes H \arrow[d, "\mu"]  \\
+H \arrow[r, "\epsilon"] \arrow[u, "\Delta"] \arrow[d, "\Delta"'] & I \arrow[r, "\eta"] & H                            \\
+H\otimes H \arrow[rr, "1\otimes S"]                              &                     & H\otimes H \arrow[u, "\mu"']
+\end{tikzcd}
+\end{center}
+\end{definition}
+
+\begin{proposition}\label{06:35-04/28/2022}
+Suppose $\varphi:\Spec B\to \Spec A$ corresponds to $\phi:A\to B$, if $\forall b\in B$, $b=uf(a)$ for some $a\in A,u\in B^\times$, then $\varphi$ is a homeomorphism
+\end{proposition}
+
+\begin{proof}
+
+\end{proof}
+
+
+
+\section{Field}
+
+\begin{definition}
+A \textbf{division ring}\index{Division ring} $R$ is a nonzero ring such that $\mathbb F^\times=\mathbb F-\{0\}$ \par
+A \textbf{field}\index{Field} $\mathbb F$ is a nonzero commutative ring such that $\mathbb F^\times=\mathbb F-\{0\}$
+\end{definition}
+
+\begin{definition}
+A \textbf{character}\index{Group character} is of $G$ is a group homomorphism $G\to\mathbb F^\times$, and a \textbf{cocharacter} is a group homomorphism $\mathbb F^\times\to G$
+\end{definition}
+
+\begin{lemma}
+Characters of $G$, denoted as $ch(G)$ are linear independent on $\mathbb F[G]$
+\end{lemma}
+
+\begin{proof}
+Suppose not, we can find $c_1\chi_1+\cdots+c_m\chi_m=0,c_i\in\mathbb F^\times$, with minimal terms, since $\chi_1\neq\chi_m$, there exists $g_0\in G$ such that $\chi_1(g_0)\neq\chi_m(g_0)$, on the other hand we have $0=c_1\chi_1(g)+\cdots+c_m\chi_m(g)=c_1\chi_1(g)\chi_m(g_0)+\cdots+c_m\chi_m(g)\chi_m(g_0),\forall g\in G$ and $0=c_1\chi_1(gg_0)+\cdots+c_m\chi_m(gg_0)=c_1\chi_1(g)\chi_1(g_0)+\cdots+c_m\chi_m(g)\chi_m(g_0),\forall g\in G$, subtract to get $0=c_1(\chi_m(g_0)-\chi_1(g_0))\chi_1(g)+\cdots+c_{m-1}(\chi_m(g_0)-\chi_{m-1}(g_0))\chi_{m-1}(g)$ with fewer terms which is a contradiction
+\end{proof}
+
+\begin{definition}
+$E/F$ is a field extension, $\alpha\in E$ induces an $F$-linear automorphism $T_\alpha:E\to E$ by multiplication, then the \textit{field trace}\index{Field trace} is $\Tr_{E/F}(\alpha)=\Tr T_\alpha$. The \textit{field norm}\index{Field norm} is $N_{E/F}(\alpha)=\det T_\alpha$. Suppose
+\[f(x)=\prod(x-\sigma_i(\alpha))=x^n+a_1x^{n-1}+\cdots+a_n\]
+is the minimal monic polynomial, use $1,\alpha,\cdots,\alpha^{n-1}$ as a basis for $F(\alpha)$, then $T_\alpha$ has the matrix form
+\[\begin{bmatrix}
+0& 0&\cdots&0&-a_n \\
+1&0&\cdots&0&-a_{n-1} \\
+&1&\cdots&0&-a_{n-2} \\
+&&\ddots&\vdots&\vdots \\
+&&&1&-a_1
+\end{bmatrix}\]
+
+Hence $\Tr_{F(\alpha)/F}(\alpha)=-a_1=\sum\sigma_i(\alpha)$, $N_{F(\alpha)/F}(\alpha)=(-1)^na_n=\prod\sigma_i(\alpha)$
+\end{definition}
+
+\begin{definition}
+$\mathbb F$ is a \textbf{perfect field}\index{Perfect field} if  $\mathbb F^p=\mathbb F$ if $\mathrm{char}\mathbb F=p\neq0$ or $\mathrm{char}\mathbb F=0$
+\end{definition}
+
+\begin{definition}
+$E/F$ is a field extension, $\alpha\in E$ is algebraic over $F$ if $\alpha$ is a zero of some polynomial in $F[x]$. The \textbf{algebraic closure} of $F$ in $E$ are the algebraic elements of $E$
+\end{definition}
+
+\begin{theorem}[Emil Artin]
+Any field $F$ has an algebraically closed extension
+\end{theorem}
+
+\begin{theorem}
+$F\leq L$ is a field extension, $G=\Aut_F(L)$ as a profinite group with induced topology as a topological group. then there is a one to one correspondence between intermediate fields $E$ and closed subgroups $H$. $E$ is finite $\iff$ $H$ is open. $\sigma E$ corresponds to $\sigma H\sigma^{-1}$ for any $\sigma\in G$. $E$ is Galois $\iff$ $H$ is normal, in such case, $\Aut_F(E)=G/H$
+\end{theorem}
+
+
+\section{Number Field}
+
+\begin{lemma}
+$K=\mathbb Q[\alpha]$ is number field, $f$ is the minimal polynomial of $\alpha$. Suppose $\sigma :K\hookrightarrow\mathbb C$ is an embedding, then $\sigma(\alpha)$ is a root of $f$, and any such choice gives an embedding
+\end{lemma}
+
+\begin{definition}
+$E,F$ are algebraic number fields of finite degree, $E/F$ is finite separable, $A,B$ are corresponding ring of integers, $\{\beta_1,\cdots,\beta_n\}$ is an integral basis of $B$ over $A$. The \textbf{discriminant} of $E/F$ with respect to $\{\beta_1,\cdots,\beta_n\}$ is $D_{E/F}(\beta_1,\cdots,\beta_n)=\det(Tr(\beta_i\beta_j))$
+\begin{center}
+\begin{tikzcd}
+B \arrow[r, hook]                 & E                 \\
+A \arrow[u, hook] \arrow[r, hook] & F \arrow[u, hook]
+\end{tikzcd}
+\end{center}
+\end{definition}
+
+\begin{lemma}
+$D_K$ is well defined in $\dfrac{A}{(A^\times)^2}$
+\end{lemma}
+
+\begin{definition}
+$E,F$ are algebraic number fields of finite degree, $E/F$ is finite separable, $A,B$ are corresponding ring of integers which are Dedekind domains
+\begin{center}
+\begin{tikzcd}
+B \arrow[r, hook]                 & E                 \\
+A \arrow[u, hook] \arrow[r, hook] & F \arrow[u, hook]
+\end{tikzcd}
+\end{center}
+$pB=q_1^{e_1}\cdots q_r^{e_r}$ with $e_i>0$. $p$ is \textbf{ramified}\index{Ramified} if $e_i>1$ for some $i$, otherwise unramified. $p$ is \textbf{inert}\index{Inert} if $r=e=1$. $p$ \textbf{totally split}\index{Totally split} if $e_i=f_i=1$ \par
+$B/pB\cong\prod_{i=1}^rB/q_i^{e_i}$, $f_i=[k_{q_i}:k_p]$, $[E:F]=\dim_{k_p}(B/pB)=\sum_{i=1}^re_if_i$ \par
+If $E/F$ is Galois, $G=Aut(E/F)$ acts transitively on $\{q_1,\cdots,q_r\}$, then $n=\sum_{i=1}^re_if_i=ref$
+\end{definition}
+
+\begin{proof}
+$B\cong A^n$, $B/pB\cong A^n/pA^n\cong(A/p)^n\cong k_p^n$
+\end{proof}
+
+\begin{example}
+$2\mathbb Z[i]=(1+i)^2$ is ramified, $3\mathbb Z[i]$ is inert, $5\mathbb Z[i]=(2+i)(2-i)$ totally split
+\begin{center}
+\begin{tikzcd}
+\mathbb Z[i] \arrow[r, hook]                 & \mathbb Q[i]                 \\
+\mathbb Z \arrow[u, hook] \arrow[r, hook] & \mathbb Q \arrow[u, hook]
+\end{tikzcd}
+\end{center}
+\end{example}
+
+\begin{theorem}
+$p$ ramifies in $O_K$ $\Leftrightarrow$ $p\mid\mathrm{disc}(O_K/\mathbb Z)$
+\begin{center}
+\begin{tikzcd}
+O_K \arrow[r, hook]                 & K                 \\
+\mathbb Z \arrow[u, hook] \arrow[r, hook] & \mathbb Q \arrow[u, hook]
+\end{tikzcd}
+\end{center}
+\end{theorem}
+
+\begin{proof}
+$pO_K=\beta_1^{e_1}\cdots\beta_r^{e_r}$, $O_K/pO_K\cong O_K/\beta_i^{e_i}$ is an isomorphism of $\mathbb F_p$ algebras. $d_i=\mathrm{disc}((O_K/\beta_i^{e_i})/\mathbb F_p))$, $d=\mathrm{disc}((O_K/pO_K)/\mathbb F_p))$, thus $d=d_1\cdots d_r$, since discriminant is functorial, $D=\det(Tr_{O_K/\mathbb Z}())\mapsto d$, $p|D\Leftrightarrow d=0\Leftrightarrow d_i=0$ for some $i$
+\end{proof}
+
+\end{document}

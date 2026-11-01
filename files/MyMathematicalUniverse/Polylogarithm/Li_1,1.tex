@@ -1,0 +1,68 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+The following identity is true
+\[\Li_{1,1}(x,y)=\Li_2\left(\frac{xy-y}{1-y}\right)-\Li_2\left(\frac{y}{y-1}\right)-\Li_2(xy)\]
+\[\Li_2(1-x)=-\Li2(x)-\log x\log(1-x)+\frac{\pi^2}{6}\]
+Note that $\log x\log(1-x)\to0$ as $x\to 1$
+
+\begin{align*}
+\Li_{1,1}(x,y)&=\int \frac{dy}{1-y}\frac{dx}{1-x}+\frac{d(xy)}{1-xy}\left(\frac{dy}{1-y}-\frac{dx}{x(1-x)}\right) \\
+&=\int d\log(1-y)d\log(1-x)+d\log(1-xy)d\log\frac{x(1-y)}{1-x} \\
+&=\int dv_2dv_1+dv_{12}dw_1
+\end{align*}
+To compute the monodromy around $x=0$, take $q(\epsilon)$ to be the loop $(x=\epsilon e^{it},y=\epsilon)$, we get $0$. \\
+To compute the monodromy around $y=0$, take $q(\epsilon)$ to be the loop $(x=\epsilon,y=\epsilon e^{it})$, we get $0$. \\
+To compute the monodromy around $x=1$, take $q(\epsilon)$ to be the composition of $(x=(1-t)\epsilon+t(1-\epsilon),y=\epsilon)$, $(x=1-\epsilon e^{it},y=\epsilon)$ and $(x=(1-t)(1-\epsilon)+t\epsilon,y=\epsilon)$, we get $0$. \\
+To compute the monodromy around $y=1$, take $q(\epsilon)$ to be the composition of $(x=\epsilon,y=(1-t)\epsilon+t(1-\epsilon))$, $(x=\epsilon,y=1-\epsilon e^{it})$ and $(x=\epsilon,y=(1-t)(1-\epsilon)+t\epsilon)$, we get $-2\pi i\Li_1(x)$. \\
+To compute the monodromy around $xy=1$, take $q$ to be the loop $(x=x^0,y\text{ such that }\int_qd\log(1-xy)=2\pi i)$, we get $-2\pi i\Li_1(\frac{1-xy}{1-x})$
+
+The variation matrix is
+\[\Lambda=\begin{bmatrix}
+1&&&\\
+\Li_1(y)&1&&\\
+\Li_1(xy)&&1&\\
+\Li_{1,1}(x,y)&\Li_1(x)&\Li_1\left(\frac{1-xy}{1-x}\right)&1
+\end{bmatrix}\tau_{1,1}(2\pi i)\]
+\[\omega=\begin{bmatrix}
+0&&&\\
+-dv_2&0&&\\
+-dv_{12}&0&0&\\
+0&-dv_1&-dw_1&0
+\end{bmatrix}\]
+Note that $\Li_1\left(\frac{1-xy}{1-x}\right)=-\log\left(\frac{x(y-1)}{1-x}\right)=\Li_1(y)-\Li_1(x^{-1})=\Li_1(y)-\Li_1(x)-\log x-i\pi$ \\
+The monodromy representation $\rho$ is as follows \\
+For monodromy around $x=0$
+\[\begin{bmatrix}
+1&&& \\
+&1&& \\
+&&1& \\
+&&-1&1
+\end{bmatrix}\]
+For monodromy around $y=0$, identity. \\
+For monodromy around $x=1$
+\[\begin{bmatrix}
+1&&& \\
+&1&& \\
+&&1& \\
+&-1&1&1
+\end{bmatrix}\]
+For monodromy around $y=1$
+\[\begin{bmatrix}
+1&&& \\
+-1&1&& \\
+&&1& \\
+&&-1&1
+\end{bmatrix}\]
+For monodromy around $xy=1$
+\[\begin{bmatrix}
+1&&& \\
+&1&& \\
+-1&&1& \\
+&&&1
+\end{bmatrix}\]
+
+$\widehat{\mathcal L}_{1,1}(x)=\Li_{1, 1}(x,y) - \frac{1}{2}v_{12} v_2 - \frac{1}{2}v_1 v_2 + \frac{1}{2}v_1 v_{12} - \frac{1}{2}u_1 v_{12}$
+
+\end{document}

@@ -1,0 +1,85 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+The \textit{multiple polylogarithms}\index{Multiple polylogarithm} are
+\[\Li_{\mathbf n}(\mathbf x)=\sum_{\mathbf k}\frac{\mathbf x^{\mathbf k}}{\mathbf k^{\mathbf n}}=\int_0^1\frac{dt}{a_1-t}\left(\frac{dt}{t}\right)^{n_1-1}\cdots\frac{dt}{a_d-t}\left(\frac{dt}{t}\right)^{n_d-1}\]
+Here $\mathbf k$ runs over $0<k_1<\cdots<k_d$, $a_j=a_j(\mathbf x)=(x_j\cdots x_d)^{-1}$
+\end{definition}
+
+Define $\Li_0(x)=\dfrac{x}{1-x}$
+
+\begin{note}
+For $\mathbf k$ runs over $(k_1,\cdots,k_d)\in\mathbb Z_{\geq1}^d$
+\[\sum_{\mathbf k}\frac{\mathbf x^{\mathbf k}}{\mathbf k^{\mathbf n}}=\left(\sum_{k_1}\frac{x_1^{k_1}}{k_1^{n_1}}\right)\cdots\left(\sum_{k_d}\frac{x_d^{k_d}}{k_d^{n_d}}\right)=\Li_{n_1}(x_1)\cdots\Li_{n_d}(x_d)\]
+Can be written in terms of multiple polylogarithms
+\end{note}
+
+\begin{note}
+\begin{align*}
+\Li_{n_1,\cdots,n_{i-1},0,n_{i+1},\cdots,n_{d}}(x_1,\cdots,x_d)&=\sum_{0<k_1<\cdots<k_d}\frac{x_1^{k-1}\cdots x_d^{k_d}}{k_1^{n_1}\cdots k_{i-1}^{n_{i-1}}k_{i+1}^{n_{i+1}}\cdots k_d^{n_d}} \\
+&=\sum_{0<k_1<\cdots<k_d}\frac{x_1^{k-1}\cdots x_{i-1}^{k_{i-1}}x_{i+1}^{k_{i+1}}\cdots x_d^{k_d}}{k_1^{n_1}\cdots k_{i-1}^{n_{i-1}}k_{i+1}^{n_{i+1}}\cdots k_d^{n_d}}\frac{x_i^{k_{i-1}+1}-x_i^{k_{i+1}}}{1-x_i} \\
+&=\sum_{0<k_1<\cdots<k_d}\frac{x_1^{k-1}(\cdots x_{i-1}x_i)^{k_{i-1}}x_{i+1}^{k_{i+1}}\cdots x_d^{k_d}}{k_1^{n_1}\cdots k_{i-1}^{n_{i-1}}k_{i+1}^{n_{i+1}}\cdots k_d^{n_d}}\frac{x_i}{1-x_i} \\
+&-\sum_{0<k_1<\cdots<k_d}\frac{x_1^{k-1}\cdots x_{i-1}^{k_{i-1}}(x_ix_{i+1})^{k_{i+1}}\cdots x_d^{k_d}}{k_1^{n_1}\cdots k_{i-1}^{n_{i-1}}k_{i+1}^{n_{i+1}}\cdots k_d^{n_d}}\frac{1}{1-x_i} \\
+&=\Li_{n_1,\cdots,n_{i-1},n_{i+1},\cdots,n_{d}}(x_1,\cdots,x_{i-1}x_i,x_{i+1},\cdots,x_d)\frac{x_i}{1-x_i} \\
+&-\Li_{n_1,\cdots,n_{i-1},n_{i+1},\cdots,n_{d}}(x_1,\cdots,x_{i-1},x_ix_{i+1},\cdots,x_d)\frac{1}{1-x_i}
+\end{align*}
+\begin{align*}
+\Li_{n_1,\cdots,n_{d-1},0}(x_1,\cdots,x_d)&=\Li_{n_1,\cdots,n_{d-1}}(x_1,\cdots,x_{d-1}x_d)\frac{x_d}{1-x_d}
+\end{align*}
+\begin{align*}
+\Li_{0,n_2,\cdots,n_{d}}(x_1,\cdots,x_d)&=\Li_{n_2,\cdots,n_{d-1}}(x_2,\cdots,x_d)\frac{x_1}{1-x_1} - \Li_{n_2,\cdots,n_{d-1}}(x_1x_2,\cdots,x_d)\frac{1}{1-x_1}
+\end{align*}
+\end{note}
+
+\begin{exercise}[Derivatives of polylogarithms]
+Observe the following
+\begin{align*}
+\frac{\partial}{\partial x_i}\left(\sum_{\mathbf k}\frac{\cdots x_{i-1}^{k_{i-1}}x_i^{k_i}x_{i+1}^{k_{i+1}}\cdots}{\cdots k_{i-1}^{n_{i-1}}k_i^{n_i}k_{i+1}^{n_{i+1}}\cdots}\right)&=\sum_{\mathbf k}\frac{\cdots x_{i-1}^{k_{i-1}}x_i^{k_i-1}x_{i+1}^{k_{i+1}}\cdots}{\cdots k_{i-1}^{n_{i-1}}k_i^{n_i-1}k_{i+1}^{n_{i+1}}\cdots} \\
+&=\sum_{\mathbf k}\frac{\cdots x_{i-1}^{k_{i-1}}x_i^{k_i}x_{i+1}^{k_{i+1}}\cdots}{\cdots k_{i-1}^{n_{i-1}}k_i^{n_i-1}k_{i+1}^{n_{i+1}}\cdots}\frac{1}{x_i}
+\end{align*}
+Write $u_i=\log(x_i)$, $v_i=\log(1-x_i)$, $u_{ij}=\log(x_i\cdots x_j)$, $v_{ij}=\log(1-x_i\cdots x_j)$. If $m_i>1$, then
+\begin{align*}
+d_i\Li_{n_1,\cdots,n_d}(z_1,\cdots,z_d)&=\Li_{n_1,\cdots,n_i-1,\cdots,n_d}(z_1,\cdots,z_d)\frac{d x_i}{x_i} \\
+&=\Li_{n_1,\cdots,n_i-1,\cdots,n_d}(z_1,\cdots,z_d)du_i
+\end{align*}
+\begin{align*}
+d_d\Li_{n_1,\cdots,n_{d-1},1}(z_1,\cdots,z_d)&=\Li_{n_1,\cdots,n_{d-1}}(z_1,\cdots,z_{d-1}z_d)\frac{d x_d}{1-x_d} \\
+&=-\Li_{n_1,\cdots,n_{d-1}}(z_1,\cdots,z_{d-1}z_d)dv_d
+\end{align*}
+\begin{align*}
+d_1\Li_{1,n_2,\cdots,n_d}(z_1,\cdots,z_d)&=\Li_{n_2,\cdots,n_d}(z_2,\cdots,z_d)\frac{d x_1}{1-x_1} \\
+&-\Li_{n_2,\cdots,n_d}(z_1z_2,\cdots,z_d)\frac{dx_1}{x_1(1-x_1)}
+\end{align*}
+\begin{align*}
+d_i\Li_{n_1,\cdots,n_{i-1},1,n_{i+1},\cdots,n_d}(z_1,\cdots,z_d)&=\Li_{n_1,\cdots,n_{i-1},n_{i+1},\cdots,n_d}(z_1,\cdots,z_{i-1}z_i,z_{i+1},\cdots,z_d)\frac{d x_i}{1-x_i} \\
+&-\Li_{n_1,\cdots,n_{i-1},n_{i+1},\cdots,n_d}(z_1,\cdots,z_{i-1},z_iz_{i+1},\cdots,z_d)\frac{dx_i}{x_i(1-x_i)}
+\end{align*}
+\end{exercise}
+
+\begin{remark}
+
+\end{remark}
+
+Note that $\Li_{2n}(1)=\zeta(2n)=(-1)^{n+1}\frac{(2\pi)^{2n}B_{2n}}{2(2n)!}$, $\Li_{2n}(1)+\Li_{2n}(-1)=\frac{1}{2^{2n-1}}\Li_{2n}(1)$, which implies $\Li_{2n}(-1)=(\frac{1}{2^{2n-1}}-1)\Li_{2n}(1)=(-1)^{n+1}\frac{\pi^{2n}B_{2n}}{(2n)!}(1-2^{2n-1})$
+
+\begin{theorem}
+$\Li_{2n}(x)+\Li_{2n}(x^{-1})=-\sum_{k=0}^k\frac{\pi^{2(n-k)}}{(2k)!}\log^{2k}(-x)$
+$\Li_{2n+1}(x)-\Li_{2n-1}(x^{-1})=$
+\end{theorem}
+
+\begin{proof}
+$\Li_0(x)+\Li_0(x^{-1})=-1$, $\Li_1(x)+\Li_1(x^{-1})=\log(-x)$, $\Li_2(x)+\Li_2(x^{-1})=-\frac{1}{2}\log^2(-x)-\frac{\pi^2}{6}$
+\[d(\Li_n(x)+(-1)^{n}\Li_n(x^{-1}))=(\Li_{n-1}(x)+(-1)^{n-1}\Li_{n-1}(x^{-1}))\frac{dx}{x}\]
+\end{proof}
+
+
+\begin{definition}
+The generating function of Bernoulli polynomials is $\frac{te^{xt}}{e^t-1}=\sum B(x)\frac{t^n}{n!}=\frac{d/dx}{e^{d/dx}-1}x^n$
+\end{definition}
+
+We have
+\[\Li_n(u)+(-1)^n\Li_n(-u)=-\frac{(2\pi i)^n}{n!}B_n(u)\]
+
+\end{document}

@@ -1,0 +1,79 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+Use $H_{\mathbb F}$ or $H(\mathbb F)$ to indicate coefficients in $\mathbb F$
+
+\begin{definition}
+An abelian group $H_{\mathbb Z}$ has a \textit{pure Hodge structure}\index{Pure Hodge structure} of weight $n$ if
+\[H_{\mathbb C}=\displaystyle\bigoplus_{p+q=n}H^{p,q},\quad\overline{H^{p,q}}=H^{q,p}\]
+Or equivalently, if there is a decreasing \textit{Hodge filtration} $F^p$ on $H_{\mathbb C}$ such that $H_{\mathbb C}=F^p\oplus\overline{F^{n+1-p}}$. The equivalence of the two definitions is given by ($p+q=n$)
+\[F^p=\displaystyle\bigoplus_{i\geq p}H^{i,n-i},\quad \overline{F^q}=\displaystyle\bigoplus_{j\leq p}H^{j,n-j}\]
+\[H^{p,q}=F^p\cap\overline{F^q},\quad F^p\cap\overline{F^{n+1-p}}=0\]
+\end{definition}
+
+\begin{example}
+$X$ is a complex manifold, $H_{\mathbb Z}=H^n(X;\mathbb Z)$, then
+\[H^n(X;\mathbb C)=\bigoplus_{p+q=n}H^{p,q}=\bigoplus_{p+q=n}H^p(X;\mathbb C)\wedge \overline{H^p(X;\mathbb C)}\]
+\end{example}
+
+\begin{example}[\textit{Tate-Hodge structure}]
+$\mathbb Z(1)=(2\pi i)\mathbb Z$ has a pure Hodge structure of weight -2 such that $\mathbb Z(1)_{\mathbb C}=H^{-1,-1}$, this is the unique one dimensional weight -2 pure Hodge structure($H^{-2,0}=\overline{H^{0,-2}}$ should be 0 or nonzero at the same time). $\mathbb Z(n):=\mathbb Z(1)^{\otimes n}$
+\end{example}
+
+\begin{definition}
+A \textit{polarization} over $\mathbb Q$ of a Hodge structure over $\mathbb Q$ of weight $k$ is a $(-1)^k$ symmetric nondegenerate flat bilinear map $\beta:\mathbb V_{\mathbb Q}\times\mathbb V_{\mathbb Q}\to\mathbb Q$ such that the Hermitian form $\beta_x(C_xv,\bar w)$ on each fiber $\mathcal V_x$ is positive definite, here $C_x$ is the \textit{Weil operator}, given as the direct sum of multiplication $i^{p-q}$ on $H^{p,q}_x$
+\end{definition}
+
+\begin{definition}
+A \textit{mixed Hodge structure}\index{Mixed Hodge structure} on $H_{\mathbb Z}$ consists of an increasing \textit{weight filtration} $W_\bullet$ on $H_{\mathbb Q}$ and a decreasing filtration $F^\bullet$ on $H_{\mathbb C}$ that are compatible, i.e.
+\[F^p(\gr_kW)_{\mathbb C}=\frac{F^p\cap W_{k+1}(\mathbb C)+W_k(\mathbb C)}{W_k(\mathbb C)}\]
+is a pure Hodge structure of weight $k$ of $\gr_kW$
+\end{definition}
+
+\begin{definition}
+A \textit{variation} of Hodge structure of weight $k$ over $\mathbb Q$ and a complex manifold $X$ is $(\mathbb V_{\mathbb Q},\mathcal F^\bullet)$, $\mathbb V_{\mathbb Q}$ is a locally constant sheaf of $\mathbb Q$ vector spaces, $\mathcal F^\bullet$ is a decreasing filtration of holomorphic subbundles of the locally free sheaf $\mathcal V=\mathcal O_X\otimes\mathbb V_{\mathbb Q}$ such that
+\begin{itemize}
+\item $(\mathcal V_x,\mathcal F^\bullet_x)$ has a pure Hodge structure of weight $k$, i.e. $\mathcal V_x=\mathcal F^p\oplus\overline{\mathcal F^{k+1-p}}$
+\item (Griffiths transversality) $\nabla\mathcal F^p\subseteq\Omega^1_X\otimes_{\mathcal O_X}\mathcal F^{p-1}$
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+A variation of mixed Hodge structure over $\mathbb Q$ and a complex manifold $X$ is $(\mathbb V_{\mathbb Q},\mathcal W_\bullet,\mathcal F^\bullet)$, $\mathcal W_\bullet$ is an increasing filtration of $\mathbb V_{\mathbb Q}$ by locally constant subsheaves such that
+\begin{itemize}
+\item $(\mathcal V_x,(\mathcal W_\bullet)_x,\mathcal F^\bullet_x)$ has a mixed Hodge structure, i.e. $()$ is a pure Hodge structure of weight $k$
+\item $\nabla\mathcal F^p\subseteq\Omega^1_X\otimes_{\mathcal O_X}\mathcal F^{p-1}$
+\end{itemize}
+\end{definition}
+
+\begin{remark}
+Given a locally constant sheaf is equivalent to given a monodromy representation $\rho_{\mathbf x}:\pi_1(X,\mathbf x)\to\Aut_{\mathbb Q}(\mathcal V_x)$. A variation is \textit{unipotent} if the the monodromy representation is unipotent
+\end{remark}
+
+\begin{theorem}[Deligne]\label{Deligne's theorem on unipotent VMHS}
+$\tilde X$ is a normalization of $X$, $(\mathbb V_{\mathbb Q},\mathcal W_\bullet,\mathcal F^\bullet)$ is a unipotent variation of mixed Hodge structure of weight $k$, then there is a unique extension $\mathcal{\tilde V}$ over $\tilde X$ such that
+\begin{itemize}
+\item Inside every section of $\mathcal{\tilde V}$, flat sections increase at most at the rate of $O(\log(\|x\|^k))$ on each compact set of $\tilde X-X$
+\item Every flat section of $\mathcal V^\vee$ increases at most at the rate of $O(\log(\|x\|^k))$
+\end{itemize}
+These conditions are equivalent to
+\begin{itemize}
+\item In a local basis of $\mathcal{\tilde V}$, the connection matrix $\bm\omega$ of $\mathcal V$ has at most logarithmic singularities along $\tilde X-X$
+\item The residue of $\bm\omega$ along any irreducible component of $\tilde X-X$ is nilpotent
+\end{itemize}
+\end{theorem}
+
+For smooth complex vector bundle $E$. Dolbeault operators are $\bar\partial_E:\Omega^{p,q}(E)\to\Omega^{p,q+1}(E)$ satisfying Leibniz. By Newlander-Nirenberg, $E$ has a unique holomorphic structure iff $\bar\partial_E$ is the unique Dolbeault operator
+
+For a holomorphic complex vector bundle $E$ with a Hermitian metric $h$, the Chern connection is the unique metric connection such that the $(0,1)$ part of $\nabla s$ is $\bar\partial_Es$. The connection form is $h^{-1}\partial h$
+
+\begin{definition}
+A harmonic differential $\omega=Adx+Bdy$ is the real part of an analytic complex differential, then we can define its conjugate $*\omega=Ady-Bdx$, which should be the imaginary part, we may think of $*$ as the Hodge star operator. Note that the complex form should have been $(A-iB)(dx+idy)$. Thus $\omega$ is a harmonic differential iff $d\omega=d*\omega=0$, $d*du=\Delta udx\wedge dy$ gives the Laplacian
+\end{definition}
+
+Let $\Delta=dd^*+d^*d$ be the Laplacian, then the following are equivalent(very easy to check): $\Delta\alpha=0$, $d\alpha=d^*\alpha=0$, $\alpha\in\ker d\cap(\im d)^\perp$, such forms are called harmonic forms
+
+There is a unique harmonic representative for each cohomology class, which happen to be of the smallest norm, consider the isomorphism(very easy to check) $\ker d\cap(\im d)^\perp\to H^k$, suppose $\alpha\in\ker d\cap(\im d)^\perp$, then $|\alpha+\partial\beta|^2=|\alpha|^2+|\partial\beta|^2\geq |\alpha|^2$, equality holds iff $\partial\beta=0$
+
+\end{document}

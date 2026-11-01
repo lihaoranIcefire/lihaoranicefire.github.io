@@ -1,0 +1,19 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{proposition}
+\begin{align*}
+\int_0^\infty\frac{x^{s-1}}{e^x-1}dx&=\int_0^\infty x^{s-1}e^{-x}\sum_{n=0}^\infty e^{-nx}dx \\
+&=\sum_{n=1}^\infty\int_0^\infty x^{s-1}e^{-nx}dx \\
+&=\sum_{n=1}^\infty\frac{1}{n^s}\int_0^\infty x^{s-1}e^{-x}dx \\
+&=\sum_{n=1}^\infty\frac{1}{n^s}\Gamma(s) \\
+&=\zeta(s)\Gamma(s)
+\end{align*}
+\end{proposition}
+
+\begin{theorem}[Euler's reflection formula]
+$\Gamma(z)\Gamma(1-z)=\dfrac{\pi}{\sin(\pi z)}$, $z\notin\mathbb Z$
+\end{theorem}
+
+\end{document}

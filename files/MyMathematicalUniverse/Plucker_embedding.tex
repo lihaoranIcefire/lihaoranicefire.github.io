@@ -1,0 +1,36 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+Consider Grassmannian $W\in Gr_k(n)$, the \textit{Pl\"ucker coordinates}\index{Pl\"ucker coordinates} $W_{i_1,\cdots,i_k}$ to be the minor of  $i_1,\cdots,i_k$-th columns. For  $1\leq i_1<\cdots<i_{k-1}\leq n$, $1\leq j_1<\cdots<j_k\leq n$, $r\leq k$, the \textbf{Pl\"ucker relations}\index{Pl\"ucker relations} is
+\[W_{i_1,\cdots,i_k}W_{j_1,\cdots,j_k}=\sum W_{i_1',\cdots,i_k'}W_{j_1',\cdots,j_k'}\]
+The summation is over all swaps of a size $r$ order set of $\{i_1,\cdots,i_k\}$ with $w_1,\cdots,w_r$, respectively
+\end{definition}
+
+\begin{proof}
+If $r=k$, it is trivial. So we may assume $r<k$. For $v_1,\cdots,v_k,w_1,\cdots,w_k\in\mathbb C^k$, consider multilinear function
+\[f(v_1,\cdots,v_k,w_1,\cdots,w_k)=|v_1\cdots v_k||w_1\cdots w_k|-\sum|v_1'\cdots v_k'||w_1'\cdots w_k'|=\LHS-\RHS\]
+Let's first show that $f$ is skew-symmetric, it is suffices to prove if $v_i=v_{i+1}$ or $v_k=w_k$, then $f=0$
+\begin{enumerate}[label=(\roman*)]
+\item If $v_i=v_{i+1}$, $\LHS=0$, $\RHS$ consists of terms $|\cdots v_i\cdots||\cdots v_{i+1}\cdots|$ or $|\cdots v_{i+1}\cdots||\cdots v_i\cdots|$, and each pair will cancel out in summation
+\item If $v_k=w_k$, through a linear transformation, $v_k=w_k$ can be taken to be $(0,\cdots,0,1)^T$, and then it reduces to a lower case
+\end{enumerate}
+Since $w_k,v_k$ can be move to any column up to a sign, we know $f$ is indeed skew-symmetric
+\end{proof}
+
+\begin{example}
+Consider $\Gr_2(4)$, the only Pl\"ucker relation is
+\[W_{12}W_{34}-W_{13}W_{24}+W_{14}W_{23}=0\]
+\end{example}
+
+\begin{theorem}
+The \textit{Pl\"ucker embedding}\index{Pl\"ucker embedding} is
+\begin{align*}
+\Gr_k(n)&\to \mathbb P(\textstyle\bigwedge^k\mathbb C) \\
+\Span(v_1,\cdots,v_k)&\mapsto[v_1\wedge\cdots\wedge v_k]
+\end{align*}
+The image is an irreducible projective algebraic variety defined exactly by Pl\"ucker relations on Pl\"ucker coordinates
+\end{theorem}
+
+\end{document}

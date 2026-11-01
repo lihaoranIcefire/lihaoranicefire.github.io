@@ -1,0 +1,42 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{exercise}[Derivatives of polylogarithms] \hfill \par
+If $m_i>1$ for $1\leq i\leq d$, then
+\begin{align*}
+\dfrac{\partial}{\partial z_i}\Li_{m_1,\cdots,m_d}(z_1,\cdots,z_d)&=\sum_{k_1>\cdots>k_d\geq1}\frac{z_1^{k_1}\cdots z_i^{k_i-1}\cdots z_d^{k_d}}{k_1^{m_1}\cdots k_i^{m_i-1}\cdots k_d^{m_d}} \\
+&=\dfrac{1}{z_i}\Li_{m_1,\cdots,m_i-1,\cdots,m_d}(z_1,\cdots,z_d)
+\end{align*}
+\begin{align*}
+\dfrac{\partial}{\partial z_1}\Li_{1,m_2,\cdots,m_d}(z_1,\cdots,z_d)&=\sum_{k_1>\cdots>k_d\geq1}\frac{z_1^{k_1-1}z_2^{k_2}\cdots z_d^{k_d}}{k_2^{m_2}\cdots k_d^{m_d}} \\
+&=\sum_{k_2>\cdots>k_d\geq1}\frac{z_2^{k_2}\cdots z_d^{k_d}}{k_2^{m_2}\cdots k_d^{m_d}}\sum_{k_1=k_2+1}^{\infty}z_1^{k_1-1} \\
+&=\sum_{k_2>\cdots>k_d\geq1}\frac{z_2^{k_2}\cdots z_d^{k_d}}{k_2^{m_2}\cdots k_d^{m_d}}\frac{z_1^{k_2}}{1-z_1} \\
+&=\frac{1}{1-z_1}\sum_{k_2>\cdots>k_d\geq1}\frac{(z_1z_2)^{k_2}\cdots z_d^{k_d}}{k_2^{m_2}\cdots k_d^{m_d}} \\
+&=\frac{1}{1-z_1}\Li_{m_2,\cdots,m_d}(z_1z_2,\cdots,z_d)
+\end{align*}
+\begin{align*}
+\dfrac{\partial}{\partial z_d}\Li_{m_1,\cdots,m_{d-1},1}(z_1,\cdots,z_d)&=\sum_{k_1>\cdots>k_d\geq1}\frac{z_1^{k_1}\cdots z_{d-1}^{k_{d-1}}z_d^{k_d-1}}{k_2^{m_2}\cdots k_{d-1}^{m_{d-1}}} \\
+&=\sum_{k_1>\cdots>k_{d-1}\geq2}\frac{z_1^{k_1}\cdots z_{d-1}^{k_{d-1}}}{k_1^{m_1}\cdots k_{d-1}^{m_{d-1}}}\sum_{k_d=1}^{k_{d-1}-1}z_d^{k_{d}-1} \\
+&=\sum_{k_1>\cdots>k_{d-1}\geq2}\frac{z_1^{k_1}\cdots z_{d-1}^{k_{d-1}}}{k_1^{m_1}\cdots k_{d-1}^{m_{d-1}}}\frac{1-z_d^{k_{d-1}-1}}{1-z_d} \\
+&=\sum_{k_1>\cdots>k_{d-1}\geq1}\frac{z_1^{k_1}\cdots z_{d-1}^{k_{d-1}}}{k_1^{m_1}\cdots k_{d-1}^{m_{d-1}}}\frac{1-z_d^{k_{d-1}-1}}{1-z_d} \\
+&=\frac{1}{1-z_d}\sum_{k_1>\cdots>k_{d-1}\geq1}\frac{z_1^{k_1}\cdots z_{d-1}^{k_{d-1}}}{k_1^{m_1}\cdots k_{d-1}^{m_{d-1}}} \\
+&\mkern20mu-\frac{1}{z_d(1-z_d)}\sum_{k_1>\cdots>k_{d-1}\geq1}\frac{z_1^{k_1}\cdots (z_{d-1}z_d)^{k_{d-1}}}{k_1^{m_1}\cdots k_{d-1}^{m_{d-1}}} \\
+&=\frac{1}{1-z_d}\Li_{m_1,\cdots,m_{d-1}}(z_1,\cdots,z_{d-1}) \\
+&\mkern20mu-\frac{1}{z_d(1-z_d)}\Li_{m_1,\cdots,m_{d-1}}(z_1,\cdots,z_{d-1}z_d)
+\end{align*}
+If $1<i<d$, then
+\begin{align*}
+&\mkern30mu\dfrac{\partial}{\partial z_i}\Li_{m_1,\cdots,1,\cdots,m_d}(z_1,\cdots,z_d) \\
+&=\sum_{k_1>\cdots>k_d\geq1}\frac{z_1^{k_1}\cdots z_i^{m_i-1}\cdots z_d^{k_d}}{k_2^{m_2}\cdots k_d^{m_d}} \\
+&=\sum_{\substack{k_1>\cdots>k_{i-1}>k_{i+1}>\cdots>k_d\geq1 \\ k_{i-1}>k_{i+1}+1}}\frac{z_1^{k_1}\cdots z_{i-1}^{k_{i-1}}z_{i+1}^{k_{i+1}}\cdots z_d^{k_d}}{k_1^{m_1}\cdots k_{d-1}^{m_{d-1}}}\sum_{k_i=k_{i+1}+1}^{k_{i-1}-1}z_i^{k_{i}-1} \\
+&=\sum_{\substack{k_1>\cdots>k_{i-1}>k_{i+1}>\cdots>k_d\geq1 \\ k_{i-1}>k_{i+1}+1}}\frac{z_1^{k_1}\cdots z_{i-1}^{k_{i-1}}z_{i+1}^{k_{i+1}}\cdots z_d^{k_d}}{k_1^{m_1}\cdots k_{d-1}^{m_{d-1}}}\frac{z_i^{k_{i+1}}-z_i^{k_{i-1}-1}}{1-z_i} \\
+&=\sum_{k_1>\cdots>k_{i-1}>k_{i+1}>\cdots>k_d\geq1}\frac{z_1^{k_1}\cdots z_{i-1}^{k_{i-1}}z_{i+1}^{k_{i+1}}\cdots z_d^{k_d}}{k_1^{m_1}\cdots k_{d-1}^{m_{d-1}}}\frac{z_i^{k_{i+1}}-z_i^{k_{i-1}-1}}{1-z_i} \\
+&=\frac{1}{1-z_i}\sum_{k_1>\cdots>k_{i-1}>k_{i+1}>\cdots>k_d\geq1}\frac{z_1^{k_1}\cdots z_{i-1}^{k_{i-1}}(z_iz_{i+1})^{k_{i+1}}\cdots z_d^{k_d}}{k_1^{m_1}\cdots k_{d-1}^{m_{d-1}}} \\
+&\mkern20mu-\frac{1}{z_i(1-z_i)}\sum_{k_1>\cdots>k_{i-1}>k_{i+1}>\cdots>k_d\geq1}\frac{z_1^{k_1}\cdots (z_{i-1}z_i)^{k_{i-1}}z_{i+1}^{k_{i+1}}\cdots z_d^{k_d}}{k_1^{m_1}\cdots k_{d-1}^{m_{d-1}}} \\
+&=\frac{1}{1-z_i}\Li_{m_1,\cdots,m_{i-1},m_{i+1},\cdots,m_d}(z_1,\cdots,z_{i-1},z_iz_{i+1},\cdots,z_d) \\
+&\mkern20mu-\frac{1}{z_i(1-z_i)}\Li_{m_1,\cdots,m_{i-1},m_{i+1},\cdots,m_{d-1}}(z_1,\cdots,z_{i-1}z_i,z_{i+1},\cdots,z_d)
+\end{align*}
+\end{exercise}
+
+\end{document}

@@ -1,0 +1,125 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}\hfill
+\begin{itemize}
+\item A \textit{$k$-group scheme} is a group object in the category of $k$-schemes
+\item A \textit{$k$-algebraic group} is a group object in the category of $k$-varieties
+\item A \textit{linear algebraic group} is an affine algebraic group
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+Let $k$ be a commutative ring. A $k$-\textit{group functor} is
+\[G:\{\texttt{$k$-algebras}\}\to\{\texttt{Sets}\}\]
+With natural transformations
+\begin{itemize}
+\item multiplication $m:G\times G\to G$
+\item unit $e:\Hom(k,-)\to G$
+\item inverse $i:G\to G$
+\end{itemize}
+such that $m_A:G(A)\times G(A)\to G(A)$, $e_A:\{*\}\to G(A)$, $i_A:G(A)\to G(A)$ give $G(A)$ a group structure. Thus $G$ is actually a functor $\{\texttt{$k$-algebras}\}\to\{\texttt{Groups}\}$
+\end{definition}
+
+\begin{remark}
+The functor $G\times G$ is defined to be $(G\times G)(A)=G(A)\times G(A)$ and $(G\times G)(A\xrightarrow{\varphi}B)=G(A)\times G(A)\xrightarrow{G(\varphi)\times G(\varphi)}G(B)\times G(B)$
+\end{remark}
+
+\begin{proposition}
+$k$-group functor is representable by $k$-group schemes
+\end{proposition}
+
+\begin{proof}
+Apply Yoneda lemma
+\[G\times G=\Hom(-,G)\times \Hom(-,G)\cong\Hom(-,G\times G)\cong \Hom(-,\Spec R[G]\otimes R[G])\]
+Multiplication $G(A)\times G(A)\to(G\times G)(A)$ is given by
+\begin{center}
+\begin{tikzcd}
+\Spec A \arrow[rd, "{(\phi,\psi)}", dashed] \arrow[rdd, "\psi"', bend right] \arrow[rrd, "\phi", bend left] &                               &             \\
+                                                                                                            & G\times G \arrow[r] \arrow[d] & G \arrow[d] \\
+                                                                                                            & G \arrow[r]                   & \Spec R          
+\end{tikzcd}
+\begin{tikzcd}
+A &                                                      &                                                \\
+  & {R[G]\otimes R[G]} \arrow[lu, "f\otimes g"', dashed] & {R[G]} \arrow[llu, "f"', bend right] \arrow[l] \\
+  & {R[G]} \arrow[luu, "g", bend left] \arrow[u]         & R \arrow[l] \arrow[u]                         
+\end{tikzcd}
+\end{center}
+\end{proof}
+
+\begin{definition}
+$G$ is a $k$-group scheme, $X$ is a $k$-scheme, then a \textit{group action} is $\mu:G\times_k X\to X$ such that the following diagrams commute
+\begin{center}
+\begin{tikzcd}
+                                                                  & G\times X \arrow[rd, "\mu"] &   \\
+G\times G\times X \arrow[ru, "1\times\mu"] \arrow[rd, "m\times1"] &                             & X \\
+                                                                  & G\times X \arrow[ru, "\mu"] &  
+\end{tikzcd}
+\quad
+\begin{tikzcd}
+1\times X \arrow[r, "e\times1"] \arrow[rd, "p_2"] & G\times X \arrow[d, "\mu"] \\
+                                                  & X                         
+\end{tikzcd}
+\end{center}
+\end{definition}
+
+\begin{definition}
+$G$ is a $k$-group scheme, $X,Y$ are $k$-group schemes. $\varphi:X\to Y$ is a $G$-torsor if the following diagram commutes
+\begin{center}
+\begin{tikzcd}
+G\times X \arrow[r, "\mu"] \arrow[d, "p_2"] & X \arrow[d, "\varphi"] \\
+X \arrow[r, "\varphi"]                      & Y                     
+\end{tikzcd}
+\end{center}
+And $G\times X\to X\times_YX$ induced by\begin{tikzcd}
+G\times X \arrow[rdd, "\mu", bend right] \arrow[rrd, "p_2", bend left] \arrow[rd, dashed] &                                &                        \\
+                                                                                          & X\times_YX \arrow[d] \arrow[r] & X \arrow[d, "\varphi"] \\
+                                                                                          & X \arrow[r, "\varphi"]         & Y                     
+\end{tikzcd}
+is an isomorphism
+\end{definition}
+
+\begin{proposition}
+The ring of regular functions $R[G]$ of a linear algebraic group $G$ form a Hopf algebra
+\end{proposition}
+
+\begin{proof}
+\begin{center}
+\begin{tikzcd}
+G\times G\times G \arrow[r, "1\times m"] \arrow[d, "m\times1"'] & G\times G \arrow[d, "m"] \\
+G\times G \arrow[r, "m"]                                        & G                       
+\end{tikzcd}
+\begin{tikzcd}
+{R[G]\otimes R[G]\otimes R[G]}                 & {R[G]\otimes R[G]} \arrow[l, "1\otimes \Delta"']  \\
+{R[G]\otimes R[G]} \arrow[u, "\Delta\otimes1"] & {R[G]} \arrow[l, "\Delta"] \arrow[u, "\Delta"']
+\end{tikzcd}
+\end{center}
+\begin{center}
+\begin{tikzcd}
+{R[G]\otimes R}                                 & {R[G]\otimes R[G]} \arrow[l, "1\otimes\epsilon"'] \arrow[d, "\epsilon\otimes1"] \\
+{R[G]} \arrow[u] \arrow[r] \arrow[ru, "\Delta"] & {R\otimes R[G]}                                                                
+\end{tikzcd}
+\begin{tikzcd}
+G\times\Spec R \arrow[r, "1\times e"] & G\times G \arrow[ld, "m"]              \\
+G \arrow[u] \arrow[r]                 & \Spec R\times G \arrow[u, "e\times1"']
+\end{tikzcd}
+\end{center}
+
+If $g\in G(A)=\Hom_R(R[G],A)$, $f\in R[G]$, then write $f(g)\in A$. There are coproduct $\Delta:R[G]\to R[G]\otimes R[G]$, counit $\epsilon:R[G]\to R$, antipode(coinverse) $S:R[G]\to R$. Suppose $\Delta f=\sum f_i\otimes f'_i$, then for any $g_1,g_2\in G(A)$, $f(g_1g_2)=\sum f_i(g_1)f'_i(g_2)$. The counit is given by $\epsilon(f)=f(1)$. The antipode is given by $S(f)(g)=f(g^{-1})$
+\end{proof}
+
+\begin{example}
+The category of $\mathbb Z$-graded vector spaces $(V^n)_{n\in\mathbb Z}$ is equivalent to $\Rep(\mathbb G_m)$
+\end{example}
+
+\begin{proof}
+Suppose the coaction is $\rho:V\to V\otimes k[t,t^{-1}],\rho(v)=\sum_{n}\rho_n(v)\otimes t^n$, $(\rho\otimes 1)\rho(v)=\sum_{m,n}\rho_m(\rho_n(v))\otimes t^m\otimes t^n$. On the other hand $(1\otimes\Delta)\rho(v)=\sum_{n}\rho_n(v)\otimes t^n\otimes t^n$ also $(1\otimes\epsilon)\rho(v)=\sum_n\rho_n\otimes1$, which would imply $\rho_n\rho_m=\delta_{nm}\rho_n,1=\sum_n\rho_n$, i.e. $\rho_n$ are orthogonal idempotents. The inverse would be given $\sum_n\rho_{-n}\otimes t^n$. Thus $V=\bigoplus_nV^n$ where $V^n$ corresponds to the subrepresentation $\rho_n:V^n\to V^n\otimes k[t,t^{-1}]$
+\end{proof}
+
+\begin{example}[Deligne torus]
+$\mathbb S=\Res_{\mathbb C/\mathbb R}\mathbb G_m$ is the Deligne torus, with Hopf algebra $\mathbb R[x,y,(x^2+y^2)^{-1}]$, The coproduct is $\Delta x=x\otimes x-y\otimes y$, $\Delta y=x\otimes y+y\otimes x$, or $\mathbb C[z^{\pm1},\bar z^{\pm1}]^{\mathbb Z/2}$, The coproduct is $\Delta x=x\otimes x-y\otimes y$, $\Delta z=z\otimes z$, $\Delta\bar z=\bar z\otimes\bar z$. $\mathbb S(\mathbb R)=\mathbb C^\times$, $\mathbb S(\mathbb C)=\mathbb C^\times\times\mathbb C^\times$
+\end{example}
+
+
+\end{document}

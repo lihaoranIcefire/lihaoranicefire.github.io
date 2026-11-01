@@ -1,0 +1,78 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+A \textit{sheaf cohomology theory} $H$ for $M$ with coefficients in the sheaves of $K$-modules over $M$ is a covariant cohomological $\delta$ functor that consists of
+\begin{enumerate}[leftmargin=*]
+\item A family of covariant additive functors $H^q$ from the category of sheaves of $K$-modules over $M$ to the category of $K$-modules
+\item For each short exact sequence $0\to\mathcal S'\to\mathcal S\to\mathcal S''\to0$, a homomorphism $H^q(M,\mathcal S'')\to H^{q+1}(M,\mathcal S')$
+\end{enumerate}
+such that
+\begin{enumerate}[leftmargin=*]
+\item $H^q(M,\mathcal S)=0$ for $q<0$. $H^0(M,\mathcal S)\cong\Gamma(\mathcal S)$, and for any homomorphism $\mathcal S\to\mathcal S'$
+\begin{center}
+\begin{tikzcd}
+{H^0(M,\mathcal S)} \arrow[r,"\cong"] \arrow[d] & {\Gamma(\mathcal S)} \arrow[d] \\
+{H^0(M,\mathcal S')} \arrow[r,"\cong"]          & {\Gamma(\mathcal S')}         
+\end{tikzcd}
+\end{center} 
+commutes
+\item If $\mathcal S$ is a fine sheaf, then $H^q(M,\mathcal S)=0$ for $q>0$
+\item For each short exact sequence $0\to\mathcal S'\to\mathcal S\to\mathcal S''\to0$, we have long exact sequence
+\[\cdots\to H^q(M,\mathcal S')\to H^q(M,\mathcal S)\to H^q(M,\mathcal S'')\to H^{q+1}(M,\mathcal S')\to\cdots\]
+\item For commutative diagram
+\begin{center}
+\begin{tikzcd}
+0 \arrow[r] & \mathcal S' \arrow[r] \arrow[d] & \mathcal S \arrow[d] \arrow[r] & \mathcal S'' \arrow[d] \arrow[r] & 0 \\
+0 \arrow[r] & \mathcal T' \arrow[r]           & \mathcal T \arrow[r]           & \mathcal T'' \arrow[r]           & 0
+\end{tikzcd}
+\end{center}
+we have commutative diagram
+\begin{center}
+\begin{tikzcd}
+\cdots \arrow[r] & {H^q(M,\mathcal S')} \arrow[r] \arrow[d] & {H^q(M,\mathcal S)} \arrow[d] \arrow[r] & {H^q(M,\mathcal S'')} \arrow[d] \arrow[r] & {H^{q+1}(M,\mathcal S')} \arrow[r] \arrow[d] & \cdots \\
+\cdots \arrow[r] & {H^q(M,\mathcal T')} \arrow[r]           & {H^q(M,\mathcal T)} \arrow[r]           & {H^q(M,\mathcal T'')} \arrow[r]           & {H^{q+1}(M,\mathcal T')} \arrow[r]           & \cdots
+\end{tikzcd}
+\end{center}
+\end{enumerate}
+\end{definition}
+
+Existence of cohomology theories
+
+Let $\mathcal K=M\times K$ be the constant sheaf over $M$, we shall show that any fine torsionless resolution of $\mathcal K$
+\[0\to\mathcal K\to \mathcal C^0\to\mathcal C^1\to\cdots\]
+Give rise to a cohomology theory by defining $H^q(M,\mathcal S)=H^q(\Gamma(\mathcal C^*\otimes\mathcal S))$, since $\mathcal C_i$ are fine torsionless resolution, we have 
+\[0\to\Gamma(C^*\otimes\mathcal S')\to\Gamma(C^*\otimes\mathcal S)\to\Gamma(C^*\otimes\mathcal S'')\to0\]
+is exact, which gives us the long exact sequence
+
+Let $\mathcal Z^q=\ker(\mathcal C^q\to\mathcal C^{q+1})$, then we have short exact sequence $0\to\mathcal Z^q\to\mathcal C^q\to\mathcal Z^{q+1}\to0$, as a subsheaf $\mathcal Z^q$ is also torsionless, thus  $0\to\mathcal Z^q\otimes\mathcal S\to\mathcal C^q\otimes\mathcal S\to\mathcal Z^{q+1}\otimes\mathcal S\to0$ is exact, so $0\to\Gamma(\mathcal Z^q\otimes\mathcal S)\to\Gamma(\mathcal C^q\otimes\mathcal S)\to\Gamma(\mathcal Z^{q+1}\otimes\mathcal S)$ is exact, and $\Gamma(\mathcal C^q\otimes\mathcal S)\to\Gamma(\mathcal C^{q+1}\otimes\mathcal S)$ is the composition $\Gamma(\mathcal C^q\otimes\mathcal S)\to\Gamma(\mathcal Z^{q+1}\otimes\mathcal S)\to\Gamma(\mathcal C^{q+1}\otimes\mathcal S)$, hence $H^q(M,\mathcal S)=H^q(\Gamma(\mathcal C^*\otimes\mathcal S))=\Gamma(\mathcal Z^q\otimes\mathcal S)/\im(\Gamma(\mathcal C^{q-1}\otimes\mathcal S))$. If $\mathcal S$ is fine, then  $0\to\Gamma(\mathcal Z^{q-1}\otimes\mathcal S)\to\Gamma(\mathcal C^{q-1}\otimes\mathcal S)\to\Gamma(\mathcal Z^{q}\otimes\mathcal S)\to0$ is exact, hence $H^q(M,\mathcal S)=0$ for $q\geq1$
+
+Let $\mathcal S_0$ denote the sheaf of germs of discontinuous sections of $\mathcal S$ (which is the shefification of the sheaf of discontinuous sections of $\mathcal S$), we shall show that $\mathcal S_0$ is always a fine sheaf
+
+\begin{definition}
+$H,\tilde H$ are cohomology theories, a homomorphism $H\to\tilde H$ is a natural transformation such that
+\begin{center}
+\begin{tikzcd}
+{H^0(M,\mathcal S)} \arrow[r, "\cong"] \arrow[d] & {\Gamma(\mathcal S)} \arrow[d,equal] \\
+{\tilde H^0(M,\mathcal S)} \arrow[r, "\cong"]    & {\Gamma(\mathcal S)}          
+\end{tikzcd}
+\end{center}
+commutes
+\end{definition}
+
+\begin{theorem}
+$H,\tilde H$ are cohomology theories, then there is a unique homomorhpism $H\to\tilde H$
+\end{theorem}
+
+\begin{corollary}
+Any two cohomology theories $H,\tilde H$ are uniquely isomorphic
+\end{corollary}
+
+\begin{theorem}
+$H$ is a cohomology theory
+\[0\to\mathcal S\to\mathcal C^0\to\mathcal C^1\to\cdots\]
+is a fine resolution of $\mathcal S$, then there are canonical isomorphisms $H^q(M,\mathcal S)\xrightarrow\cong H^q(\Gamma(\mathcal C^*))$
+\end{theorem}
+
+\end{document}

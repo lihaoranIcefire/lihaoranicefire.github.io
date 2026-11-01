@@ -1,0 +1,27 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+$X$ is a non-singular $n$ dimensional projective algebraic variety over $F_q$, the \textit{zeta function} is
+\[\zeta(X,s)=\exp\left(\sum_{m=1}^\infty\frac{N_m}{m}q^{-ms}\right)\]
+Where $N_m$ are the number of points of $X$ over $F_{q_m}$. The \textit{Weil conjectures}\index{Weil conjectures} are
+\begin{enumerate}[leftmargin=*,label=\textbf{\arabic*.}]
+\item Let $T=q^{-s}$
+\[\zeta(X,s)=\frac{P_1(T)P_3(T)\cdots P_{2n-1}(T)}{P_0(T)P_2(T)\cdots P_{2n}(T)}=\prod_{i=0}^{2n}P_i(T)^{(-1)^{i+1}}\]
+Where $P_0(T)=1-T$, $P_{2n}(T)=1-q^nT$, $P_i(T)$ can be split into $\prod_j(1-\alpha_{ij}T)$ over $\mathbb C$. In particular, $\zeta(X,s)$ is a rational function of $T$
+\item
+\[\zeta(X,n-s)=\pm q^{\frac{nE}{2}-Es}\zeta(X,s)\]
+Or equivalently
+\[\zeta(X,q^{-n}T^{-1})=\pm q^{\frac{nE}{2}}T^E\zeta(X,T)\]
+$E$ is the Euler characteristic. $\{\alpha_{2n-i,1},\alpha_{2n-i,2},\cdots\}$ coincide with $\left\{\dfrac{q^n}{\alpha_{i,1}},\dfrac{q^n}{\alpha_{i,2}},\cdots\right\}$ in some order
+\item $|\alpha_{i,j}|=q^{i/2}$
+\item 
+\end{enumerate}
+\end{definition}
+
+\begin{example}
+If $X$ is the $n$ dimensional projective space, $N_m=1+q^m+\cdots+q^{nm}$, $\zeta(\mathbb P^n,s)=\dfrac{1}{(1-q^{-s})\cdots(1-q^{n-s})}$
+\end{example}
+
+\end{document}

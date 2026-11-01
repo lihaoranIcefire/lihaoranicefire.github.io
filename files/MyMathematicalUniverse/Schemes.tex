@@ -1,0 +1,381 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+A \textit{subscheme} $Y$ of $X$ is a topological subspace of $Y\subseteq X$
+\end{definition}
+
+\begin{proposition}[Gluing schemes]
+$\{X_i\}_{i\in I}$ is a family of schemes, suppose that
+\begin{itemize}
+\item $V_{ij}\subseteq X_i$ are open subschemes with $V_{ii}=X_i$
+\item $\varphi_{ij}:V_{ij}\to V_{ji}$ are isomorphisms with $\varphi_{ii}=\id$
+\item $\varphi_{ik}=\varphi_{ij}\circ\varphi_{jk}:V_{ki}\cap V_{kj}\to V_{ik}\cap V_{ij}$
+\item $\varphi_{ij}|_{V_{ij}\cap V_{ik}}:V_{ij}\cap V_{ik}\to V_{ji}\cap V_{jk}$ are isomorphisms
+\end{itemize}
+Then there is a scheme $X$ (up to isomorphism) with an open covering $\{U_i\}_{i\in I}$ with open immersions $\psi_i:X_i\to X$ with $\psi(X_i)=U_i$ such that $d$
+\end{proposition}
+
+\begin{proof}
+
+\end{proof}
+
+\begin{lemma}[Functor of points]
+$X$ is a scheme, its \textit{functor of points} is
+\[\Hom(-,X):\{\texttt{Affine schemes}\}^{\text{op}}\to\{\texttt{Sets}\}\]
+Conversely, a functor is the functor of points of some scheme if it is a Zariski sheaf covered by affine schemes
+\end{lemma}
+
+\begin{proof}
+
+\end{proof}
+
+\begin{definition}
+Suppose $(X,\mathcal O)$ is a ringed space. $\mathcal F$ is a sheaf of $\mathcal O$-module. $\mathcal F$ is quasi-coherent if for any $x\in X$, there is an open neighborhood $U$ of $x$ such that $\mathcal F_U$ is the cokernel of $\bigoplus_{i\in I}\mathcal O_U\to \bigoplus_{j\in J}\mathcal O_U$
+\end{definition}
+
+\begin{proposition}
+Quasi-coherent sheaves over $\Spec R$ are $R$-modules.
+\end{proposition}
+
+\begin{proof}
+
+\end{proof}
+
+\begin{definition}
+$\varphi:X\to Y$ is \textit{dominant}\index{Dominant morphism} if $\varphi(X)$ is dense
+\end{definition}
+
+\begin{definition}
+$\varphi:X\to Y$ is \textit{quasi-finite}\index{Quasi-finite morphism} if $\varphi^{-1}(x)$ is finite for any $x\in X$
+\end{definition}
+
+\begin{definition}
+A \textit{variety} is a separated, finite type and integral scheme $X$ over $k$.
+\end{definition}
+
+\begin{proposition}
+An affine variety $X$ is of the form $\Spec k[x_1,\cdots,x_n]/(f_1,\cdots,f_m)$
+\end{proposition}
+
+\begin{definition}
+$\varphi:X\to Y$ is \textit{affine} if $\varphi^{-1}(U)$ is affine for any affine open $U$
+\end{definition}
+
+\begin{definition}
+An affine morphism $\varphi:X\to Y$ is \textit{finite}\index{Finite morphism} if $k[U]$ is finite $k[V]$-algebra for any $\varphi^{-1}(V)=U$ with $U,V$ affine.
+\end{definition}
+
+\begin{proposition}
+A finite morphism $\varphi$ is quasi-finite
+\end{proposition}
+
+\begin{definition}
+An affine morphism $\varphi:X\to Y$ is \textit{integral}\index{Integral morphism} if $k[U]$ is integral over $k[V]$ for any $\varphi^{-1}(V)=U$ with $U,V$ affine.
+\end{definition}
+
+\begin{definition}
+The \textit{canonical bundle}\index{canonical bundle} of an algebraic variety $X$ of dimension $n$ is $K=\bigwedge^n\Omega$, $\Omega$ is the cotangent bundle
+\end{definition}
+
+\begin{definition}
+The \textit{Picard group}\index{Picard group} is $H^1(X,\mathcal O^*)$
+\end{definition}
+
+\begin{definition}
+$X$ is \textit{complete}\index{Complete variety} if for any variety $Y$, the projection $X\times Y\to Y$ is closed
+\end{definition}
+
+\begin{proposition}
+A closed subvariety of a complete variety is complete. The image of a complete variety is complete. A complex variety is complete if and only if it is compact as a complex-analytic variety
+\end{proposition}
+
+\begin{definition}
+A \textit{rational map} between algebraic varieties $f:X\to Y$ is a morphism from a nonempty open subseteq $U\subseteq X$ to $Y$, if $g:Y\to Z$ is also a rational map, then we can consider $g\circ f:X\to Z$, $f$ is a \textit{birational map} if it has an inverse
+\end{definition}
+
+\begin{definition}
+A rational curve is an algebraic variety birational equivalent to $\mathbb A^1$, since birational equivalence preserve function field, we may assume it's $F(t)$
+\end{definition}
+
+\begin{definition}
+$X$ is \textit{integral} if $\mathcal O(U)$ is an integral domain for any open $U$
+\end{definition}
+
+\begin{lemma}
+Scheme $X$ is integral $\iff$ $X$ is irreducible and reduced
+\end{lemma}
+
+\begin{proof}
+Suppose $X$ is integral, then obviously it is reduced, if $X$ is not irreducible, then there exist disjoint nonempty open subsets $U,V$(just take irreducible component minus the others), but then $\mathcal O(U\cup V)\cong \mathcal O(U)\times\mathcal O(V)$ is not integral. Conversely, suppose $X$ is irreducible and reduced, note that if $U\subseteq X$ is affine integral $\iff$ $\mathcal O(U)$ is the spectrum of an integral domain. $\mathcal O(U)$ is a domain for any open subset $U$, just show that $\mathcal O(U)\to\mathcal O(V)$ restriction is injective for any affine $V\subseteq U$
+\end{proof}
+
+\begin{definition}
+$X$ is \textit{reduced} if $\mathcal O(U)$ is reduced for any open $U$
+\end{definition}
+
+\begin{definition}
+$X\to S$ is \textit{separated} if $\Delta(X)$ is closed, $\Delta:X\to X\times_SX$ is a closed immersion
+\end{definition}
+
+\begin{definition}
+$f:X\to Y$ is locally P if for each affine chart $V\subseteq Y$, $f^{-1}(V)$ is covered by affine charts $U_i$ such that $f|_{U_i}:U_i\to V$ between affine schemes are of P. Such examples include
+\begin{enumerate}
+\item Locally of finite type
+\item Locally finitely presented
+\end{enumerate}
+\end{definition}
+
+\begin{definition}
+$f:X\to S$ is a flat morphism iff for each $x\in X$, $\mathcal O_{X,x}$ is a flat $\mathcal O_{S,f(x)}$ module. Suppose $\mathcal F$ is a quasi-coherent sheaf on $X$, then $\mathcal F$ is flat iff $\mathcal F_x$ is a flat $\mathcal O_{S,f(x)}$ module.
+\end{definition}
+
+\begin{definition}
+$f:X\to Y$ is universally P if $f_Z:X\times_YZ\to Z$ is P for any $Z\to Y$, i.e. under base change
+\end{definition}
+
+\begin{definition}
+$X$ is an integral scheme, $X=\bigcup\Spec A_i$, $A_i$ are integral domains, let $B_i$ be the integral closure of $A_i$, the \textit{normalization} of $X$ is $Y=\bigcup\Spec B_i$ with the induced finite morphism $Y\to X$
+\end{definition}
+
+\begin{lemma}
+Normalizations of dimension $1$ schemes are regular, normalizations of dimension $2$ schemes only have isolated singularities
+\end{lemma}
+
+\begin{example}
+$k[x,y]/(x^2-y^3)\cong k[t^2,t^3]$ with field of fractions $k(t)$ and integral closure $k[t]$, thus the normalization of curve $\Spec\left(\dfrac{k[x,y]}{(x^2-y^3)}\right)$ is
+\begin{align*}
+\Spec k[t]&\to\Spec\left(\dfrac{k[x,y]}{(x^2-y^3)}\right) \\
+t&\mapsto (t^3,t^2)
+\end{align*}
+\end{example}
+
+\begin{definition}
+$f:X\to Y$ is \textit{flat} if $f:\mathcal O_{X,f(x)}\to\mathcal O_{Y,x}$ is flat for all $x\in X$
+\end{definition}
+
+\begin{definition}
+$X$ is a \textit{regular} scheme $\iff\mathcal O_{X,x}$ is a regular local ring for any $x\in X$
+\end{definition}
+
+\begin{definition}
+$X$ is a \textit{normal} scheme $\iff\mathcal O_{X,x}$ is a normal domain for any $x\in X\iff\mathcal O_X(U)$ is a normal domain for any open set $U\subseteq X\iff\forall x\in X$, there exists $U\ni x$ such that $\mathcal O_X(U)$ is a normal domain
+\end{definition}
+
+\begin{lemma}
+If $X$ is an integral normal scheme, then $\Gamma(X,\mathcal O_X)$ is a normal domain.
+\end{lemma}
+
+\begin{proof}
+
+\end{proof}
+
+\begin{lemma}
+Regularity implies normality.
+\end{lemma}
+
+\begin{proof}
+
+\end{proof}
+
+\begin{definition}
+$f:X\to S$ is a smooth if it is smooth on each affine patch, or equivalently, locally of finite presentation and flat
+\end{definition}
+
+\begin{definition}
+$f:X\to Y$ is \textit{unramified}\index{Unramified morphism} if
+\begin{itemize}
+\item $f$ is locally finitely presented
+\item For $f(x)=y$, $k(x)/k(y)$ is a separable algebraic extension and $m_y\mathcal O_{X,x}=m_{x}$
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+$f:X\to Y$ is an \textit{\'etale morphism}\index{\'Etale morphism} if $f$ is flat and unramified. \'Etale morphism should be thought of as a local isomorphism.
+\end{definition}
+
+\begin{definition}
+The \textit{direct image functor}\index{Direct image functor} of $f:X\to Y$ is $f_*:\Sh(X)\to\Sh(Y)$, $f_*(F)(V)=F(f^{-1}V)$
+The $f_*$ is left exact, $R^qf_*F$ is the associated sheaf to the presheaf $U\mapsto H^q(f^{-1}(U),F)$
+\end{definition}
+
+\begin{definition}
+The \textit{inverse image functor}\index{Inverse image functor} of $f:X\to Y$ is $f^{-1}:\Sh(Y)\to\Sh(X)$, the sheafification of
+\[U\mapsto\varinjlim_{V\supseteq f(U)}G(V)\]
+The pullback sheaf of $y\hookrightarrow Y$ is the stalk $O_{Y,y}$ \par
+For $\mathcal O_Y$ modules $\mathcal V$, we have $f^*\mathcal V=f^{-1}\mathcal V\otimes_{f^{-1}\mathcal O_Y}\mathcal O_X$
+\end{definition}
+
+\begin{remark}
+Given a vector bundle, its sheaf of sections is locally free. Conversely, if we have a locally free sheaf then it's the sheaf of sections of a vector bundle which we can build by taking sheaf Spec of the symmetric algebra of the locally free sheaf
+\end{remark}
+
+\begin{definition}
+$f:Z\to X$ is a closed immersion if $f(Z)$ is closed and locally regular functions on $Z$ can be extended to regular functions on $X$, i.e. $f^\#:\mathcal O_X\to f_*\mathcal O_Z$ is surjective
+\end{definition}
+
+\begin{definition}
+$f:X\to Y$ is proper if it is separated, universally closed and of finite type
+\end{definition}
+
+\begin{proposition}
+Composition of proper morphisms is proper. Closed immersions are proper
+\end{proposition}
+
+\begin{definition}
+$L/k$ is a field extension, \textit{Weil restriction} is the right adjoint of fiber product, i.e. $\Res_{L/k}X(S)=X(S\times_kL)$, or $\Hom(-,\Res_{L/k}x(-))=\Hom(-\times_kL,-)$
+\end{definition}
+
+\begin{proposition}
+Suppose $X=\Spec A$, $Y=\Spec B$, $f:B\to A$, $M,N$ are modules over $A,B$ that corresponds to $\mathcal O$-modules $\mathcal F,\mathcal G$ over $X,Y$, then $f_*\mathcal F$ corresponds to $M$ regarded as a $B$ module, $f^{-1}\mathcal G$ corresponds to
+\end{proposition}
+
+\begin{definition}
+Let $X$ be a locally Noetherian integral scheme, a prime divisor is an integral subscheme $Z\subseteq U$, a \textit{Weil divisor} is $\displaystyle\sum_{\text{$Z$ prime divisors}} n_ZZ$, where the sum is locally finite
+\end{definition}
+
+\begin{definition}
+Let $X$ be a integral Noetherian scheme, a Cartier divisor is a family $\{U_i,f_i\}$, where $\{U_i\}$ is an open cover of $X$, and $f_i\in\Gamma(U_i,\mathcal M_X^\times)$ such that $f_i/f_j\in\Gamma(U_i\cap U_j,\mathcal O_X^\times)$, i.e. a Cartier divisor is a global section of $\mathcal M_X^\times/\mathcal O_X^\times$
+\end{definition}
+
+\begin{lemma}
+There is a map $\Div(X)\to\Pic(X)$ that sends a Cartier divisor to its associated line bundle, which is given by $\mathcal L|_{U_i}=\mathcal O_X\frac{1}{f_i}$, hence the transition map is $f_i/f_j$ on $U_i\cap U_j$ from $U_i$ to $U_j$
+\end{lemma}
+
+\begin{example}[Vector bundles over $\mathbb A_k^n$]
+Suppose $E=\mathbb A^n_k\times_k\mathbb A^r_k\xrightarrow{\pi}\mathbb A^n_k$ is a vector bundle, then a section would be determined by $(t_1,\cdots,t_r)\mapsto(f_1(x_1,\cdots,x_n),\cdots,f_r(x_1,\cdots,x_n))$
+\end{example}
+
+\begin{definition}[Gluing construction of $\mathbb P^n$]
+Consider $U_i=k[\frac{X_0}{X_i},\cdots,\widehat{\frac{X_i}{X_i}},\cdots,\frac{X_n}{X_i}]$, then $U_i-[0:\cdots:\underset{j}{1}:\cdots:0]$ would be $k[\frac{X_0}{X_i},\cdots,\widehat{\frac{X_i}{X_i}},\cdots,(\frac{X_j}{X_i})^{\pm1},\cdots,\frac{X_n}{X_i}]$, and the transition map would be $\varphi_{ij}:U_i\xrightarrow{\frac{X_i}{X_j}} U_j$
+\end{definition}
+
+\begin{definition}[$\mathcal O(n)$ bundles over $\mathbb P^n$]
+Suppose $L\xrightarrow{\pi}\mathbb P^n$ is a line bundle, and $U_i\times_k\mathbb A^1_k\cong\Spec k[\frac{X_0}{X_i},\cdots,\widehat{\frac{X_i}{X_i}},\cdots,\frac{X_n}{X_i}]\otimes_kk[t_i]$, and consider map
+\[
+U_i\times\mathbb A^1_k\xrightarrow{\frac{X_i}{X_j}\otimes(\frac{X_i}{X_j})^d} U_j\times\mathbb A^1_k
+\]
+Hence a global section of $H^0(\mathbb P^n,\mathcal O(d))$ would necessarily looks like a homogeneous polynomial $f$ of degree $d$, so that
+\[
+(\frac{X_i}{X_j})^df(\frac{X_0}{X_i},\cdots,\widehat{\frac{X_i}{X_i}},\cdots,\frac{X_n}{X_i})=f(\frac{X_0}{X_j},\cdots,\widehat{\frac{X_j}{X_j}},\cdots,\frac{X_n}{X_j})
+\]
+\end{definition}
+
+\begin{example}[Tautological bundle and Hyperplane bundle(Serre's twisting sheaf)]
+
+\end{example}
+
+\begin{definition}
+Dimension
+\end{definition}
+
+\begin{proposition}
+$\dim(\mathcal O_{Y,y})=\codim(X,Y)$
+\end{proposition}
+
+Classically, ideal $I\subseteq k[x_1,\cdots,x_n]$ corresponds to an algebraic set $V(I)\subseteq\mathbb A^n$, $p=(a_1,\cdots,a_n)\in\mathbb A^n$, then tangent space $T_pV$(view as embedded in $\mathbb A^n$) will just be
+\[\left\{(y_1,\cdots,y_n)\in\mathbb A^n\middle|\sum_{i=1}^n(y_i-a_i)\frac{\partial f}{\partial x_i}(p)=0,\forall f\in I\right\}\]
+
+\begin{definition}
+$k[\epsilon]=k[x]/(x^2)$ is a local $k$ algebra with maximal ideal $(\epsilon)$, $p\in X(k)$, then $T_pV\cong\Hom_{\text{loc}}(\mathcal O_{V,p},k[\epsilon])$, i.e. $T_pX$ is the fiber over $p$ of $X(k[\epsilon])\to X(k)$ induced by $k[\epsilon]\to k$, $\epsilon\mapsto0$, i.e. $\alpha:A\to k[\epsilon]$ such that $A\xrightarrow\alpha k[\epsilon]\to k$ has kernel $p$(which is a maximal ideal), i.e. $\alpha^{-1}((\epsilon))=p$. For $\phi: V\to W$, $(d\phi)_p:\Hom_{\text{loc}}(\mathcal O_{V,p},k[\epsilon])\to\Hom_{\text{loc}}(\mathcal O_{W,\phi(p)},k[\epsilon])$ is induced by $\mathcal O_{W,\phi(p)}\to\mathcal O_{V,p}$
+\end{definition}
+
+\begin{definition}
+$A$ is a $k$ algebra, $M$ is an $A$ module, a derivation is a $k$ linear map $A\to M$ such that $D(ab)=aD(b)+D(a)b$. Denote the $k$ vector space of derivations as $\Der_k(A,M)$
+\end{definition}
+
+\begin{example}
+$R$ is a local $k$ algebra with maximal ideal $m$ and $R/m=k$, then $R\cong k\oplus m$ as a $k$ vector space since the exact sequence split
+\begin{center}
+\begin{tikzcd}
+0 \arrow[r] & m \arrow[r] & R \arrow[r] & R/m\cong k \arrow[r] \arrow[l, bend right] & 0
+\end{tikzcd}
+\end{center}
+Here $k\to R$ maps 1 to 1, making $k\to R\to R/m\cong k$ a $k$ linear isomorphism. Thus $d:R\to m/m^2$, $f\mapsto f-f(m)\mod m^2$ is a $k$ derivation
+\end{example}
+
+\begin{proposition}
+$(R,m)$ is a local ring, there is a canonical isomorphism $\Hom_{\text{loc}}(R,k[\epsilon])\to\Der_k(R,k)\to\Hom_k(m/m^2,k)$
+\end{proposition}
+
+\begin{proof}
+Given a local homomorhpim $\alpha:R\to k[\epsilon]$, $\alpha(f)=f(m)+D_\alpha(f)\epsilon$, here $D_\alpha$ would be a derivation. Given a derivation $D$, $D$ vanishes on $k$ as well as $m^2$, thus induces a linear map $m/m^2\to k$. Given a linear map $m/m^2\to k$, define derivation $R\to m/m^2$, $f\mapsto df$
+\end{proof}
+
+\begin{definition}
+The blow up of the origin in $\mathbb A^n$ is $$Bl_0\mathbb A^n=\left\{(x_1,\cdots,x_n)\times[y_1,\cdots,y_n]\in\mathbb A^n\times\mathbb P^{n-1}\middle|x_iy_j=x_jy_i\right\}$$Let $\varphi:Bl_0\mathbb A^n\to\mathbb A^n$ be the projection to the first factor, then $Bl_0\mathbb A^n$ is covered by $n$ open affine charts $U_i=\{y_i\neq0\}\cap Bl_0\mathbb A^n$, where $k[U_i]=k\left[x_i,\dfrac{y_1}{y_i},\cdots,\dfrac{y_n}{y_i}\right]$, so $U_i\cong\mathbb A^n$, with $\varphi|_{U_i}:U_i\to\mathbb A^n$ given by \\
+$k[x_1,\cdots,x_n]\xrightarrow{\alpha_i}k\left[x_i,\dfrac{y_1}{y_i},\cdots,\dfrac{y_n}{y_i}\right], x_j\mapsto x_i\dfrac{y_j}{y_i}$ \par
+$\forall i$, $\varphi|_{U_i}|_{D(x_i)} : D(x_i)\to D(x_i)$ is an isomorphism, $\varphi|_{U_i}^{-1}(0)=V(\alpha_i(x_1,\cdots,x_n))=V(x_i)\cong Spmk\left[\dfrac{y_1}{y_i},\cdots,\dfrac{y_n}{y_i}\right]\cong\mathbb A^{n-1}$, and these $V(x_i)$'s glue to give $\varphi^{-1}(0)\cong\mathbb P^{n-1}$ which called the exceptional divisor
+\end{definition}
+
+\begin{proposition}
+There is a bijection between points on $\varphi^{-1}(0)$ and the line in $\mathbb A^n$ passing $0$
+\end{proposition}
+
+\begin{proof}
+Let $L=\displaystyle\bigcap_{i=1}^n\{x_i=a_it\}$, not all $a_i$'s are zero be a line, then $\varphi|_{U_i}^{-1}(L\setminus 0)=\left\{x_i=a_it,t\neq0,a_iy_j=a_jy_i\right\}$, and $\overline{\varphi|_{U_i}^{-1}(L\setminus 0)}=\left\{x_i=a_it,a_iy_j=a_jy_i\right\}$, so this line corresponds to $[a_1,\cdots,a_n]\in\mathbb P^{n-1}\cong\varphi^{-1}(0)$, thus if $L'\neq L$, $\overline{\varphi|_{U_i}^{-1}(L\setminus 0)}\cap\overline{\varphi|_{U_i}^{-1}(L'\setminus 0)}=\emptyset$ \par
+$Bl_0\mathbb A^n$ is nonsingular since it is covered by affine spaces $\mathbb A^n$, $Bl_0\mathbb A^n$ is irreducible since $Bl_0\mathbb A^n\setminus\varphi^{-1}(0)\cong\mathbb A\setminus0$ is irreducible, and each point of $\varphi^{-1}(0)$ is in the closure of some line $L$ in $Bl_0\mathbb A^n\setminus\varphi^{-1}(0)$, so $Bl_0\mathbb A^n\setminus\varphi^{-1}(0)$ is dense in $Bl_0\mathbb A^n$
+\end{proof}
+
+\begin{definition}
+If $V\subseteq\mathbb A^n$ is a closed subvariety containing $0$, then the blow up of the origin $Bl_0V:=\overline{\varphi^{-1}(V\setminus0)}$, from this, we get an birational isomorphism $\varphi:Bl_0V\to V$ which is an isomorphism away from $0$
+\end{definition}
+
+\begin{lemma}\label{05:59-/04/28/2022}
+Suppose $X,Y$ are both $S$-scheme, $x\in X,y\in Y$ are both over $s$, then the set of points in $X\times_S Y$ whose projections to $X,Y$ are $x,y$ are in bijection with the prime ideals of $k(x)\otimes_{k(s)} k(y)$, i.e. $\Spec k(x)\times_{\Spec k(s)}\Spec k(y)$
+\end{lemma}
+
+\begin{definition}
+$f:X\to Y$ is a morphism between $k$-schemes, $y\in Y$ is a point, then the \textit{scheme-theoretic fiber} over $y$ of $f$ is
+\begin{center}
+\begin{tikzcd}
+X\times_{Y}\Spec k(y) \arrow[d] \arrow[r] & X \arrow[d, "f"] \\
+\Spec k(y) \arrow[r, hook]                & Y               
+\end{tikzcd}
+\end{center}
+\end{definition}
+
+\begin{proposition}
+$p_2:\Spec k(y)\times_YX\to X$ is homeomorphism onto the set-theoretic fiber $f^{-1}(y)$
+\end{proposition}
+
+\begin{proof}
+\begin{itemize}
+\item \textsf{Surjectivity}: $\forall x\in f^{-1}(y)$ there is a unique point in $\Spec k(y)\times_YX$ mapping to $x$ under $p_2$ (by Lemma~\ref{05:59-/04/28/2022}, $\Spec k(y)\otimes_{k(y)}k(x)=\Spec k(x))$
+\item \textsf{Injectivity}: Image of $p_2$ lies in $f^{-1}(y)$
+\item \textsf{Homeomorphism}: The assertion about homeomorphism is local, so we can assume $Y=\Spec A$, $X=\Spec B$, then $p_2$ corresponds to $B\to k(y)\otimes_A B$, $b\mapsto 1\otimes b$. Apply Lemma~\ref{06:35-04/28/2022}, any element in $k(y)\otimes_AB$ can be written as $\sum\frac{\overline{a_i}}{\overline{s}}\otimes b_i=(\frac{1}{\overline{s}}\otimes1)(1\otimes(\sum a_ib_i))$, here $y\in\Spec A$ corresponds to prime $p<A$ and so $k(y)=\frac{A_p}{pA_p}$
+\end{itemize}
+\end{proof}
+
+\begin{lemma}\label{07:02-04/28/2022}
+$X$ scheme, $\mathcal J$ is a quasi-coherent sheaf of ideals in $\mathcal O_X$, let $Y:=\supp(\frac{\mathcal O_X}{\mathcal J})$. Then $Y\xhookrightarrow{i} X$ is closed and $(Y,\mathcal O_Y)$ is a scheme with $\mathcal O_Y:=i^{-1}(\frac{\mathcal O_X}{\mathcal J})$
+\end{lemma}
+
+\begin{proof}
+
+\end{proof}
+
+\begin{definition}
+$(Y,\mathcal O_Y)$ is a \textit{subscheme} of $(X,\mathcal O_X)$ if $Y\subseteq X$ is locally closed and if $U=X-(\overline{Y}-Y)$(largest open subseteq of $X$ in which $Y$ is closed), then $Y=\supp\frac{\mathcal O_{X|U}}{\mathcal J}$ for some quasi-coherent sheaf of ideals in $\mathcal O_{X|U}$. In the case $U=X$ we say $Y$ is a \textit{closed subscheme} of $X$.
+\end{definition}
+
+\begin{proposition}
+$\exists$ bijection between closed subschemes of $X$ and quasi-coherent ideal sheaves of $\mathcal O_X$
+\end{proposition}
+
+\begin{proof}
+This follows from the fact that if $\mathcal J,\mathcal J'$ are tow quasi-coherent sheaves of ideals with the same support $Y$ and the restriction of $\mathcal O_X/\mathcal J$, $\mathcal O_X/\mathcal J'$ to $Y$ are the same, then $\mathcal J=\mathcal J'$ (follows from $I,I'<A$ two ideals then $I=I'\iff A/I=A/I'$)
+\end{proof}
+
+\begin{proposition}
+There is a equivalence of categories between $A$ modules and quasi-coherent sheaves over affine scheme $\Spec A$, sending $A$ module $M$ to the constant sheaf $\underline M$, and quasi-coherent sheaf $\mathcal F$ to $A$ module of global sections $\mathcal F(\Spec A)$
+\end{proposition}
+
+\begin{theorem}
+Quasi-coherent sheaves over a scheme forms an abelian category
+\end{theorem}
+
+
+
+\end{document}

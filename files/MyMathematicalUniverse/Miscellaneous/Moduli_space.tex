@@ -1,0 +1,28 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+Consider a parametrized curve $C=\{(t,\mathbf x(t))\}_{t\in I}$, $\mathbf x(t)\in\mathbb R^n$, now we change $I$ to some space $X$, $\mathbf x(t)$ to some algebro-geometric objects, then we have a parametrization of these objects by $X$
+
+\begin{definition}
+$U$ is a family of some algebro-geometric objects. A parametrization of $U$ by space $X$ is a map $X\to U$, attaching some object $U_x$ for each $x\in X$, we can also think of this map as a section of $X\times U\to X$ \par
+We say $X$ is the parametrization space, $U$ is parametrized over $X$ \par
+A moduli functor $F$ is a contravariant functor $Space\to Set$ that takes a space $X$ to the set of families of objects over $X$, and take a morphism $f$ to the pullback $f^*$ that taking section $s$ to pullback section $f^*s(y)=(y,\Pr_Usf(y))$
+\begin{center}
+\begin{tikzcd}
+Y\times U \arrow[r] \arrow[d] & X\times U \arrow[d] \\
+Y \arrow[r, "f"]                   & X                  
+\end{tikzcd}
+\end{center}
+The category of spaces can be the category of schemes, manifolds, topological spaces, etc. \par
+$M$ is a fine moduli space if $F$ is corepresentable by $M$, i.e. there is a natural isomorphism $\tau:F\to\Hom(-,M)$. There is a universal family over $M$ corresponds to $1_M\in\Hom(M,M)$. Then any family over $X$ is the pullback along some $X\xrightarrow fM$ of the universal family. The universal family is essentially unique and "tautological" \par
+$M$ is a coarse moduli space if there is exists a natural transformation $\tau:F\to\Hom(-,M)$ and universal among these natural transformations, i.e. for any natural transformation $\tau':F\to\Hom(-,M')$, there is a morphism $M'\xrightarrow\phi M$ such that the following diagram commutes
+\begin{center}
+\begin{tikzcd}
+                               & F \arrow[d, "\tau"] \arrow[ld, "\tau'"'] \\
+{\Hom(-,M')} \arrow[r, "\exists_1\phi"] & {\Hom(-,M)}                            
+\end{tikzcd}
+\end{center}
+\end{definition}
+
+\end{document}

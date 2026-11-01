@@ -1,0 +1,14 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+Iterated integrals form a Hopf algebra $H$ with coproduct
+\[\Delta I(a_0;a_1,\cdots;a_n;a_{n+1})=\sum_{0=i_0<i_1<\cdots<i_k<i_{k+1}=n+1}I(a_{i_0};a_{i_1},\cdots,a_{i_k};a_{i{k+1}})\otimes\prod_{p=1}^kI(a_{i_p};a_{i_p+1},\cdots,a_{i_{p+1}-1};a_{i_{p+1}})\]
+The product is the just shuffle product, $\Delta_{i_1,\cdots,i_k}$ means those in grading $(i_1,\cdots,i_k)$. $\Delta'(x)=\Delta(x)-1\otimes x-x\otimes1$ is the reduced coproduct. The space of indecomposables $Q(H)=H/(H_{>0}\cdot H_{>0})$ is mod products. The projection $\frac{1}{n}R=P:H\to Q(H)$, where $R$ is defined inductively as  $R(x)=nx-\mu(1\otimes R)\Delta'(x)$, $\mu$ is multiplication. The cobracket is defined as $\delta(x)=(P\otimes P)(1-\tau)\Delta(x)$, $\tau(x\otimes y)=y\otimes x$ \\
+Symbol of a multiple polylogarithm is defined to be $\Delta_{1,\cdots,1}(x)$, and omit $\log$ sign
+\end{definition}
+
+
+
+\end{document}

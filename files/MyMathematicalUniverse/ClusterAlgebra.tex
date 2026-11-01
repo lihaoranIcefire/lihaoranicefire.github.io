@@ -1,0 +1,669 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\tableofcontents
+\newpage
+
+\section{Cluster algebra}
+
+\makeatletter
+\newcommand*{\xedge}[2][]{\ext@arrow {30}{30}55{\arrowfill@\relbar-\relbar}{#1}{#2}}
+\newcommand*{\xdirectededge}[2][]{\ext@arrow {30}{30}55{\arrowfill@\relbar-\rightarrow}{#1}{#2}}
+\makeatother
+
+\begin{lemma}\label{ZP is a UFD}
+$\mathbb P$ is a torsion free abelian group written multiplicatively, then the group ring $\mathbb{ZP}$ is a UFD
+\end{lemma}
+
+\begin{proof}
+Finitely generated torsion free abelian groups are free
+\end{proof}
+
+\begin{definition}[Exchange pattern]
+$I=\{1,\cdots,n\}$, $\mathbb T_n$ is the regular $n$ tree, the coefficient group $\mathbb P$ is a torsion free abelian group under multiplication, thus the group ring $\mathbb{ZP}$ is a domain. Cluster variables are $\mathbf{x}(t)=\{x_i(t)\}_{i\in I}$ for $t\in \mathbb T_n$ such that for $\neq j$ and $t\xedge jt'$
+\[x_i(t)=x_i(t')\]
+$\mathcal M=\left\{M_j(t)\right\}$ are monomials such that
+\[M_j(t)(\mathbf x)=p_j(t)\prod_i x_i^{b_i}, p_j(t)\in\mathbb P, b_i\geq0\]
+and for $t\xedge jt'$, $b_i$'s depend on $j$ and $t$
+\[x_j(t)x_j(t')=M_j(t)(\mathbf x(t))+M_j(t')(\mathbf x(t'))\]
+satisfying \textbf{exchange pattern}
+\begin{enumerate}[label=(E\arabic*), leftmargin=*]
+\item $x_j\nmid M_j(t)$
+\item $x_i\mid M_j(t)\Rightarrow x_i\nmid M_j(t')$ for $t\xedge{j}t'$
+\item $x_j\mid M_i(t)\Leftrightarrow x_i\mid M_j(t')$ for $t\xedge it'\xedge jt_1$
+\item $\dfrac{M_i(t_3)}{M_i(t_4)}=\left.\dfrac{M_i(t_2)}{M_i(t_1)}\right|_{x_j\leftarrow\frac{M_0}{x_j}}$ for $t_1\xedge{i} t_2\xedge jt_3\xedge it_4$, $M_0=\left.(M_j(t_2)+M_j(t_3))\right|_{x_i=0}$
+\end{enumerate}
+\end{definition}
+
+\begin{remark}
+The substitution $x_j\leftarrow\dfrac{M_0}{x_j}$ is effectively a monomial. Since if $M_j(t_2)$ nor $M_j(t_3)$ contain $x_i$, then $M_i(t_2)$ nor $M_i(t_3)$ contain $x_j$ which it substitute for nothing \par
+\[\dfrac{M_i(t_2)}{M_i(t_1)}=\left.\left(\left.\dfrac{M_i(t_2)}{M_i(t_1)}\right|_{x_j\leftarrow\frac{M_0}{x_j}}\right)\right|_{x_j\leftarrow\frac{M_0}{x_j}}=\left.\dfrac{M_i(t_3)}{M_i(t_4)}\right|_{x_j\leftarrow\frac{M_0}{x_j}}\]
+\end{remark}
+
+\begin{definition}
+There is an involution between $(\mathbf{x},\mathcal M)$ and $(\mathbf{x'},\mathcal M')$ where $x_j'(t)=x_j(t')$, $M_j'(t)=M_j(t')$ for every $t\xedge jt'$
+\end{definition}
+
+\begin{definition}
+Suppose $J\subseteq I$ is a subset of size $m$, delete sides labeled in $I-J$ in $\mathbb T_n$ and choose choose a connected component which would be $\mathbb T_m$, add to the coefficient group $x_k$'s $k\in I-J$. This is called a restriction
+\end{definition}
+
+\begin{definition}
+Exchange pattern on exponents is a family of $B(t)$ such that for each $t\xedge{\medskip}t'$
+\[\frac{M_j(t)}{M_j(t')}=\frac{p_j(t)}{p_j(t')}\prod_ix_i^{b_{ij}(t)}\]
+Thus
+\[M_j(t)=p_j(t)\prod_ix_i^{[b_{ij}(t)]_+},M_j(t')=p_j(t')\prod_ix_i^{[-b_{ij}(t)]_+}\]
+\end{definition}
+
+\begin{definition}
+An $n\times n$ matrix $B$ is \textbf{sign-skew-symmetric} if $b_{ii}=0$ and for $i\neq j$, $b_{ij},b_{ji}$ are both zeros or of opposite signs. $B$ is \textbf{skew-symmetrizable} if there is a diagonal matrix $D$ such that $DB$ is skew symmetric, i.e. $d_ib_{ij}=-d_jb_{ji}$. Skew-symmetrizable matrices are obviously sign-skew-symmetric
+\end{definition}
+
+\begin{lemma}\label{Lemma on (|a|b+a|b|)/2}
+\begin{align*}
+\frac{|a|b+a|b|}{2}=\begin{cases}
+ab&a,b>0 \\
+-ab&a,b<0 \\
+0&ab<0
+\end{cases}=\sgn(a)[ab]_+=\sgn(b)[ab]_+
+\end{align*}
+\end{lemma}
+
+\begin{note}
+$|a|=[a]_++[-a]_+$
+\end{note}
+
+\begin{definition}
+A \textbf{mutation} on a $m\times n$ ($m>n$) matrix $B$ in direction $k$ denoted by $\mu_k$ is given by
+\begin{align*}
+b_{ij}'=\begin{cases}
+-b_{ij}&i=k\text{ or }j=k \\
+b_{ij}+\dfrac{|b_{ik}|b_{kj}+b_{ik}|b_{kj}|}{2}=b_{ij}+\sgn(b_{ik})[b_{ik}b_{kj}]_+&\text{otherwise}
+\end{cases}
+\end{align*}
+Here $\mu_k(B)=B'$. $\mu_k$ is involutive
+\end{definition}
+
+\begin{theorem}
+If $B(t)$ are sign-skew-symmetric and $\mu_k(B(t))=B(t')$ for each $t\xedge kt'$, then it gives a exchange pattern
+\end{theorem}
+
+\begin{proof}
+Suppose $B(t)$ is an exchange pattern, then $B(t)$ is obviously sign-skew-symmetric. For $t\xedge kt'$, we have
+\begin{align*}
+\frac{M_k(t)}{M_k(t')}=\frac{p_k(t)}{p_k(t')}\prod_ix_i^{b_{ik}}, \frac{M_k(t')}{M_k(t)}=\frac{p_k(t')}{p_k(t)}\prod_ix_i^{b_{ik}'}
+\end{align*}
+Hence $b_{ik}'=-b_{ik}$. Consider $t_1\xedge jt'\xedge kt\xedge jt_2$
+\[\frac{M_j(t')}{M_j(t_1)}=\left.\frac{M_j(t)}{M_j(t_2)}\right|_{x_k\leftarrow \frac{M_0}{x_k}}\]
+becomes
+\[\frac{p_j(t')}{p_j(t_1)}\prod_ix_i^{b_{ij}'}=\left.\frac{p_j(t)}{p_j(t_2)}\prod_ix_i^{b_{ij}}\right|_{x_k\leftarrow \frac{M_0}{x_k}}\]
+Where
+\[M_0=\left.\left(p_k(t)\prod_ix_i^{[b_{ik}]_+}+p_k(t')\prod_ix_i^{[-b_{ik}]_+}\right)\right|_{x_j=0}\]
+\begin{enumerate}[leftmargin=*,label=Case \arabic*:]
+\item $b_{jk}>0\Leftrightarrow b_{kj}<0$, then $\displaystyle M_0=p_k(t')\prod_{i\neq j}x_i^{[-b_{ik}]_+}$, thus
+\begin{align*}
+\prod_{i\neq j}x_i^{b_{ij}'}&=\prod_{i\neq j,k}x_i^{b_{ij}}\cdot\left(x_k^{-1}\displaystyle\prod_{i\neq j,k}x_i^{[-b_{ik}]_+}\right)^{b_{kj}}=\prod_{i\neq j,k}x_i^{b_{ij}+b_{kj}[-b_{ik}]_+}x_k^{-b_{kj}}
+\end{align*}
+\item $b_{jk}<0\Leftrightarrow b_{kj}>0$, then $\displaystyle  M_0=p_k(t')\prod_{i\neq j}x_i^{[-b_{ik}]_+}$, thus
+\begin{align*}
+\prod_{i\neq j}x_i^{b_{ij}'}&=\prod_{i\neq j,k}x_i^{b_{ij}}\cdot\left(x_k^{-1}\displaystyle\prod_{i\neq j,k}x_i^{[b_{ik}]_+}\right)^{b_{kj}}=\prod_{i\neq j,k}x_i^{b_{ij}+b_{kj}[b_{ik}]_+}x_k^{-b_{kj}}
+\end{align*}
+\item $b_{jk}=0\Leftrightarrow b_{kj}=0$, then
+\[\prod_{i\neq j,k}x_i^{b_{ij}'}=\prod_{i\neq j,k}x_i^{b_{ij}}\]
+\end{enumerate}
+Therefore $b_{kj}'=-b_{kj}$ and $b_{ij}'=b_{ij}+\sgn(b_{ik})[b_{ik}b_{kj}]_+$ \par
+Conversely, if $B(t)$ are sign-skew-symmetric and $\mu_k(B(t))=B(t')$ for each $t\xedge kt'$, take
+\[M_k(t)=\prod_ix_i^{[b_{ik}(t)]_+},M_k(t')=\prod_ix_i^{[-b_{ik}(t)]_+}\]
+ for $t\xedge kt'$, then obviously $x_k\nmid M_k(t)$ since $b_{kk}=0$ and
+ \[x_j\mid M_k(t)\Leftrightarrow b_{jk}>0\Leftrightarrow -b_{jk}<0\Rightarrow x_j\nmid M_k(t')\]
+For $t\xedge kt'\xedge jt_1$
+\[x_j\mid M_k(t)\Leftrightarrow b_{jk}>0\Leftrightarrow b_{kj}'=-b_{kj}>0\Leftrightarrow x_k\mid M_j(t')\]
+For $t_1\xedge jt'\xedge kt\xedge j t_2$, it is the exact argument above by taking $p_j(t)\equiv1$
+\end{proof}
+
+\begin{proposition}\label{Mutation of a skew-symmetrizable matrix preserves the skew-symmetrizing matrix}
+Given a skew-symmetrizable matrix $B$, the all possible mutations $B(t)$ in $\mathbb T_n$ are skew-symmetrizable with the same skew-symmetrizing matrix $D$
+\end{proposition}
+
+\begin{proof}
+True for each mutation $\mu_k$
+\end{proof}
+
+\begin{remark}
+For cluster algebra of rank $n\leq2$, the exchange pattern is skew-symmetrizable. If $n=1$, $B(t)\equiv 0$. If $n=2$, $B(t_n)=(-1)^n\begin{pmatrix}
+0&b \\
+-c&0
+\end{pmatrix}$
+\end{remark}
+
+\begin{definition}
+Denote $2n$ tuple $\mathbf p(t)$ the coefficients $p_j(t),p_j(t')$ for $t\xedge jt'$. $\Sigma(t)=(\mathbf x(t),\mathbf p(t),B(t))$ is a \textbf{seed}, $\mathbf x(t)$ is the \textbf{cluster} of the seed. If we assume $\mathbf x(t_0)$ are algebraically independent ($\mathbf x(t_0)$ is a cluster of rank $n$), then so are $\mathbf x(t)$ since they are all mutationally equivalent. Denote the collection of all cluster variables $\mathcal X$, the collection of all coefficients $\mathcal P$, the collection of exchange matrices $\mathcal B$, the collection of $M_j(t)$'s $\mathcal M$, the collection of seeds $\mathcal S$ \par
+We can take $\mathcal F=\mathbb{ZP}(x_1,\cdots,x_n)$ to be the \textbf{ambient field}, $\mathbf x$ can be some cluster $\mathbf x(t_0)$. The \textbf{cluster algebra} is the subalgebra $\mathbb Z\mathcal P[\mathcal X]$
+\end{definition}
+
+\begin{proposition}
+Given $B(t)$ that give rise to exchange pattern, the coefficients must satisfy
+\begin{equation}\label{exchange pattern on coefficients}
+p_i(t_1)p_i(t_3)p_i(t_3)^{[b_{ji}(t_3)]_+}=p_i(t_2)p_i(t_4)p_i(t_2)^{[b_{ji}(t_2)]_+}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+For $t_1\xedge it_2\xedge jt_3\xedge it_4$
+\begin{align*}
+\frac{p_i(t_3)}{p_i(t_4)}\prod_kx_k^{b_{ki}(t_3)}=\frac{M_i(t_3)}{M_i(t_4)}=\left.\frac{M_i(t_3)}{M_i(t_4)}\right|_{x_j\leftarrow\frac{M_0}{x_j}}=\left.\frac{p_i(t_2)}{p_i(t_1)}\prod_kx_k^{b_{ki}(t_2)}\right|_{x_j\leftarrow\frac{M_0}{x_j}}
+\end{align*}
+Here
+\[M_0=\left.\left(M_j(t_2)+M_j(t_3)\right)\right|_{x_i=0}=\left.\left(p_j(t_2)\prod_kx_k^{[b_{kj}(t_2)]_+}+p_j(t_3)\prod_kx_k^{[b_{kj}(t_3)]_+}\right)\right|_{x_i=0}\]
+Take $x_k=1$ for $k\neq j$, and use the fact that $B(t)$ are sign-skew-symmetric, we get
+\begin{align*}
+p_i(t_1)p_i(t_3)=p_i(t_2)p_i(t_4)M_0^{b_{ji}(t_2)}
+\end{align*}
+With
+\begin{enumerate}[leftmargin=*,label=Case \arabic*:]
+\item $b_{ij}(t_2)>0$. Then $b_{ij}(t_3)<0$, $M_0=p_j(t_3)$ and
+\[p_i(t_1)p_i(t_3)p_i(t_3)^{b_{ji}(t_3)}=p_i(t_2)p_i(t_4)\]
+\item $b_{ij}(t_2)<0$. Then $b_{ij}(t_3)>0$, $M_0=p_j(t_2)$ and
+\[p_i(t_1)p_i(t_3)=p_i(t_2)p_i(t_4)p_i(t_2)^{b_{ji}(t_2)}\]
+\item $b_{ij}(t_2)=0$. Then $b_{ij}(t_3)=0$, $M_0=p_j(t_2)+p_j(t_3)$, but $b_{ji}(t_2)=b_{ji}(t_3)=0$, hence
+\[p_i(t_1)p_i(t_3)=p_i(t_2)p_i(t_4)\]
+\end{enumerate}
+\end{proof}
+
+\begin{note}
+A trivial solution of \eqref{exchange pattern on coefficients} is $p_j(t)=1$
+\end{note}
+
+\begin{proposition}
+The \textbf{universal coefficient group} $\mathcal P$ of $\mathbb P$ is the free abelian group generated by $p_i(t)$ modulo \eqref{exchange pattern on coefficients}. $\mathcal P$ is torsion free, more precisely, it is the free abelian group generated by $p_i(t_0),p_i(t)$ for every $t_0\xedge it$ and exactly one of $p_i(t),p_i(t')$ for every $t\xedge it'$ where $t,t'\neq t_0$
+\end{proposition}
+
+\begin{definition}
+Take the field of rational functions of cluster variables $\mathbf x(t_0)$ with coefficients in $\mathbb Z\mathcal P$ to be the ambient field $\mathcal F$, all other cluster variables $\mathbf x(t)$ are also in $\mathcal F$ by Theorem \ref{Laurent phenonmenon}. The \textbf{universal cluster algebra} $\mathcal A$ is the subalgebra generated by all cluster variables with coefficients in $\mathbb{Z}\mathcal P$
+\end{definition}
+
+\begin{definition}\label{M-equivalence}
+$t,t'\in\mathbb T_n$ are $\mathcal M$-\textbf{equivalent} if there is a permutation $\sigma$ of $I$ such that
+\begin{itemize}
+\item $x_{\sigma(i)}(t)=x_{i}(t')$
+\item $M_{\sigma(j)}(t)(\mathbf x(t))=M_{j}(t')(\mathbf x(t'))$ and $M_{\sigma(j)}(t_1)(\mathbf x(t))=M_{j}(t_1')(\mathbf x(t'))$ for $t\xedge{\sigma(j)}t_1$ and $t'\xedge{j}t_1'$
+\end{itemize}
+\end{definition}
+
+
+
+\section{Laurent phenomenon}
+
+\begin{lemma}[Caterpillar lemma]\label{Caterpillar lemma}
+Define the caterpillar tree $\mathbb T_{n,m}$ consists of a spine of $m+2$ nodes, with an orientation from $t_\mathrm{tail}$ to $t_\mathrm{head}$ with $t_\mathrm{base}$ connected to $t_\mathrm{tail}$, as illustrated in Figure \ref{T4,8} \par
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}
+\newcommand{\directededge}[2] % #1 starting point, #2 ending point
+{
+\draw [->] #1--($0.5*#1+0.5*#2$);
+\draw ($0.5*#1+0.5*#2$)--#2;
+}
+\filldraw (0,0) circle (0.03);
+\filldraw (9,0) circle (0.03);
+\draw (0,0)--(1,0);
+\draw (8,0)--(9,0);
+\foreach \x in {1,...,8}
+{
+\filldraw (\x,0) circle (0.03);
+\filldraw (\x,1) circle (0.03);
+\filldraw (\x,-1) circle (0.03);
+\draw (\x,0)--(\x,1);
+\draw (\x,0)--(\x,-1);
+}
+\foreach \x in {1,...,7}
+{
+\directededge{(\x,0)}{($(\x,0)+(1,0)$)};
+}
+\node at (0,0)[left] {$t_\mathrm{tail}$};
+\node at (9,0) [right]{$t_\mathrm{head}$};
+\node at (1,0)[above left] {$t_\mathrm{base}$};
+\end{tikzpicture}
+\caption{$\mathbb T_{4,8}$}\label{T4,8}
+\end{figure}
+Let $\mathbb A$ be a UFD, exchange polynomial $P\in\mathbb A[x_1,\cdots,x_n]$ for each edge $t\xedge jt'$, denoted $x\xedge[P]{j}t'$ satisfying the generalized exchange pattern
+\begin{itemize}
+\item $P$ doesn't depend on $x_j$ and $x_i$ doesn't divide $P$
+\item For $t_0\xedge[P]it_1\xdirectededge[Q]jt_2$, $P,Q_0$ are coprime in $\mathbb A[x_1,\cdots,x_n]$, where $Q_0=Q|_{x_i=0}$
+\item For $t_0\xedge[P]{i}t_1\xdirectededge[Q]{j}t_2\xedge[R]{i}t_3$, $LQ_0^bP=R|_{x_j\leftarrow \frac{Q_0}{x_j}}$ for some $b\geq0$ and some Laurent monomial $L$ with coefficients in $\mathbb A$ coprime with $P$
+\end{itemize}
+Cluster variables $\mathbf x(t)=\{x_i(t)\}$ for $t\in\mathbb T_{n,m}$ satisfying for each $t\xedge[P]it'$
+\begin{itemize}
+\item $x_i(t)=x_i(t')$ for any $i\neq j$
+\item $x_j(t)x_j(t')=P(t)(\mathbf x(t))$
+\end{itemize}
+Then $\mathbf x(t_\mathrm{head})$ are Laurent polynomials in $\mathbf x(t_0)$ with coefficients in $\mathbb A$
+\end{lemma}
+
+\begin{proof}
+Write the subring of Laurent polynomials generated by $\mathbf x(t)$ as 
+\[\mathcal L(t)=\mathbb A[x_1(t)^{\pm1},\cdots,x_n(t)^{\pm1}]\]
+Make induction on $m$. If $m=1$, consider $t_\mathrm{tail}=t\xedge[P]{i}t_\mathrm{base}=t'\xedge[Q]jt_\mathrm{head}=t_1$, we have for $k\neq i,j$
+\begin{align*}
+x_k(t_1)&=x_k(t')=x_k(t) \\
+x_i(t_1)&=x_i(t')=\dfrac{P(\mathbf x(t))}{x_i(t)} \\
+x_j(t_1)&=\dfrac{Q(\mathbf x(t'))}{x_j(t')}=\dfrac{Q(\mathbf x(t'))}{x_j(t)} 
+\end{align*}
+Now suppose $m\geq2$, let's show that $X=x_k(t_\mathrm{head})\in\mathcal L(t_0)$, by induction, $X\in\mathcal L(t_1)\cap\mathcal L(t_3)$. Since $X,x_i(t_1)=\dfrac{P(\mathbf x(t_0))}{x_i(t_0)}\in\mathcal L(t_0)$, $X=\dfrac{f_0}{x_i(t_1)^a}$ for some $f_0\in\mathcal L(t_0)$ and $a\geq0$, similarly, $X=\dfrac{g_0}{x_j(t_2)^bx_i(t_3)^c}$ for some $g_0\in\mathcal L(t_0)$ and $b,c\geq0$, thanks to Lemma \ref{Lemma for caterpillar lemma}, $X\in\mathcal L(t_0)$
+\end{proof}
+
+\begin{lemma}\label{Lemma for caterpillar lemma}
+For $t_0\xedge[P]{i}t_1\xdirectededge[Q]{j}t_2\xedge[R]{i}t_3$, $\mathbf x(t_1),\mathbf x(t_2),\mathbf x(t_3)\in\mathcal L(t_0)$, and
+\[\gcd(x_i(t_1),x_i(t_3))=\gcd(x_j(t_2),x_i(t_1))=1\]
+in $\mathcal L(t_0)$
+\end{lemma}
+
+\begin{note}
+$\mathcal L(t_0)$ is a UFD, $\mathcal L(t_0)^\times$ consists of Laurent monomials with coefficients $\mathbb A^\times$
+\end{note}
+
+\begin{proof}
+Denote $x=x_i(t_0)$, $y=x_j(t_0)=x_j(t_1)$, $z=x_i(t_1)=x_i(t_2)$, $u=x_j(t_2)=x_j(t_3)$, $v=x_i(t_3)$, think of $P,Q,R$ as functions of $x_j,x_i,x_j$ respectively, then 
+\begin{align*}
+z&=\dfrac{P(y)}{x} \\
+u&=\dfrac{Q(z)}{y}=\frac{Q\left(\frac{P(y)}{x}\right)}{y} \\
+v&=\dfrac{R(u)}{z}=\frac{R\left(\frac{Q(z)}{y}\right)}{z}=\frac{R\left(\frac{Q(z)}{y}\right)-R\left(\frac{Q(0)}{y}\right)}{z}+\frac{R\left(\frac{Q(0)}{y}\right)}{z}
+\end{align*}
+\[\dfrac{R\left(\frac{Q(z)}{y}\right)-R\left(\frac{Q(0)}{y}\right)}{z}=R'\left(\frac{Q_0}{y}\right)\frac{Q'(0)}{y}+\frac{1}{2}\left.R\left(\frac{Q(z)}{y}\right)''\right|_{z=0}z+\cdots\equiv R'\left(\frac{Q_0}{y}\right)\frac{Q'(0)}{y}\mod z\]
+\[\frac{R\left(\frac{Q_0}{y}\right)}{z}=\frac{L(y)Q_0(y)^bP(y)}{z}=L(y)Q_0(y)^bx\]
+Thus $v\in\mathcal L(t_0)$ \par
+Since $\gcd(P,Q_0)=\gcd(P,L)=1$
+\[\gcd(z,v)=\gcd\left(\dfrac{P(y)}{x},L(y)Q_0(y)^bx\right)=\gcd\left(P(y),L(y)Q_0(y)^b\right)=1\]
+Since $\dfrac{Q(z)}{y}\equiv\dfrac{Q_0}{y}\mod z$
+\[\gcd(z,u)=\gcd\left(z,\dfrac{Q_0}{y}\right)=\gcd\left(P(y),Q_0\right)=1\]
+\end{proof}
+
+\begin{theorem}\label{Laurent phenonmenon}
+Catepillar lemma \ref{Caterpillar lemma} implies that in a cluster algebra, any cluster variable can be expressed as a Laurent polynomial in a given $\mathbf x(t_0)$ with coefficients in $\mathbb Z_{\geq0}\mathbb P$ since there is no subtraction involved
+\end{theorem}
+
+\begin{proof}
+$\mathbb T_{n,m}$ can be embedded in $\mathbb T_n$. $M_j(t)+M_j(t')$ doesn't depend on $x_j$ and not divisible by $x_i$ for $t\xedge jt'$ and any $i\neq j$ \par
+For $t_0\xedge[P]{i}t_1\xdirectededge[Q]{j}t_2\xedge[R]{i}t_3$, we have
+\[\frac{P}{M_i(t_0)}=1+\frac{M_i(t_1)}{M_i(t_0)}=1+\left.\frac{M_i(t_2)}{M_i(t_3)}\right|_{x_j\leftarrow\frac{M_0}{x_j}}=\left.\frac{R}{M_i(t_3)}\right|_{x_j\leftarrow\frac{M_0}{x_j}}\]
+Where $M_0=\left.(M_j(t_1)+M_j(t_2))\right|_{x_i=0}=Q_0$, thus
+\[\frac{R|_{x_j\leftarrow\frac{Q_0}{x_j}}}{P}=\frac{M_i(t_3)|_{x_j\leftarrow\frac{Q_0}{x_j}}}{M_i(t_0)}\]
+Note that $\displaystyle M_i(t_0)=p_i(t_0)\prod_kx_k^{[b_{ki}(t_0)]_+}$ and
+\begin{align*}
+M_i(t_3)|_{x_j\leftarrow\frac{Q_0}{x_j}}&=p_i(t_3)\left.\prod_kx_k^{[b_{ki}(t_3)]_+}\right|_{x_j\leftarrow\frac{Q_0}{x_j}} \\
+&=p_i(t_3)\left(\frac{Q_0}{x_j}\right)^{[b_{ji}(t_3)]_+}\prod_{k\neq i,j}x_k^{[b_{ki}(t_3)]_+} \\
+&=p_i(t_3)Q_0^{[b_{ji}(t_3)]_+}x_j^{-[b_{ji}(t_3)]_+}\prod_{k\neq i,j}x_k^{[b_{ki}(t_3)]_+} \\
+\end{align*}
+Hence
+\[R|_{x_j\leftarrow\frac{Q_0}{x_j}}=\frac{p_i(t_3)}{p_i(t_0)}x_j^{-[b_{ji}(t_3)]_+-[b_{ji}(t_0)]_+}\prod_{k\neq i,j}x_k^{[b_{ki}(t_3)]_+-[b_{ki}(t_0)]_+}Q_0^{[b_{ji}(t_3)]_+}P=LQ_0^bP\]
+Since the sum of two monomials $P$ doesn't depend on $x_i$ and is not divisible by any $x_k$ for $k\neq i$, $Q_0$ is a monomial, $L$ is a Laurent monomial, $Q_0,P$ are coprime in $\mathbb A[\mathbf x]$ and $L,P$ are coprime in $\mathcal L[\mathbf x]$
+\end{proof}
+
+
+
+\section{Y-system}
+
+$A$ is the Cartan matrix of root system $\Phi$ with simple system $\Pi$, denote $[\alpha:\alpha_i]$ as the coefficients of $\alpha\in\Phi$, write $\Phi_{\geq-1}=\Phi_+\cup(-\Pi)$. Since the Coxeter graph is a tree, it is bipartite, up to renaming $I=\{1,\cdots,n\}=I_-\sqcup I_+$, $\varepsilon(i)=\varepsilon$ for $i\in I_\varepsilon$ be the indicator. Let $t_\varepsilon=\displaystyle\prod_{i\in I_\varepsilon}s_i$, $t=t_-t_+$ is a Coxeter element, $h$ is the Coxeter number. $s_{\mathbf i_-},s_{\mathbf i_+}$ are reduced words of $t_-,t_+$, then
+\[w_\circ=\underbrace{s_{\mathbf i_-}s_{\mathbf i_+}\cdots s_{\mathbf i_\pm}}_{h\text{ times}}=s_{\mathbf i_\circ}\]
+is the element of longest length
+
+\begin{definition}
+Suppose $\Phi$ is irreducible, then
+\[[s_i(\alpha):\alpha_k]=\begin{cases}
+-[\alpha:\alpha_i]-\displaystyle\sum_{j\neq i}a_{ij}[\alpha:\alpha_j]&k=i \\
+[\alpha:\alpha_k]&k\neq i
+\end{cases}\]
+Define a piecewise linear modification
+\[[\sigma_i(\alpha):\alpha_k]=\begin{cases}
+-[\alpha:\alpha_i]-\displaystyle\sum_{j\neq i}a_{ij}[\alpha:\alpha_j]_+&k=i \\
+[\alpha:\alpha_k]&k\neq i
+\end{cases}\]
+\end{definition}
+
+\begin{proposition}\hfill
+\begin{enumerate}[leftmargin=*,label=\textbf{\arabic*.}]
+\item $\sigma_i$ are involutions
+\item $\sigma_i,\sigma_j$ commutes if $i,j$ are not adjacent in the Coxeter graph
+\item $\sigma_i$ preserves $\Phi_{\geq-1}$
+\end{enumerate}
+\end{proposition}
+
+\begin{proposition}
+Let $\tau_\varepsilon=\displaystyle\prod_{i\in I_\varepsilon}\sigma_i$
+\begin{enumerate}[leftmargin=*,label=\textbf{\arabic*.}]
+\item $\tau_\varepsilon$ are involutions that preserve $\Phi_{\geq -1}$
+\item $\tau_\varepsilon\alpha=t_\varepsilon\alpha$ for $\alpha\in\mathbb Z_{\geq0}\Pi$
+\item $\Phi_{\geq-1}\to\Phi_{\geq-1}^\vee$, $\alpha\mapsto\alpha^\vee$ are $\tau_\varepsilon$ equivariant, i.e. $(\tau_\varepsilon\alpha)^\vee=\tau_\varepsilon\alpha^\vee$
+\end{enumerate}
+\end{proposition}
+
+\begin{definition}
+A \textbf{Y-system} is a family of commuting variables $Y_i(t)$, $i\in I=\{1,\cdots,n\}$, $t\in\mathbb Z$ such that
+\begin{equation}\label{Y-system}
+Y_{i}(t+1)Y_{i}(t-1)=\prod_{j\neq i}(1+Y_i(t))^{-a_{ij}}
+\end{equation}
+\end{definition}
+
+\begin{remark}
+\eqref{Y-system} only really involve those $Y_j(k)$ with $\varepsilon(j)\cdot(-1)^k=\const$, assume $Y_j(k)=Y_j(k+1)$ for $\varepsilon(i)=(-1)^k$, then we have
+\begin{align*}
+Y_i(k+1)=\begin{cases}
+\dfrac{\prod_{j\neq i}(1+Y_i(k))^{-a_{ij}}}{Y_i(k)} &\varepsilon(i)=(-1)^k+1 \\
+Y_i(k) &\varepsilon(i)=(-1)^k
+\end{cases}
+\end{align*}
+Denote $\mathcal Y$ as the collection of all $Y_j(k)$'s, $u_i=Y_i(0)$, define
+\begin{align*}
+\tau_\varepsilon(u_i)=\begin{cases}
+\dfrac{\prod_{j\neq i}(1+u_i)^{-a_{ij}}}{u_i} &\varepsilon(i)=\varepsilon \\
+u_i &\text{otherwise}
+\end{cases}
+\end{align*}
+\end{remark}
+
+\begin{theorem}[Zamolodichikov]
+$Y_i(t)$'s are $2(h+2)$ periodic, i.e. $Y_{i}(t+2(h+2))=Y_i(t)$
+\end{theorem}
+
+\begin{theorem}
+There is a unique family $\{F[\alpha]\}_{\alpha\in\Phi_{\geq-1}}$ of polynomials in $u_i$ such that $F[-\alpha_i]=-1$ and
+\[\tau_\varepsilon(F[\alpha])=\frac{\displaystyle\prod_{\varepsilon(i)=-\varepsilon}(u_i+1)^{[\alpha^\vee:\alpha_i^\vee]}}{\displaystyle\prod_{\varepsilon(i)=\varepsilon}u_i^{[\alpha^\vee:\alpha_i^\vee]_+}}F[\tau_{-\varepsilon}(\alpha)]\]
+Furthermore, $F[\alpha]\in\mathbb Z_{\geq0}[\mathbf u]$ has constant term $1$. Call $F[\alpha]$ Fibonacci polynomials \par
+Any $\alpha\in\Phi_{\geq-1}$ can be written as $\alpha(k,i)=(\tau_-\tau_+)^k(-\alpha_i)$, denote $N[\alpha]=\displaystyle\prod_{j\neq i}F[\alpha(-k,i)]^{-a_{ij}}$, note that $N[\alpha]\in\mathbb Z_{\geq0}[\mathbf u]$ also has constant term $1$
+\end{theorem}
+
+\begin{theorem}
+There is a unique bijection $\Phi_\geq-1\to\mathcal Y$, $\alpha\mapsto Y[\alpha]=\dfrac{N[\alpha]}{\mathbf u^{\alpha^\vee}}$ such that $Y[-\alpha_i]=u_i$, $\tau_\varepsilon(Y[\alpha])=Y[\tau_\varepsilon(\alpha)]$
+\end{theorem}
+
+\begin{definition}
+A \textbf{tropical specialization} $r_\mathrm{trop}$ of a rational expression $r$ is changing the addition $+$ and multiplication $\cdot$ into $\oplus$ and $\odot$ where $a\oplus b=\max(a,b)$, $a\odot b=a+b$ \par
+The \textbf{compatibility degree} for $\alpha,\beta\in\Phi_{\geq-1}$ is
+\begin{align*}
+(\alpha||\beta)=(Y[\alpha]+1)(\beta)_\mathrm{trop}
+\end{align*}
+Here $(Y[\alpha]+1)(\beta)$ is evaluation at $\{u_i=[\beta:\alpha_i]\}$. $\alpha,\beta$ are \textbf{compatible} if $(\alpha||\beta)=0$ \par
+$\Delta(\Phi)$ is a simplicial complex with $\Phi_{\geq-1}$ as vertices and mutually compatible subsets of $\Delta(\Phi)$ are simplices, the maximal simplices are \textbf{clusters}. The \textbf{exchange graph} $E(\Phi)$ is an unoriented graph with clusters as vertices and an edge between clusters which has intersection of cardinality $n-1$
+\end{definition}
+
+\begin{remark}
+$(||)$ is uniquely characterized by
+\[(-\alpha_i||\beta)=(Y[-\alpha_i]+1)(\beta)_{\mathrm{trop}}=(u_i+1)(\beta)_{\mathrm{trop}}=[\beta:\alpha_i]_+\]
+\[(\tau_\varepsilon(\alpha)||\tau_\varepsilon(\beta))=(Y[\tau_\varepsilon(\alpha)]+1)(\tau_\varepsilon(\beta))_\mathrm{trop}=(\tau_\varepsilon(Y[\alpha])+1)(\tau_\varepsilon(\beta))_\mathrm{trop}=(\alpha||\beta)\]
+\end{remark}
+
+\begin{proposition}
+Consider perfect bilinear pairing
+\begin{align*}
+\mathbb Z\Pi^\vee\times \mathbb Z\Pi&\to\mathbb Z \\
+(\xi,\gamma)&\mapsto\{\xi,\gamma\}
+\end{align*}
+Where $\{\xi,\gamma\}=\sum\varepsilon(i)[\xi:\alpha_i^\vee][\gamma:\alpha_i]$. Then
+\begin{align*}
+(\alpha||\beta)=\max(\{\tau_+\alpha^\vee,\beta\},\{\alpha^\vee,\tau_+\beta\},0)=\max(-\{\tau_-\alpha^\vee,\beta\},-\{\alpha^\vee,\tau_-\beta\},0)
+\end{align*}
+\end{proposition}
+
+\begin{note}
+$(||)$ doesn't depend on the choice of the indicator $\varepsilon$
+\end{note}
+
+\begin{proposition}\hfill
+\begin{enumerate}[leftmargin=*,label=\textbf{\arabic*.}]
+\item $(\alpha||\beta)=(\beta^\vee||\alpha^\vee)$, in particular, if $\Phi$ is simply laced, then $(\alpha||\beta)=(\beta||\alpha)$
+\item If $(\alpha||\beta)=0$, then $(\beta||\alpha)=0$
+\item $J\subseteq I$, $\Phi(J)\subseteq\Phi$ is a root subsystem, $(||)$ on $\Phi(J)$ is the same as the restriction
+\end{enumerate}
+\end{proposition}
+
+\begin{theorem}
+$\Delta(\Phi)$ is pure of dimension $n-1$, and each facet forms a $\mathbb Z$-basis for the root lattice
+\end{theorem}
+
+\begin{theorem}
+The simplicial cones of all clusters form a complete simplicial fan
+\end{theorem}
+
+\begin{corollary}
+The geometric realization of $\Delta(\Phi)$ is $\mathbb S^{n-1}$
+\end{corollary}
+
+\begin{conjecture}
+The simplicial fan of $\Delta(\Phi)$ is the normal fan of some convex polytope $P(\Phi)$
+\end{conjecture}
+
+\begin{theorem}
+$E(\Phi)$ is a regular $n$ tree
+\end{theorem}
+
+\begin{example}
+
+\end{example}
+
+
+
+\section{Associahedron}
+
+\begin{definition}
+Any $n$ regular polygon has $\displaystyle\binom{n}{2}-n=\dfrac{n(n-3)}{2}$ diagonals, with these as vertices, noncrossing subsets as simplexes, we have given it a abstract simplicial complex structure
+\end{definition}
+
+
+
+\section{Cluster algebra of geometric type}
+
+\begin{lemma}\label{Semifield is multiplicative torison free}
+Semifield $\mathbb P$ is multiplicative torison free
+\end{lemma}
+
+\begin{proof}
+Suppose $p^m=1$, then
+\[p=\frac{p^m\oplus p^{m-1}\oplus \cdots+p}{p^{m-1}\oplus p^{m-2}\oplus \cdots+1}=\frac{1\oplus p^{m-1}\oplus \cdots+p}{p^{m-1}\oplus p^{m-2}\oplus \cdots\oplus 1}=1\]
+\end{proof}
+
+\begin{definition}
+Exchange pattern is \textbf{normalized} if $\mathbb P$ is a semifield and $p_j(t)\oplus p_j(t')=1$ for any $t\xedge jt'$
+\end{definition}
+
+\begin{proposition}\label{Normalized exchange pattern determines the cluster algebra}
+Given $p_j,r_j$ in a semifield $\mathbb P$ such that $p_j\oplus r_j=1$, and exchange matrix $B(t)$ on $\mathbb T_n$, define $p_j(t_0)=p_j$, $p_j(t)=r_j$ for each $t_0\xedge it$, this completely determines the cluster algebra
+\end{proposition}
+
+\begin{proof}
+Define $u_j(t)=\dfrac{p_j(t)}{p_j(t')}$ for $t\xedge jt'$, then
+\[p_j(t)=\frac{u_j(t)}{1\oplus u_j(t)},p_j(t')=\frac{1}{1\oplus u_j(t)}\]
+Then \eqref{exchange pattern on coefficients} becomes
+\[u_i(t_3)p_j(t_3)^{[b_{ji}(t_3)]_+}=u_i(t_2)p_j(t_2)^{[b_{ji}(t_2)]_+}\]
+\begin{enumerate}[leftmargin=*,label=Case \arabic*:]
+\item $u_i(t_3)p_j(t_3)^{b_{ji}(t_3)}=u_i(t_2)\Rightarrow u_i(t_3)=u_i(t_2)(1\oplus u_j(t_2))^{b_{ji}(t_2)}$
+\item $u_i(t_3)=u_i(t_2)p_j(t_2)^{b_{ji}(t_2)}=u_i(t_2)\left(\dfrac{u_j(t_2)}{1\oplus u_j(t_2)}\right)^{b_{ji}(t_2)}$
+\end{enumerate}
+Thus for $t\xedge jt'$, we have
+\[u_i(t')=u_i(t)u_j(t)^{[b_{ji}(t)]_+}(1\oplus u_j(t))^{-b_{ji}(t)}\]
+\end{proof}
+
+\begin{remark}
+$\mathbf p$ determines $\mathbf u$ which in turn determines $\mathbf p$ \par
+Fix semifield $\mathbb P$, $B$ is skew-symmetrizable, then $(B,\mathbf p)$ determines the cluster algebra $\mathcal A=\mathcal A(B,\mathbf p)$ up to isomorphism
+\end{remark}
+
+\begin{corollary}
+The exchange graph of a normalized cluster algebra is $n$-regular
+\end{corollary}
+
+\begin{definition}
+The \textbf{tropical semifield}\index{tropical semifield} $(\mathbb R,\oplus,\odot)$ is a semifield with multiplication as $\odot$, $\min$ or $\max$ as $\oplus$ \par
+The tropical semifield generated by $p$ is the free abelian group generated multiplicatively by $p$ with $p^a\oplus p^b=p^{\min(a,b)}$
+\end{definition}
+
+\begin{definition}
+A normalized cluster algebra is of geometric type if $\mathbb P$ is the tropical semifield generated by $\{p_i\}_{i\in I'}$ and each $p_j(t)$ is a monomial with nonnegative exponents
+\end{definition}
+
+\begin{remark}
+In this particular case, normality just means that for $t\xedge jt'$, $p_j(t),p_j(t')$ doesn't have a common variable, or the support doesn't intersect
+\end{remark}
+
+\begin{proposition}
+$\mathbb P$ is the tropical semifield generated by $p_i,i\in I'$, $B(t)$ is the exchange pattern of exponents, $p_j(t)$ give rise to a cluster algebra of geometric type iff $C(t)$ satisfies the exchange pattern of coefficients, i.e. $\displaystyle p_{j}(t)=\prod_ip_i^{[c_{ij}(t)]_+}$ and
+\begin{align*}
+c_{ij}'=\begin{cases}
+-c_{ij}&j=k \\
+c_{ij}+\dfrac{|c_{ij}|b_{jk}+c_{ij}|b_{jk}|}{2}&\text{otherwise}
+\end{cases}
+\end{align*}
+Here the mutation is in direction $k$
+\end{proposition}
+
+\begin{proof}
+Suppose $p_j(t)$ give rise to a cluster algebra of geometric type. Define $\displaystyle u_j(t)=\dfrac{p_j(t)}{p_j(t')}=\prod_{i\in I'}p_i^{c_{ij}(t)}$ for each $t\xedge jt'$, then according to Proposition \ref{Normalized exchange pattern determines the cluster algebra}
+\[p_j(t)=\dfrac{u_j(t)}{1\oplus u_j(t)}=\dfrac{\prod_ip_i^{c_{ij}}}{1\oplus\prod_ip_i^{c_{ij}}}=\dfrac{\prod_ip_i^{c_{ij}}}{\prod_ip_i^{-[-c_{ij}]_+}}=\prod_ip_i^{[c_{ij}]_+}\]
+\[1=u_k(t)u_k(t')=\prod_ip_i^{c_{ik}+c'_{ik}}\Rightarrow c'_{ik}=-c_{ik}\]
+And
+\begin{align*}
+\prod_ip_i^{c_{ij}'}&=\prod_ip_i^{c_{ij}}\left(\prod_ip_i^{c_{ik}}\right)^{[b_{kj}]_+}\left(1\oplus\prod_ip_i^{c_{ik}}\right)^{-b_{kj}} \\
+&=\prod_ip_i^{c_{ij}}\prod_ip_i^{c_{ik}[b_{kj}]_+}\prod_ip_i^{b_{kj}[-c_{ik}]_+} \\
+&=\prod_ip_i^{c_{ij}+\frac{|c_{ij}|b_{jk}+c_{ij}|b_{jk}|}{2}}
+\end{align*}
+\end{proof}
+
+\begin{remark}
+Note if we take $\tilde B(t)=(\tilde b_{ij})_{i\in I\cup I',j\in I}$ where $\tilde b_{ij}=b_{ij}$ for $i,j\in I$ is the principal part of $\tilde B$, $\tilde b_{ij}=c_{ij}$ for $i\in I',j\in I$
+\end{remark}
+
+\begin{corollary}
+Given $\tilde B_0$ with a skew-symmetrizable principal part $B_0$, then there exists a unique exchange pattern of geometric type such that $\tilde B(t_0)=\tilde B_0$ for $t_0\in\mathbb T_n$
+\end{corollary}
+
+\begin{proof}
+By Proposition \ref{Mutation of a skew-symmetrizable matrix preserves the skew-symmetrizing matrix}
+\end{proof}
+
+\begin{remark}
+The class of exchange patterns of geometric type is stable under restriction and direct product
+\end{remark}
+
+
+
+\section{Rank two case}
+
+\begin{example}\label{Cluster algebra of rank 2}
+If $n=2$, consider $\mathbb T_2$
+\[\xedge 1t_0\xedge 2t_1\xedge 1t_2\xedge 2t_3\xedge 1t_4\xedge 2t_5\xedge 1\]
+The cluster variables are $y_i,y_{i+1}$ for $t_i$
+\[y_{2k+1}=x_1(t_{2k})=x_1(t_{2k+1}),y_{2k}=x_2(t_{2k-1})=x_2(t_{2k})\]
+$M_2(t_0)$ and $M_2(t_1)$ don't have $x_1$ and can't both have $x_2$ \par
+If both of them don't have $x_2$, then $M_2(t_0),M_2(t_1)\in\mathbb P$, thus
+\[\cdots x_2\nmid M_1(t_{-1})\Leftrightarrow x_1\nmid M_2(t_0)\Leftrightarrow x_2\nmid M_1(t_1)\Leftrightarrow x_1\nmid M_2(t_2)\cdots \]
+\[\cdots x_2\nmid M_1(t_0)\Leftrightarrow x_1\nmid M_2(t_1)\Leftrightarrow x_2\nmid M_1(t_2)\Leftrightarrow x_1\nmid M_2(t_3)\cdots \]
+So is every $M_*(t_*)\in\mathbb P$, write $q_m,r_m$ as the two monomials of $t_{m-1}\xedge{\medskip}t_m$, then we have
+\[y_{m-1}y_{m+1}=q_m+r_m\]
+And for $t_{m-2}\xedge{\medskip} t_{m-1}\xedge{\medskip}t_m\xedge{\medskip}t_{m+1}$ we have
+\[\dfrac{q_{m+1}}{r_{m+1}}=\frac{r_{m-1}}{q_{m-1}}\Leftrightarrow q_{m-1}q_{m+1}=r_{m-1}r_{m+1}\]
+If $M_2(t_0)=q_1x_1^b$, $M_2(t_1)=r_1$(the other case corresponds to the involution) for some $b>0$, then $M_1(t_1)=q_2x_2^c$, $M_1(t_2)=r_2$ for some $c>0$, we have
+\[\frac{M_2(t_2)}{M_2(t_3)}=\left.\frac{M_2(t_1)}{M_2(t_0)}\right|_{x_1\leftarrow\frac{M_0}{x_1}}=\left.\frac{r_1}{q_1x_1^b}\right|_{x_1\leftarrow\frac{r_2}{x_1}}=\frac{r_1x_1^b}{q_1r_2^b}\]
+Since $x_1\mid M_2(t_3)\Rightarrow x_2\nmid M_2(t_2)$ gives a contradiction, $x_1\nmid M_2(t_3)\Rightarrow M_2(t_3)=r_3$, thus $M_2(t_2)=q_3x_1^b$, periodically, we can conclude
+\begin{align*}
+M_2(t_{2k})&=q_{2k+1}x_1^b \\
+M_2(t_{2k+1})&=r_{2k+1} \\
+M_1(t_{2k-1})&=q_{2k}x_2^c \\
+M_1(t_{2k})&=r_{2k}
+\end{align*}
+Therefore we have
+\begin{align*}
+y_{2k-1}y_{2k+1}&=q_{2k}y_{2k}^c+r_{2k} \\
+y_{2k}y_{2k+2}&=q_{2k+1}y_{2k+1}^b+r_{2k+1}
+\end{align*}
+For $t_{2k-1}\xedge{1}t_{2k}\xedge{2}t_{2k+1}\xedge{1}t_{2k+2}$ we have
+\[q_{2k}q_{2k+2}r_{2k+1}^c=r_{2k}r_{2k+2}\]
+For $t_{2k-2}\xedge{2}t_{2k-1}\xedge{1}t_{2k}\xedge{2}t_{2k+1}$ we have
+\[q_{2k-1}q_{2k+1}r_{2k}^b=r_{2k-1}r_{2k+1}\]
+The exchange matrices are
+\[B(t_m)=(-1)^m\begin{pmatrix}
+0&b \\
+-c&0
+\end{pmatrix}\]
+Conversely, given such relation, we can always find a corresponding cluster algebra \par
+In particular, consider the coordinate ring of $\Gr_2(5)$, let
+\begin{align*}
+y_m&=[\overline{2m-1},\overline{2m+1}] \\
+q_m&=[\overline{2m-2},\overline{2m+2}] \\
+r_m&=[\overline{2m-2},\overline{2m-1}][\overline{2m+1},\overline{2m+2}] \\
+b&=c=1
+\end{align*}
+\end{example}
+
+\begin{note}
+If we denote $m\mod 2$ as $\langle m\rangle$, then
+\begin{align*}
+p_{\langle m\rangle}(t_m)&=q_{m+1} \\
+p_{\langle m+1\rangle}(t_m)&=r_m \\
+x_{\langle m\rangle}(t_m)&=q_m \\
+x_{\langle m+1\rangle}(t_m)&=y_{m+1}
+\end{align*}
+\end{note}
+
+\begin{example}
+As in Example \ref{Cluster algebra of rank 2}, by Theorem \ref{Laurent phenonmenon}, we know that
+\[y_m=\frac{N_m(y_1,y_2)}{y_1^{d_1(m)}y_2^{d_2(m)}}\]
+Where $N_m(y_1,y_2)\in\mathbb {ZP}[y_1,y_2]$ not divisible by $y_1$ or $y_2$
+\end{example}
+
+
+
+\section{Cluster algebra of finite type}
+
+\begin{definition}
+Seeds $\Sigma(t),\Sigma(t')$ are \textbf{equivalent} if $t,t'$ are $\mathcal M$-equivalent, i.e. there is a permutation $\sigma$ of $I$ such that $x_{\sigma(i)(t)}=x_{i}(t')$, 
+$b_{\sigma(i)\sigma(j)}(t')=b_{ij}(t)$, $p_{\sigma(j)}(t)=p_j(t')$. For geometric type, $c_{i\sigma(j)}(t)=c_{ij}(t')$, or rather, $\tilde b_{\sigma(i)\sigma(j)}(t')=\tilde b_{ij}(t)$ since $\sigma$ as only a permutation of $I$ fixes $I'$. By Proposition \ref{Normalized exchange pattern determines the cluster algebra}, if $t,t'$ are equivalent, and $t\xedge{\sigma(j)}t_1$ and $t'\xedge{j}t_1'$, then $t_1,t_1'$ are equivalent \par
+Cluster algebras $\mathcal A(\mathcal S)$, $\mathcal A'(\mathcal S')$ are strongly isomorphic if there is a field isomorphism $\mathcal F\to\mathcal F'$ that sends seeds in $\mathcal S$ to seeds $\mathcal S'$, thus inducing bijection $\mathcal S\to\mathcal S'$ and an isomorphism $\mathcal A\to\mathcal A'$ \par
+$\mathcal A(B,-)$ are all the possible normalized cluster algebras. $\mathcal A(B),\mathcal A(B')$ are strongly isomorphic if there is a one-to-one correspondence between $\mathcal A(B,\mathbf p)$ and $\mathcal A(B',\mathbf p')$, this is true iff $B,B'$ are mutationally equivalent modulo relabelling rows and columns \par
+$\mathcal A$ is of \textbf{finite type} if it has finitely many seeds up to equivalences
+\end{definition}
+
+\begin{definition}
+The \textbf{Cartan counterpart} of $B$ is the \textbf{generalized Cartan matrix} $A(B)=(a_{ij})$, $a_{ii}=2$, $a_{ij}=-|b_{ij}|$ for $i\neq j$, with the same symmetrizing matrix $D$, i.e. $d_ia_{ij}=d_ja_{ji}$
+\end{definition}
+
+\begin{theorem}\label{A Cartan matrix of finite type, A(B)=A, bijbik>0, p normalized, then cluster algebra is of finite type}
+$A$ is a Cartan matrix of finite type, there is a sign-skew symmetric $B_\circ$ such that $A(B_\circ)=A$ and $b_{ij}b_{ik}>0$ for all $i,j,k$, and $\mathbf p_\circ$ is normalized, then $\mathcal A(B_\circ,\mathbf p_\circ)$ is of finite type. Any cluster algebra of finite type is strongly isomorphic to one such data
+\end{theorem}
+
+\begin{remark}
+Since the Coxeter graph of $A$ is a tree which is bipartite, thus we can certainly divide them into sinks and sources. Since $b_{ij}>0$ would be there is a directed edge from $i$ to $j$, thus we can always find such a $B_\circ$
+\end{remark}
+
+\begin{theorem}
+$B,B'$ sign-skew symmetric, $\mathcal A(B),\mathcal A(B')$ iff $A(B),A(B')$ are of the same Cartan-Killing type
+\end{theorem}
+
+\begin{theorem}
+$\mathcal A$ is a cluster algebra, the following are equivalent
+\begin{enumerate}[leftmargin=*,label=(\roman*)]
+\item $\mathcal A$ is of finite type
+\item $|\mathcal X|<\infty$
+\item For every seed $(\mathbf x,\mathbf p,B)$, $|b_{xy}b_{yx}|<3$ for $x,y\in\mathbf x$
+\item $\mathcal A=\mathcal A(B_\circ,p_\circ)$ as in Theorem~\ref{A Cartan matrix of finite type, A(B)=A, bijbik>0, p normalized, then cluster algebra is of finite type}
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}
+$\mathcal A(B)$ consists of cluster algebras all simultaneously of finite type or of infinite type. There is a bijective correspondence between generalized Cartan matrices of finite type and strong isomorphic classes of normalized cluster algebras, through $B\rightarrow A(B)$
+\end{theorem}
+
+\begin{theorem}\label{Bijection between almost positive roots and X}
+There is a unique bijection $\Phi_{\geq-1}\to\mathcal X$, $\alpha\mapsto x[\alpha]=\dfrac{P_\alpha(\mathbf{x}_\circ)}{\mathbf x^\alpha}$, $P_\alpha\in\mathbb Z_{\geq0}\mathcal P$ with nonzero constant term such that $X[-\alpha_i]=x_i$
+\end{theorem}
+
+\begin{theorem}
+Every seed $(\mathbf x,\mathbf p,B)$ in $\mathcal A$ is uniquely determined by the cluster $\mathbf x$, and for any $x\in \mathbf x$, there is a unique cluster $\mathbf x'$ such that $\mathbf x\cap\mathbf x'=\mathbf x-\{x\}$. The the cluster complex $\Delta(\mathcal A)$ encodes the combinatorics of seed mutations
+\end{theorem}
+
+\begin{theorem}
+The bijection in Theorem~\ref{Bijection between almost positive roots and X} identifies $\Delta(\mathcal A)$ and $\Delta(\Phi)$, in particular, the cluster complex doesn't depend on $\mathbb P$ nor $\mathbf p_\circ$
+\end{theorem}
+
+
+
+\end{document}

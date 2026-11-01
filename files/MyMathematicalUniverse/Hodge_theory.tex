@@ -1,0 +1,56 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+An abelian group $H_{\mathbb Z}$(write $H_R=H_{\mathbb Z}\otimes R$) has a \textit{pure Hodge structure}\index{Pure Hodge structure} of weight $n$ if
+\[H_{\mathbb C}=\displaystyle\bigoplus_{p+q=n}H_{\mathbb C}^{p,q},\quad\overline{H_{\mathbb C}^{p,q}}=H_{\mathbb C}^{q,p}\]
+Or equivalently, if there is a decreasing \textit{Hodge filtration} $F^pH_{\mathbb C}$ on $H_{\mathbb C}$ such that $H_{\mathbb C}=F^pH_{\mathbb C}\oplus\overline{F^{n+1-p}H_{\mathbb C}}$. The equivalence of the two definitions is given by ($p+q=n$)
+\[F^pH_{\mathbb C}=\displaystyle\bigoplus_{i\geq p}H_{\mathbb C}^{i,n-i},\quad \overline{F^qH_{\mathbb C}}=\displaystyle\bigoplus_{j\leq p}H_{\mathbb C}^{j,n-j}\]
+\[H_{\mathbb C}^{p,q}=F^pH_{\mathbb C}\cap\overline{F^qH_{\mathbb C}},\quad F^pH_{\mathbb C}\cap\overline{F^{n+1-p}H_{\mathbb C}}=0\]
+\end{definition}
+
+\begin{example}
+$X$ is a complex manifold, $H_{\mathbb Z}=H^n(X;\mathbb Z)$, then
+\[H_{\mathbb C}^n(X;\mathbb C)=\bigoplus_{p+q=n}H^{p,q}=\bigoplus_{p+q=n}H^p(X;\mathbb C)\wedge \overline{H^q(X;\mathbb C)}\]
+\end{example}
+
+\begin{example}[\textit{Hodge-Tate structure}]
+The first ???? , $\mathbb Z(1)=(2\pi i)\mathbb Z$ has a pure Hodge structure of weight -2. Here $\mathbb Z(1)_{\mathbb C}=H^{-1,-1}$ is the unique one dimensional weight -2 pure Hodge structure. Uniqueness is due to the fact that $H^{-2,0}=\overline{H^{0,-2}}$ must be 0 or nonzero at the same time.
+\end{example}
+
+\begin{definition}
+The tensor product of two Hodge structures $H_1$ and $H_2$ is given by $H^{p,q} = $ 
+\end{definition}
+
+\begin{example}[Hodege-Tate $n$]
+The previous example generalizes to $\mathbb Z(n):=\mathbb Z(1)^{\otimes n}$. This has a one dimensional pure Hodge structure of weight $n$
+\end{example}
+
+\begin{definition}
+A \textit{polarization} over $\mathbb Q$ of a Hodge structure over $\mathbb Q$ of weight $k$ is a $(-1)^k$ symmetric nondegenerate flat bilinear map $\beta:\mathbb V_{\mathbb Q}\times\mathbb V_{\mathbb Q}\to\mathbb Q$ such that the Hermitian form $\beta_x(C_xv,\bar w)$ on each fiber $\mathcal V_x$ is positive definite, here $C_x$ is the \textit{Weil operator}, given as the direct sum of multiplication $i^{p-q}$ on $\mathcal V^{p,q}_x$
+\end{definition}
+
+\begin{definition}
+A \textit{mixed Hodge structure}\index{Mixed Hodge structure} on $H_{\mathbb Z}$ consists of an increasing \textit{weight filtration} $W_\bullet$ on $H_{\mathbb Q}$ and a decreasing filtration $F^\bullet$ on $H_{\mathbb C}$ that are compatible, i.e.
+\[F^p(\gr_kW)_{\mathbb C}=\frac{F^p\cap W_{k+1}(\mathbb C)+W_k(\mathbb C)}{W_k(\mathbb C)}\]
+is a pure Hodge structure of weight $k$ of $\gr_kW$
+\end{definition}
+
+\begin{definition}
+A \textit{variation} of Hodge structure of weight $k$ over $\mathbb Q$ and a complex manifold $X$ is $(\mathbb V_{\mathbb Q},\mathcal F^\bullet)$, $\mathbb V_{\mathbb Q}$ is a locally constant sheaf of $\mathbb Q$ vector spaces, $\mathcal F^\bullet$ is a decreasing filtration of holomorphic subbundles of the locally free sheaf $\mathcal V=\mathcal O_X\otimes\mathbb V_{\mathbb Q}$ such that
+\begin{itemize}
+\item $(\mathcal V_x,\mathcal F^\bullet_x)$ has a pure Hodge structure of weight $k$, i.e. $\mathcal V_x=\mathcal F^p\oplus\overline{\mathcal F^{k+1-p}}$
+\item (Griffiths transversality) $\nabla\mathcal F^p\subseteq\Omega^1_X\otimes_{\mathcal O_X}\mathcal F^{p-1}$
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+A variation of mixed Hodge structure over $\mathbb Q$ and a complex manifold $X$ is $(\mathbb V_{\mathbb Q},\mathcal W_\bullet,\mathcal F^\bullet)$, $\mathcal W_\bullet$ is an increasing filtration of $\mathbb V_{\mathbb Q}$ by locally constant subsheaves such that
+\begin{itemize}
+\item $(\mathcal V_x,(\mathcal W_\bullet)_x,\mathcal F^\bullet_x)$ has a mixed Hodge structure, i.e. $()$ is a pure Hodge structure of weight $k$
+\item $\nabla\mathcal F^p\subseteq\Omega^1_X\otimes_{\mathcal O_X}\mathcal F^{p-1}$
+\end{itemize}
+\end{definition}
+
+\end{document}

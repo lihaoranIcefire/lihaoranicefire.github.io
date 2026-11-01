@@ -1,0 +1,40 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{definition}
+The Grothendieck group of $R$ is $K_0(R)$, the Grothendieck group of monoid of finitely generated projective modules over $R$
+\end{definition}
+
+\begin{theorem}[Swan's theorem]\label{Swan's theorem}
+$X$ is a compact Hausdorff space, $K(X)=K_0(C(X,\mathbb R))$
+\end{theorem}
+
+\begin{proof}
+If $E\to X$ is a vector bundle, then it is the direct summand of some trivial vector bundle. Conversely, if $P$ is a finitely generated module over $R=C(X,\mathbb R)$, then $P$ is image of some idempotent endomorphism of $R^n$ which is a vector bundle
+\end{proof}
+
+\begin{definition}[Whitehead group]
+The \textbf{Whitehead group}\index{Whitehead group} of ring $R$ is an abelian group $K_1(R)$ satisfying universal property
+\begin{center}
+\begin{tikzcd}
+GL(R) \arrow[d, "\pi"'] \arrow[rd]     &   \\
+K_1(R) \arrow[r, "\exists_1"', dashed] & A
+\end{tikzcd}
+\end{center}
+For any abelian group $A$
+\end{definition}
+
+\begin{construction}
+Thanks to Whitehead's lemma \ref{Whitehead's lemma}, $K_1(R)=GL(R)/[GL(R),GL(R)]=GL(R)/E(R)$
+\end{construction}
+
+\begin{definition}
+If $R$ is commutative, $SL(R)$ is the kernel of $GL(R)\xrightarrow{\det}R^\times$, the special Whitehead group $SK_1(R)=SL(R)/E(R)$ is the kernel of $K_1(R)\xrightarrow{\det}R^\times$, $GL(R)\cong SL(R)\rtimes R^\times$, $K_1(R)\cong SK_1(R)\oplus R^\times$. $K_1(F)=F^\times$
+\end{definition}
+
+\begin{lemma}
+Since $GL(R_1\times R_2)=GL(R_1)\times GL(R_2)$, $K_1(R_1\times R_2)=K_1(R_1)\oplus K_1(R_2)$
+\end{lemma}
+
+\end{document}
